@@ -1,4 +1,3 @@
-
 namespace aLMS.API
 {
     public class Program
