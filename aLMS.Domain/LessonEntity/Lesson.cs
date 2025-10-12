@@ -1,4 +1,5 @@
 ﻿using aLMS.Domain.Common;
+using aLMS.Domain.ExerciseEntity;
 using aLMS.Domain.TopicEntity;
 using System;
 using System.Collections.Generic;

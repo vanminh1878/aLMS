@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using aLMS.Domain.GradeEntity;
+using aLMS.Domain.UserEntity;
 
 namespace aLMS.Domain.SchoolEntity
 {

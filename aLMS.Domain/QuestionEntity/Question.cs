@@ -1,5 +1,7 @@
-﻿using aLMS.Domain.Common;
+﻿using aLMS.Domain.AnswerEntity;
+using aLMS.Domain.Common;
 using aLMS.Domain.ExerciseEntity;
+using aLMS.Domain.StudentAnswerEntity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
