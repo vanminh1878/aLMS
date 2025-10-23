@@ -1,0 +1,17 @@
+dotnet ef migrations add InitialCreate --startup-project "../aLMS.Api"
+hoặc
+(dotnet ef migrations add InitialCreate --project "aLMS.Infrastructure" --startup-project "aLMS.Api")
+
+cài đặt:
+dotnet tool install --global dotnet-ef
+
+To undo this action, use 'ef migrations remove'
+
+*add update
+dotnet ef migrations add DeleteStoreIdInCategories --startup-project "../aLMS.Api"
+dotnet ef migrations add AddStockIntakeIdToStockIntakeDetail --startup-project "../aLMS.Api"
+dotnet ef migrations add delete --startup-project "../aLMS.Api"
+
+*update
+dotnet ef database update --project ../aLMS.Infrastructure --startup-project ../aLMS.Api
+
