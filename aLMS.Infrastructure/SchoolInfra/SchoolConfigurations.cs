@@ -29,7 +29,7 @@ namespace aLMS.Infrastructure.AccountInfra
                 .HasColumnType("varchar(150)");
 
             builder.Property(x => x.Status)
-                .HasColumnType("bit")
+                .HasColumnType("boolean")
                 .HasDefaultValue(true);
         }
     }

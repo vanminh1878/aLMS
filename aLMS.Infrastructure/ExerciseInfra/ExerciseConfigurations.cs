@@ -25,7 +25,7 @@ namespace aLMS.Infrastructure.AccountInfra
                 .HasColumnType("varchar(500)");
 
             builder.Property(x => x.HasTimeLimit)
-                .HasColumnType("bit")
+                .HasColumnType("boolean")
                 .HasDefaultValue(false);
 
             builder.Property(x => x.TimeLimit)

@@ -31,7 +31,7 @@ namespace aLMS.Infrastructure.AccountInfra
                 .HasColumnType("text");
 
             builder.Property(x => x.IsRequired)
-                .HasColumnType("bit")
+                .HasColumnType("boolean")
                 .HasDefaultValue(false);
 
             builder.Property(x => x.TopicId)

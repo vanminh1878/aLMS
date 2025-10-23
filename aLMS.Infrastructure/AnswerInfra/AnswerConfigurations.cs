@@ -22,7 +22,7 @@ namespace aLMS.Infrastructure.AccountInfra
                 .HasColumnType("text");
 
             builder.Property(x => x.IsCorrect)
-                .HasColumnType("bit")
+                .HasColumnType("boolean")
                 .HasDefaultValue(false);
 
             builder.Property(x => x.OrderNumber)

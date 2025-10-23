@@ -31,7 +31,7 @@ namespace aLMS.Infrastructure.AccountInfra
                 .HasColumnType("decimal(5,2)");
 
             builder.Property(x => x.IsCompleted)
-                .HasColumnType("bit")
+                .HasColumnType("boolean")
                 .HasDefaultValue(false);
 
             builder.Property(x => x.AttemptNumber)
