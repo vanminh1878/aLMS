@@ -26,8 +26,8 @@ namespace aLMS.Infrastructure.SchoolInfra
             using (var connection = new NpgsqlConnection(_connectionString))
             {
                 var sb = new StringBuilder();
-                sb.AppendLine("SELECT Id, Name, Address, Email, Status");
-                sb.AppendLine("FROM \"School\"");
+                sb.AppendLine("SELECT \"Id\", \"Name\", \"Address\", \"Email\", \"Status\"");
+                sb.AppendLine("FROM \"school\"");
                 return await connection.QueryAsync<School>(sb.ToString());
             }
         }
@@ -37,10 +37,10 @@ namespace aLMS.Infrastructure.SchoolInfra
             using (var connection = new NpgsqlConnection(_connectionString))
             {
                 var sb = new StringBuilder();
-                sb.AppendLine("SELECT Id, Name, Address, Email, Status");
-                sb.AppendLine("FROM \"School\"");
-                sb.AppendLine("WHERE Id = @Id");
-                return await connection.QuerySingleOrDefaultAsync<School>(sb.ToString(), new { Id = id });
+                sb.AppendLine("SELECT \"Id\", \"Name\", \"Address\", \"Email\", \"Status\"");
+                sb.AppendLine("FROM \"school\"");
+                sb.AppendLine("WHERE \"Id\" = @id");
+                return await connection.QuerySingleOrDefaultAsync<School>(sb.ToString(), new { id });
             }
         }
 
@@ -61,9 +61,9 @@ namespace aLMS.Infrastructure.SchoolInfra
             using (var connection = new NpgsqlConnection(_connectionString))
             {
                 var sb = new StringBuilder();
-                sb.AppendLine("DELETE FROM \"School\"");
-                sb.AppendLine("WHERE Id = @Id");
-                await connection.ExecuteAsync(sb.ToString(), new { Id = id });
+                sb.AppendLine("DELETE FROM \"school\"");
+                sb.AppendLine("WHERE \"Id\" = @id");
+                await connection.ExecuteAsync(sb.ToString(), new { id });
             }
         }
 

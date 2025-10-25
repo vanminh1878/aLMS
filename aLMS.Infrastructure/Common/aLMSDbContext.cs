@@ -49,27 +49,27 @@ namespace aLMS.Infrastructure.Common
         }
 
         // DbSet cho các entity
-        public DbSet<School> Schools { get; set; } = null!;
-        public DbSet<Grade> Grades { get; set; } = null!;
-        public DbSet<Class> Classes { get; set; } = null!;
-        public DbSet<Subject> Subjects { get; set; } = null!;
-        public DbSet<Topic> Topics { get; set; } = null!;
-        public DbSet<Lesson> Lessons { get; set; } = null!;
-        public DbSet<Exercise> Exercises { get; set; } = null!;
-        public DbSet<Question> Questions { get; set; } = null!;
-        public DbSet<Answer> Answers { get; set; } = null!;
-        public DbSet<StudentProfile> StudentProfiles { get; set; } = null!;
-        public DbSet<User> Users { get; set; } = null!;
-        public DbSet<TeacherProfile> TeacherProfiles { get; set; } = null!;
-        public DbSet<Department> Departments { get; set; } = null!;
-        public DbSet<ParentProfile> ParentProfiles { get; set; } = null!;
-        public DbSet<Account> Accounts { get; set; } = null!;
-        public DbSet<Role> Roles { get; set; } = null!;
-        public DbSet<Permission> Permissions { get; set; } = null!;
-        public DbSet<RolePermission> RolePermissions { get; set; } = null!;
-        public DbSet<StudentExercise> StudentExercises { get; set; } = null!;
-        public DbSet<StudentAnswer> StudentAnswers { get; set; } = null!;
-        public DbSet<Behaviour> Behaviours { get; set; } = null!;
+        public DbSet<School> School { get; set; } = null!;
+        public DbSet<Grade> Grade { get; set; } = null!;
+        public DbSet<Class> Classe { get; set; } = null!;
+        public DbSet<Subject> Subject { get; set; } = null!;
+        public DbSet<Topic> Topic { get; set; } = null!;
+        public DbSet<Lesson> Lessons{ get; set; } = null!;
+        public DbSet<Exercise> Exercises{ get; set; } = null!;
+        public DbSet<Question> Questions{ get; set; } = null!;
+        public DbSet<Answer> Answer { get; set; } = null!;
+        public DbSet<StudentProfile> StudentProfile { get; set; } = null!;
+        public DbSet<User> User { get; set; } = null!;
+        public DbSet<TeacherProfile> TeacherProfile { get; set; } = null!;
+        public DbSet<Department> Department { get; set; } = null!;
+        public DbSet<ParentProfile> ParentProfile { get; set; } = null!;
+        public DbSet<Account> Account { get; set; } = null!;
+        public DbSet<Role> Role { get; set; } = null!;
+        public DbSet<Permission> Permission { get; set; } = null!;
+        public DbSet<RolePermission> RolePermission { get; set; } = null!;
+        public DbSet<StudentExercise> StudentExercise { get; set; } = null!;
+        public DbSet<StudentAnswer> StudentAnswer { get; set; } = null!;
+        public DbSet<Behaviour> Behaviour { get; set; } = null!;
 
         // Áp dụng cấu hình entity từ các file configuration trong assembly
         protected override void OnModelCreating(ModelBuilder modelBuilder)

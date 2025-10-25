@@ -19,5 +19,20 @@ namespace aLMS.Domain.SchoolEntity
 
         public ICollection<Grade> Grades { get; set; }
         public ICollection<User> Users { get; set; }
+
+        public void RaiseSchoolCreatedEvent()
+        {
+            AddDomainEvent(new SchoolCreatedEvent(Id, Name, Email));
+        }
+
+        public void RaiseSchoolUpdatedEvent()
+        {
+            AddDomainEvent(new SchoolUpdatedEvent(Id, Name, Email));
+        }
+
+        public void RaiseSchoolDeletedEvent()
+        {
+            AddDomainEvent(new SchoolDeletedEvent(Id));
+        }
     }
 }

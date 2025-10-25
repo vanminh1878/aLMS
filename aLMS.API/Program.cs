@@ -1,4 +1,5 @@
 ﻿using aLMS.Application.Common.Interfaces;
+using aLMS.Application.Common.Mappings;
 using aLMS.Infrastructure.AccountInfra;
 using aLMS.Infrastructure.AnswerInfra;
 using aLMS.Infrastructure.BehaviourInfra;
@@ -32,6 +33,7 @@ using System.Globalization;
 using System.Text;
 
 
+
 namespace aLMS.API
 {
     public class Program
@@ -57,36 +59,162 @@ namespace aLMS.API
                 builder.Services.AddDbContext<aLMSDbContext>(options =>
                     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-                // Đăng ký MediatR
-                builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(aLMSDbContext).Assembly));
+                // Đăng ký MediatR - đăng ký assembly chứa các handlers (aLMS.Application)
+                builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(aLMS.Application.SchoolServices.Commands.CreateSchool.CreateSchoolCommandHandler).Assembly));
 
                 // Đăng ký IHttpContextAccessor
                 builder.Services.AddHttpContextAccessor();
 
-                // Đăng ký các repository
-                builder.Services.AddScoped<IUsersRepository, UsersRepository>();
-                builder.Services.AddScoped<IRoleRepository, RoleRepository>();
-                builder.Services.AddScoped<IAccountRepository, AccountRepository>();
-                builder.Services.AddScoped<ISchoolRepository, SchoolRepository>();
-                builder.Services.AddScoped<IGradeRepository, GradeRepository>();
-                builder.Services.AddScoped<IClassRepository, ClassRepository>();
-                builder.Services.AddScoped<ISubjectRepository, SubjectRepository>();
-                builder.Services.AddScoped<ITopicRepository, TopicRepository>();
-                builder.Services.AddScoped<ILessonRepository, LessonRepository>();
-                builder.Services.AddScoped<IExerciseRepository, ExerciseRepository>();
-                builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
-                builder.Services.AddScoped<IAnswerRepository, AnswerRepository>();
-                builder.Services.AddScoped<IStudentProfileRepository, StudentProfileRepository>();
-                builder.Services.AddScoped<ITeacherProfileRepository, TeacherProfileRepository>();
-                builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
-                builder.Services.AddScoped<IParentProfileRepository, ParentProfileRepository>();
-                builder.Services.AddScoped<IPermissionRepository, PermissionRepository>();
-                builder.Services.AddScoped<IRolePermissionRepository, RolePermissionRepository>();
-                builder.Services.AddScoped<IStudentExerciseRepository, StudentExerciseRepository>();
-                builder.Services.AddScoped<IStudentAnswerRepository, StudentAnswerRepository>();
-                builder.Services.AddScoped<IBehaviourRepository, BehaviourRepository>();
+                // Đăng ký các repository với DI, truyền aLMSDbContext và connectionString
+                builder.Services.AddScoped<IUsersRepository>(provider =>
+                    new UsersRepository(
+                        provider.GetRequiredService<aLMSDbContext>(),
+                        provider.GetRequiredService<IConfiguration>().GetConnectionString("DefaultConnection")
+                            ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.")
+                    ));
+
+                builder.Services.AddScoped<IRoleRepository>(provider =>
+                    new RoleRepository(
+                        provider.GetRequiredService<aLMSDbContext>(),
+                        provider.GetRequiredService<IConfiguration>().GetConnectionString("DefaultConnection")
+                            ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.")
+                    ));
+
+                builder.Services.AddScoped<IAccountRepository>(provider =>
+                    new AccountRepository(
+                        provider.GetRequiredService<aLMSDbContext>(),
+                        provider.GetRequiredService<IConfiguration>().GetConnectionString("DefaultConnection")
+                            ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.")
+                    ));
+
+                builder.Services.AddScoped<ISchoolRepository>(provider =>
+                    new SchoolRepository(
+                        provider.GetRequiredService<aLMSDbContext>(),
+                        provider.GetRequiredService<IConfiguration>().GetConnectionString("DefaultConnection")
+                            ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.")
+                    ));
+
+                builder.Services.AddScoped<IGradeRepository>(provider =>
+                    new GradeRepository(
+                        provider.GetRequiredService<aLMSDbContext>(),
+                        provider.GetRequiredService<IConfiguration>().GetConnectionString("DefaultConnection")
+                            ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.")
+                    ));
+
+                builder.Services.AddScoped<IClassRepository>(provider =>
+                    new ClassRepository(
+                        provider.GetRequiredService<aLMSDbContext>(),
+                        provider.GetRequiredService<IConfiguration>().GetConnectionString("DefaultConnection")
+                            ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.")
+                    ));
+
+                builder.Services.AddScoped<ISubjectRepository>(provider =>
+                    new SubjectRepository(
+                        provider.GetRequiredService<aLMSDbContext>(),
+                        provider.GetRequiredService<IConfiguration>().GetConnectionString("DefaultConnection")
+                            ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.")
+                    ));
+
+                builder.Services.AddScoped<ITopicRepository>(provider =>
+                    new TopicRepository(
+                        provider.GetRequiredService<aLMSDbContext>(),
+                        provider.GetRequiredService<IConfiguration>().GetConnectionString("DefaultConnection")
+                            ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.")
+                    ));
+
+                builder.Services.AddScoped<ILessonRepository>(provider =>
+                    new LessonRepository(
+                        provider.GetRequiredService<aLMSDbContext>(),
+                        provider.GetRequiredService<IConfiguration>().GetConnectionString("DefaultConnection")
+                            ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.")
+                    ));
+
+                builder.Services.AddScoped<IExerciseRepository>(provider =>
+                    new ExerciseRepository(
+                        provider.GetRequiredService<aLMSDbContext>(),
+                        provider.GetRequiredService<IConfiguration>().GetConnectionString("DefaultConnection")
+                            ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.")
+                    ));
+
+                builder.Services.AddScoped<IQuestionRepository>(provider =>
+                    new QuestionRepository(
+                        provider.GetRequiredService<aLMSDbContext>(),
+                        provider.GetRequiredService<IConfiguration>().GetConnectionString("DefaultConnection")
+                            ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.")
+                    ));
+
+                builder.Services.AddScoped<IAnswerRepository>(provider =>
+                    new AnswerRepository(
+                        provider.GetRequiredService<aLMSDbContext>(),
+                        provider.GetRequiredService<IConfiguration>().GetConnectionString("DefaultConnection")
+                            ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.")
+                    ));
+
+                builder.Services.AddScoped<IStudentProfileRepository>(provider =>
+                    new StudentProfileRepository(
+                        provider.GetRequiredService<aLMSDbContext>(),
+                        provider.GetRequiredService<IConfiguration>().GetConnectionString("DefaultConnection")
+                            ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.")
+                    ));
+
+                builder.Services.AddScoped<ITeacherProfileRepository>(provider =>
+                    new TeacherProfileRepository(
+                        provider.GetRequiredService<aLMSDbContext>(),
+                        provider.GetRequiredService<IConfiguration>().GetConnectionString("DefaultConnection")
+                            ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.")
+                    ));
+
+                builder.Services.AddScoped<IDepartmentRepository>(provider =>
+                    new DepartmentRepository(
+                        provider.GetRequiredService<aLMSDbContext>(),
+                        provider.GetRequiredService<IConfiguration>().GetConnectionString("DefaultConnection")
+                            ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.")
+                    ));
+
+                builder.Services.AddScoped<IParentProfileRepository>(provider =>
+                    new ParentProfileRepository(
+                        provider.GetRequiredService<aLMSDbContext>(),
+                        provider.GetRequiredService<IConfiguration>().GetConnectionString("DefaultConnection")
+                            ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.")
+                    ));
+
+                builder.Services.AddScoped<IPermissionRepository>(provider =>
+                    new PermissionRepository(
+                        provider.GetRequiredService<aLMSDbContext>(),
+                        provider.GetRequiredService<IConfiguration>().GetConnectionString("DefaultConnection")
+                            ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.")
+                    ));
+
+                builder.Services.AddScoped<IRolePermissionRepository>(provider =>
+                    new RolePermissionRepository(
+                        provider.GetRequiredService<aLMSDbContext>(),
+                        provider.GetRequiredService<IConfiguration>().GetConnectionString("DefaultConnection")
+                            ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.")
+                    ));
+
+                builder.Services.AddScoped<IStudentExerciseRepository>(provider =>
+                    new StudentExerciseRepository(
+                        provider.GetRequiredService<aLMSDbContext>(),
+                        provider.GetRequiredService<IConfiguration>().GetConnectionString("DefaultConnection")
+                            ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.")
+                    ));
+
+                builder.Services.AddScoped<IStudentAnswerRepository>(provider =>
+                    new StudentAnswerRepository(
+                        provider.GetRequiredService<aLMSDbContext>(),
+                        provider.GetRequiredService<IConfiguration>().GetConnectionString("DefaultConnection")
+                            ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.")
+                    ));
+
+                builder.Services.AddScoped<IBehaviourRepository>(provider =>
+                    new BehaviourRepository(
+                        provider.GetRequiredService<aLMSDbContext>(),
+                        provider.GetRequiredService<IConfiguration>().GetConnectionString("DefaultConnection")
+                            ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.")
+                    ));
                 //builder.Services.AddScoped<IAuthService, AuthService>();
                 //builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
+
 
                 // Thêm CORS cho Angular frontend
                 builder.Services.AddCors(options =>
@@ -132,6 +260,7 @@ namespace aLMS.API
                 builder.Services.AddControllers();
                 builder.Services.AddEndpointsApiExplorer();
                 builder.Services.AddSwaggerGen();
+                builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
                 var app = builder.Build();
 
