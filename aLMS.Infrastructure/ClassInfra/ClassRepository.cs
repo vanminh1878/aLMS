@@ -26,8 +26,8 @@ namespace aLMS.Infrastructure.ClassInfra
             using (var connection = new NpgsqlConnection(_connectionString))
             {
                 var sb = new StringBuilder();
-                sb.AppendLine("SELECT Id, GradeId, ClassName");
-                sb.AppendLine("FROM \"Class\"");
+                sb.AppendLine("SELECT \"Id\", \"ClassName\", \"GradeId\"");
+                sb.AppendLine("FROM \"class\"");
                 return await connection.QueryAsync<Class>(sb.ToString());
             }
         }
@@ -37,10 +37,10 @@ namespace aLMS.Infrastructure.ClassInfra
             using (var connection = new NpgsqlConnection(_connectionString))
             {
                 var sb = new StringBuilder();
-                sb.AppendLine("SELECT Id, GradeId, ClassName");
-                sb.AppendLine("FROM \"Class\"");
-                sb.AppendLine("WHERE Id = @Id");
-                return await connection.QuerySingleOrDefaultAsync<Class>(sb.ToString(), new { Id = id });
+                sb.AppendLine("SELECT \"Id\", \"ClassName\", \"GradeId\"");
+                sb.AppendLine("FROM \"class\"");
+                sb.AppendLine("WHERE \"Id\" = @id");
+                return await connection.QuerySingleOrDefaultAsync<Class>(sb.ToString(), new { id });
             }
         }
 
@@ -61,9 +61,9 @@ namespace aLMS.Infrastructure.ClassInfra
             using (var connection = new NpgsqlConnection(_connectionString))
             {
                 var sb = new StringBuilder();
-                sb.AppendLine("DELETE FROM \"Class\"");
-                sb.AppendLine("WHERE Id = @Id");
-                await connection.ExecuteAsync(sb.ToString(), new { Id = id });
+                sb.AppendLine("DELETE FROM \"class\"");
+                sb.AppendLine("WHERE \"Id\" = @id");
+                await connection.ExecuteAsync(sb.ToString(), new { id });
             }
         }
 
@@ -72,10 +72,10 @@ namespace aLMS.Infrastructure.ClassInfra
             using (var connection = new NpgsqlConnection(_connectionString))
             {
                 var sb = new StringBuilder();
-                sb.AppendLine("SELECT Id, GradeId, ClassName");
-                sb.AppendLine("FROM \"Class\"");
-                sb.AppendLine("WHERE GradeId = @GradeId");
-                return await connection.QueryAsync<Class>(sb.ToString(), new { GradeId = gradeId });
+                sb.AppendLine("SELECT \"Id\", \"ClassName\", \"GradeId\"");
+                sb.AppendLine("FROM \"class\"");
+                sb.AppendLine("WHERE \"GradeId\" = @gradeId");
+                return await connection.QueryAsync<Class>(sb.ToString(), new { gradeId });
             }
         }
 

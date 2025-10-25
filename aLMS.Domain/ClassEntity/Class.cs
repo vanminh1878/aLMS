@@ -17,5 +17,20 @@ namespace aLMS.Domain.ClassEntity
         public Grade Grade { get; set; }
 
         public ICollection<Subject> Subjects { get; set; }
+
+        public void RaiseClassCreatedEvent()
+        {
+            AddDomainEvent(new ClassCreatedEvent(Id, ClassName, GradeId));
+        }
+
+        public void RaiseClassUpdatedEvent()
+        {
+            AddDomainEvent(new ClassUpdatedEvent(Id, ClassName, GradeId));
+        }
+
+        public void RaiseClassDeletedEvent()
+        {
+            AddDomainEvent(new ClassDeletedEvent(Id));
+        }
     }
 }
