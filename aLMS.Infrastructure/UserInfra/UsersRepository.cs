@@ -16,8 +16,8 @@ namespace aLMS.Infrastructure.UserInfra
 {
     public class UsersRepository : IUsersRepository
     {
-        private readonly DbContext _context; 
-        private readonly string _connectionString; 
+        private readonly DbContext _context;
+        private readonly string _connectionString;
 
         public UsersRepository(DbContext context, string connectionString)
         {
@@ -25,29 +25,28 @@ namespace aLMS.Infrastructure.UserInfra
             _connectionString = connectionString;
         }
 
-
         public async Task<IEnumerable<User>> GetAllUsersAsync()
         {
             using (var connection = new NpgsqlConnection(_connectionString))
             {
-                var query = @"SELECT Id, Name, DateOfBirth, Gender, PhoneNumber, Email, Address, SchoolId, AccountId, RoleId 
-                             FROM ""User""";
-                return await connection.QueryAsync<User>(query);
+                var sb = new StringBuilder();
+                sb.AppendLine("SELECT Id, Name, DateOfBirth, Gender, PhoneNumber, Email, Address, SchoolId, AccountId, RoleId");
+                sb.AppendLine("FROM \"User\"");
+                return await connection.QueryAsync<User>(sb.ToString());
             }
         }
-
 
         public async Task<User> GetUserByIdAsync(Guid id)
         {
             using (var connection = new NpgsqlConnection(_connectionString))
             {
-                var query = @"SELECT Id, Name, DateOfBirth, Gender, PhoneNumber, Email, Address, SchoolId, AccountId, RoleId 
-                             FROM ""User"" 
-                             WHERE Id = @Id";
-                return await connection.QuerySingleOrDefaultAsync<User>(query, new { Id = id });
+                var sb = new StringBuilder();
+                sb.AppendLine("SELECT Id, Name, DateOfBirth, Gender, PhoneNumber, Email, Address, SchoolId, AccountId, RoleId");
+                sb.AppendLine("FROM \"User\"");
+                sb.AppendLine("WHERE Id = @Id");
+                return await connection.QuerySingleOrDefaultAsync<User>(sb.ToString(), new { Id = id });
             }
         }
-
 
         public async Task AddUserAsync(User user)
         {
@@ -55,23 +54,22 @@ namespace aLMS.Infrastructure.UserInfra
             await _context.SaveChangesAsync();
         }
 
-
         public async Task UpdateUserAsync(User user)
         {
             _context.Set<User>().Update(user);
             await _context.SaveChangesAsync();
         }
 
-
         public async Task DeleteUserAsync(Guid id)
         {
             using (var connection = new NpgsqlConnection(_connectionString))
             {
-                var query = @"DELETE FROM ""User"" WHERE Id = @Id";
-                await connection.ExecuteAsync(query, new { Id = id });
+                var sb = new StringBuilder();
+                sb.AppendLine("DELETE FROM \"User\"");
+                sb.AppendLine("WHERE Id = @Id");
+                await connection.ExecuteAsync(sb.ToString(), new { Id = id });
             }
         }
-
 
         public async Task<User> GetUserByEmailAsync(string email)
         {
@@ -79,15 +77,15 @@ namespace aLMS.Infrastructure.UserInfra
                 .FirstOrDefaultAsync(u => u.Email == email);
         }
 
-
         public async Task<IEnumerable<User>> GetUsersBySchoolIdAsync(Guid schoolId)
         {
             using (var connection = new NpgsqlConnection(_connectionString))
             {
-                var query = @"SELECT Id, Name, DateOfBirth, Gender, PhoneNumber, Email, Address, SchoolId, AccountId, RoleId 
-                             FROM ""User"" 
-                             WHERE SchoolId = @SchoolId";
-                return await connection.QueryAsync<User>(query, new { SchoolId = schoolId });
+                var sb = new StringBuilder();
+                sb.AppendLine("SELECT Id, Name, DateOfBirth, Gender, PhoneNumber, Email, Address, SchoolId, AccountId, RoleId");
+                sb.AppendLine("FROM \"User\"");
+                sb.AppendLine("WHERE SchoolId = @SchoolId");
+                return await connection.QueryAsync<User>(sb.ToString(), new { SchoolId = schoolId });
             }
         }
 
