@@ -1,6 +1,26 @@
-﻿using System.Globalization;
-using System.Text;
+﻿using aLMS.Application.Common.Interfaces;
+using aLMS.Infrastructure.AccountInfra;
+using aLMS.Infrastructure.AnswerInfra;
+using aLMS.Infrastructure.BehaviourInfra;
+using aLMS.Infrastructure.ClassInfra;
 using aLMS.Infrastructure.Common;
+using aLMS.Infrastructure.DepartmentInfra;
+using aLMS.Infrastructure.ExerciseInfra;
+using aLMS.Infrastructure.GradeInfra;
+using aLMS.Infrastructure.LessonInfra;
+using aLMS.Infrastructure.ParentProfileInfra;
+using aLMS.Infrastructure.PermissionInfra;
+using aLMS.Infrastructure.QuestionInfra;
+using aLMS.Infrastructure.RoleInfra;
+using aLMS.Infrastructure.RolePermissionInfra;
+using aLMS.Infrastructure.SchoolInfra;
+using aLMS.Infrastructure.StudentAnswerInfra;
+using aLMS.Infrastructure.StudentExerciseInfra;
+using aLMS.Infrastructure.StudentProfileInfra;
+using aLMS.Infrastructure.SubjectInfra;
+using aLMS.Infrastructure.TeacherProfileInfra;
+using aLMS.Infrastructure.TopicInfra;
+using aLMS.Infrastructure.UserInfra;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Localization;
@@ -8,6 +28,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
+using System.Globalization;
+using System.Text;
 
 
 namespace aLMS.API
@@ -42,27 +64,27 @@ namespace aLMS.API
                 builder.Services.AddHttpContextAccessor();
 
                 // Đăng ký các repository
-                //builder.Services.AddScoped<IUsersRepository, UsersRepository>();
-                //builder.Services.AddScoped<IRolesRepository, RolesRepository>();
-                //builder.Services.AddScoped<IAccountsRepository, AccountsRepository>();
-                //builder.Services.AddScoped<ISchoolsRepository, SchoolsRepository>();
-                //builder.Services.AddScoped<IGradesRepository, GradesRepository>();
-                //builder.Services.AddScoped<IClassesRepository, ClassesRepository>();
-                //builder.Services.AddScoped<ISubjectsRepository, SubjectsRepository>();
-                //builder.Services.AddScoped<ITopicsRepository, TopicsRepository>();
-                //builder.Services.AddScoped<ILessonsRepository, LessonsRepository>();
-                //builder.Services.AddScoped<IExercisesRepository, ExercisesRepository>();
-                //builder.Services.AddScoped<IQuestionsRepository, QuestionsRepository>();
-                //builder.Services.AddScoped<IAnswersRepository, AnswersRepository>();
-                //builder.Services.AddScoped<IStudentProfilesRepository, StudentProfilesRepository>();
-                //builder.Services.AddScoped<ITeacherProfilesRepository, TeacherProfilesRepository>();
-                //builder.Services.AddScoped<IDepartmentsRepository, DepartmentsRepository>();
-                //builder.Services.AddScoped<IParentProfilesRepository, ParentProfilesRepository>();
-                //builder.Services.AddScoped<IPermissionsRepository, PermissionsRepository>();
-                //builder.Services.AddScoped<IRolePermissionsRepository, RolePermissionsRepository>();
-                //builder.Services.AddScoped<IStudentExercisesRepository, StudentExercisesRepository>();
-                //builder.Services.AddScoped<IStudentAnswersRepository, StudentAnswersRepository>();
-                //builder.Services.AddScoped<IBehavioursRepository, BehavioursRepository>();
+                builder.Services.AddScoped<IUsersRepository, UsersRepository>();
+                builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+                builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+                builder.Services.AddScoped<ISchoolRepository, SchoolRepository>();
+                builder.Services.AddScoped<IGradeRepository, GradeRepository>();
+                builder.Services.AddScoped<IClassRepository, ClassRepository>();
+                builder.Services.AddScoped<ISubjectRepository, SubjectRepository>();
+                builder.Services.AddScoped<ITopicRepository, TopicRepository>();
+                builder.Services.AddScoped<ILessonRepository, LessonRepository>();
+                builder.Services.AddScoped<IExerciseRepository, ExerciseRepository>();
+                builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
+                builder.Services.AddScoped<IAnswerRepository, AnswerRepository>();
+                builder.Services.AddScoped<IStudentProfileRepository, StudentProfileRepository>();
+                builder.Services.AddScoped<ITeacherProfileRepository, TeacherProfileRepository>();
+                builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+                builder.Services.AddScoped<IParentProfileRepository, ParentProfileRepository>();
+                builder.Services.AddScoped<IPermissionRepository, PermissionRepository>();
+                builder.Services.AddScoped<IRolePermissionRepository, RolePermissionRepository>();
+                builder.Services.AddScoped<IStudentExerciseRepository, StudentExerciseRepository>();
+                builder.Services.AddScoped<IStudentAnswerRepository, StudentAnswerRepository>();
+                builder.Services.AddScoped<IBehaviourRepository, BehaviourRepository>();
                 //builder.Services.AddScoped<IAuthService, AuthService>();
                 //builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 
