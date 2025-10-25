@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace aLMS.Application.SchoolServices.Commands.UpdateSchool
 {
-    public class UpdateSchoolCommand : IRequest<Unit>
+    public class UpdateSchoolCommand : IRequest<UpdateSchoolResult>
     {
         public UpdateSchoolDto SchoolDto { get; set; }
     }

@@ -2,15 +2,12 @@
 using aLMS.Domain.SchoolEntity;
 using AutoMapper;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace aLMS.Application.SchoolServices.Commands.UpdateSchool
 {
-    public class UpdateSchoolCommandHandler : IRequestHandler<UpdateSchoolCommand, Unit>
+    public class UpdateSchoolCommandHandler : IRequestHandler<UpdateSchoolCommand, UpdateSchoolResult>
     {
         private readonly ISchoolRepository _schoolRepository;
         private readonly IMapper _mapper;
@@ -21,13 +18,30 @@ namespace aLMS.Application.SchoolServices.Commands.UpdateSchool
             _mapper = mapper;
         }
 
-        public async Task<Unit> Handle(UpdateSchoolCommand request, CancellationToken cancellationToken)
+        public async Task<UpdateSchoolResult> Handle(UpdateSchoolCommand request, CancellationToken cancellationToken)
         {
             var school = _mapper.Map<School>(request.SchoolDto);
-            school.RaiseSchoolUpdatedEvent();
 
-            await _schoolRepository.UpdateSchoolAsync(school);
-            return Unit.Value;
+            try
+            {
+                school.RaiseSchoolUpdatedEvent();
+                await _schoolRepository.UpdateSchoolAsync(school);
+
+                return new UpdateSchoolResult
+                {
+                    Success = true,
+                    Message = "School updated successfully.",
+                    SchoolId = school.Id
+                };
+            }
+            catch (Exception ex)
+            {
+                return new UpdateSchoolResult
+                {
+                    Success = false,
+                    Message = $"Failed to update school: {ex.Message}"
+                };
+            }
         }
     }
 }

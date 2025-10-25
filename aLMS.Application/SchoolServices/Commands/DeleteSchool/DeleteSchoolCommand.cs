@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace aLMS.Application.SchoolServices.Commands.DeleteSchool
 {
-    public class DeleteSchoolCommand : IRequest<Guid>
+    public class DeleteSchoolCommand : IRequest<DeleteSchoolResult>
     {
         public Guid Id { get; set; }
     }

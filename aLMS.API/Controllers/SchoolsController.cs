@@ -1,13 +1,14 @@
 ﻿using aLMS.Application.Common.Dtos;
 using aLMS.Application.SchoolServices.Commands.CreateSchool;
-using aLMS.Application.SchoolServices.Commands.UpdateSchool;
 using aLMS.Application.SchoolServices.Commands.DeleteSchool;
+using aLMS.Application.SchoolServices.Commands.UpdateSchool;
 using aLMS.Application.SchoolServices.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using static MassTransit.ValidationResultExtensions;
 
 namespace aLMS.API.Controllers
 {
@@ -47,15 +48,24 @@ namespace aLMS.API.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateSchool([FromBody] UpdateSchoolDto schoolDto)
         {
-            await _mediator.Send(new UpdateSchoolCommand { SchoolDto = schoolDto });
-            return NoContent();
+            var result = await _mediator.Send(new UpdateSchoolCommand { SchoolDto = schoolDto });
+            if (!result.Success)
+                return BadRequest(result); 
+
+            return Ok(result);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteSchool(Guid id)
         {
-            await _mediator.Send(new DeleteSchoolCommand { Id = id });
-            return NoContent();
+            var result = await _mediator.Send(new DeleteSchoolCommand { Id = id });
+
+            if (!result.Success)
+                return BadRequest(result);
+
+            return Ok(result);
         }
+
+
     }
 }
