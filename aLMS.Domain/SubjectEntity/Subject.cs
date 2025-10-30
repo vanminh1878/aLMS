@@ -19,5 +19,19 @@ namespace aLMS.Domain.SubjectEntity
         public Class Class { get; set; }
 
         public ICollection<Topic> Topics { get; set; }
+        public void RaiseSubjectCreatedEvent()
+        {
+            AddDomainEvent(new SubjectCreatedEvent(Id, Name, ClassId));
+        }
+
+        public void RaiseSubjectUpdatedEvent()
+        {
+            AddDomainEvent(new SubjectUpdatedEvent(Id, Name, ClassId));
+        }
+
+        public void RaiseSubjectDeletedEvent()
+        {
+            AddDomainEvent(new SubjectDeletedEvent(Id));
+        }
     }
 }

@@ -23,25 +23,16 @@ namespace aLMS.Infrastructure.SubjectInfra
 
         public async Task<IEnumerable<Subject>> GetAllSubjectsAsync()
         {
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                var sb = new StringBuilder();
-                sb.AppendLine("SELECT Id, Name, Description, Category, ClassId");
-                sb.AppendLine("FROM \"Subject\"");
-                return await connection.QueryAsync<Subject>(sb.ToString());
-            }
+            using var conn = new NpgsqlConnection(_connectionString);
+            var sql = "SELECT \"Id\", \"Name\", \"Description\", \"Category\", \"ClassId\" FROM \"subject\"";
+            return await conn.QueryAsync<Subject>(sql);
         }
 
         public async Task<Subject> GetSubjectByIdAsync(Guid id)
         {
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                var sb = new StringBuilder();
-                sb.AppendLine("SELECT Id, Name, Description, Category, ClassId");
-                sb.AppendLine("FROM \"Subject\"");
-                sb.AppendLine("WHERE Id = @Id");
-                return await connection.QuerySingleOrDefaultAsync<Subject>(sb.ToString(), new { Id = id });
-            }
+            using var conn = new NpgsqlConnection(_connectionString);
+            var sql = "SELECT \"Id\", \"Name\", \"Description\", \"Category\", \"ClassId\" FROM \"subject\" WHERE \"Id\" = @id";
+            return await conn.QuerySingleOrDefaultAsync<Subject>(sql, new { id });
         }
 
         public async Task AddSubjectAsync(Subject subject)
@@ -58,30 +49,21 @@ namespace aLMS.Infrastructure.SubjectInfra
 
         public async Task DeleteSubjectAsync(Guid id)
         {
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                var sb = new StringBuilder();
-                sb.AppendLine("DELETE FROM \"Subject\"");
-                sb.AppendLine("WHERE Id = @Id");
-                await connection.ExecuteAsync(sb.ToString(), new { Id = id });
-            }
-        }
-
-        public async Task<IEnumerable<Subject>> GetSubjectsByClassIdAsync(Guid classId)
-        {
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                var sb = new StringBuilder();
-                sb.AppendLine("SELECT Id, Name, Description, Category, ClassId");
-                sb.AppendLine("FROM \"Subject\"");
-                sb.AppendLine("WHERE ClassId = @ClassId");
-                return await connection.QueryAsync<Subject>(sb.ToString(), new { ClassId = classId });
-            }
+            using var conn = new NpgsqlConnection(_connectionString);
+            var sql = "DELETE FROM \"subject\" WHERE \"Id\" = @id";
+            await conn.ExecuteAsync(sql, new { id });
         }
 
         public async Task<bool> SubjectExistsAsync(Guid id)
         {
             return await _context.Set<Subject>().AnyAsync(s => s.Id == id);
+        }
+
+        public async Task<IEnumerable<Subject>> GetSubjectsByClassIdAsync(Guid classId)
+        {
+            using var conn = new NpgsqlConnection(_connectionString);
+            var sql = "SELECT \"Id\", \"Name\", \"Description\", \"Category\", \"ClassId\" FROM \"subject\" WHERE \"ClassId\" = @classId";
+            return await conn.QueryAsync<Subject>(sql, new { classId });
         }
     }
 }

@@ -12,7 +12,7 @@ namespace aLMS.Application.Common.Interfaces
         Task AddSubjectAsync(Subject subject);
         Task UpdateSubjectAsync(Subject subject);
         Task DeleteSubjectAsync(Guid id);
-        Task<IEnumerable<Subject>> GetSubjectsByClassIdAsync(Guid classId);
         Task<bool> SubjectExistsAsync(Guid id);
+        Task<IEnumerable<Subject>> GetSubjectsByClassIdAsync(Guid classId);
     }
 }
