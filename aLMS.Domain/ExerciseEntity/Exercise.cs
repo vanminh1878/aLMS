@@ -25,5 +25,19 @@ namespace aLMS.Domain.ExerciseEntity
 
         public ICollection<Question> Questions { get; set; }
         public ICollection<StudentExercise> StudentExercises { get; set; }
+        public void RaiseExerciseCreatedEvent()
+        {
+            AddDomainEvent(new ExerciseCreatedEvent(Id, Title, LessonId));
+        }
+
+        public void RaiseExerciseUpdatedEvent()
+        {
+            AddDomainEvent(new ExerciseUpdatedEvent(Id, Title, LessonId));
+        }
+
+        public void RaiseExerciseDeletedEvent()
+        {
+            AddDomainEvent(new ExerciseDeletedEvent(Id));
+        }
     }
 }

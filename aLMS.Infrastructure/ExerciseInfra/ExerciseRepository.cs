@@ -1,11 +1,11 @@
-﻿using aLMS.Application.Common.Interfaces;
+﻿// aLMS.Infrastructure.ExerciseInfra/ExerciseRepository.cs
+using aLMS.Application.Common.Interfaces;
 using aLMS.Domain.ExerciseEntity;
 using Dapper;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace aLMS.Infrastructure.ExerciseInfra
@@ -23,25 +23,34 @@ namespace aLMS.Infrastructure.ExerciseInfra
 
         public async Task<IEnumerable<Exercise>> GetAllExercisesAsync()
         {
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                var sb = new StringBuilder();
-                sb.AppendLine("SELECT Id, Title, ExerciseFile, HasTimeLimit, TimeLimit, QuestionLayout, OrderNumber, TotalScore, LessonId");
-                sb.AppendLine("FROM \"Exercise\"");
-                return await connection.QueryAsync<Exercise>(sb.ToString());
-            }
+            using var conn = new NpgsqlConnection(_connectionString);
+            var sql = @"
+                SELECT ""Id"", ""Title"", ""ExerciseFile"", ""HasTimeLimit"", ""TimeLimit"", 
+                       ""QuestionLayout"", ""OrderNumber"", ""TotalScore"", ""LessonId""
+                FROM ""exercise""";
+            return await conn.QueryAsync<Exercise>(sql);
         }
 
         public async Task<Exercise> GetExerciseByIdAsync(Guid id)
         {
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                var sb = new StringBuilder();
-                sb.AppendLine("SELECT Id, Title, ExerciseFile, HasTimeLimit, TimeLimit, QuestionLayout, OrderNumber, TotalScore, LessonId");
-                sb.AppendLine("FROM \"Exercise\"");
-                sb.AppendLine("WHERE Id = @Id");
-                return await connection.QuerySingleOrDefaultAsync<Exercise>(sb.ToString(), new { Id = id });
-            }
+            using var conn = new NpgsqlConnection(_connectionString);
+            var sql = @"
+                SELECT ""Id"", ""Title"", ""ExerciseFile"", ""HasTimeLimit"", ""TimeLimit"", 
+                       ""QuestionLayout"", ""OrderNumber"", ""TotalScore"", ""LessonId""
+                FROM ""exercise""
+                WHERE ""Id"" = @id";
+            return await conn.QuerySingleOrDefaultAsync<Exercise>(sql, new { id });
+        }
+
+        public async Task<IEnumerable<Exercise>> GetExercisesByLessonIdAsync(Guid lessonId)
+        {
+            using var conn = new NpgsqlConnection(_connectionString);
+            var sql = @"
+                SELECT ""Id"", ""Title"", ""ExerciseFile"", ""HasTimeLimit"", ""TimeLimit"", 
+                       ""QuestionLayout"", ""OrderNumber"", ""TotalScore"", ""LessonId""
+                FROM ""exercise""
+                WHERE ""LessonId"" = @lessonId";
+            return await conn.QueryAsync<Exercise>(sql, new { lessonId });
         }
 
         public async Task AddExerciseAsync(Exercise exercise)
@@ -58,25 +67,9 @@ namespace aLMS.Infrastructure.ExerciseInfra
 
         public async Task DeleteExerciseAsync(Guid id)
         {
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                var sb = new StringBuilder();
-                sb.AppendLine("DELETE FROM \"Exercise\"");
-                sb.AppendLine("WHERE Id = @Id");
-                await connection.ExecuteAsync(sb.ToString(), new { Id = id });
-            }
-        }
-
-        public async Task<IEnumerable<Exercise>> GetExercisesByLessonIdAsync(Guid lessonId)
-        {
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                var sb = new StringBuilder();
-                sb.AppendLine("SELECT Id, Title, ExerciseFile, HasTimeLimit, TimeLimit, QuestionLayout, OrderNumber, TotalScore, LessonId");
-                sb.AppendLine("FROM \"Exercise\"");
-                sb.AppendLine("WHERE LessonId = @LessonId");
-                return await connection.QueryAsync<Exercise>(sb.ToString(), new { LessonId = lessonId });
-            }
+            using var conn = new NpgsqlConnection(_connectionString);
+            var sql = "DELETE FROM \"exercise\" WHERE \"Id\" = @id";
+            await conn.ExecuteAsync(sql, new { id });
         }
 
         public async Task<bool> ExerciseExistsAsync(Guid id)

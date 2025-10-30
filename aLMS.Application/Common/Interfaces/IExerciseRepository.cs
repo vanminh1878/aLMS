@@ -9,10 +9,10 @@ namespace aLMS.Application.Common.Interfaces
     {
         Task<IEnumerable<Exercise>> GetAllExercisesAsync();
         Task<Exercise> GetExerciseByIdAsync(Guid id);
+        Task<IEnumerable<Exercise>> GetExercisesByLessonIdAsync(Guid lessonId);
         Task AddExerciseAsync(Exercise exercise);
         Task UpdateExerciseAsync(Exercise exercise);
         Task DeleteExerciseAsync(Guid id);
-        Task<IEnumerable<Exercise>> GetExercisesByLessonIdAsync(Guid lessonId);
         Task<bool> ExerciseExistsAsync(Guid id);
     }
 }
