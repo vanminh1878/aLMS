@@ -19,5 +19,20 @@ namespace aLMS.Domain.GradeEntity
         public SchoolEntity.School School { get; set; }
 
         public ICollection<Class> Classes { get; set; }
+
+        public void RaiseGradeCreatedEvent()
+        {
+            AddDomainEvent(new GradeCreatedEvent(Id, GradeName, SchoolYear, SchoolId));
+        }
+
+        public void RaiseGradeUpdatedEvent()
+        {
+            AddDomainEvent(new GradeUpdatedEvent(Id, GradeName, SchoolYear, SchoolId));
+        }
+
+        public void RaiseGradeDeletedEvent()
+        {
+            AddDomainEvent(new GradeDeletedEvent(Id));
+        }
     }
 }

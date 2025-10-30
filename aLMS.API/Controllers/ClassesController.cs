@@ -63,5 +63,11 @@ namespace aLMS.API.Controllers
 
             return Ok(result);
         }
+        [HttpGet("by-grade/{gradeId}")]
+        public async Task<ActionResult<IEnumerable<ClassDto>>> GetByGradeId(Guid gradeId)
+        {
+            var classes = await _mediator.Send(new GetClassesByGradeIdQuery { GradeId = gradeId });
+            return Ok(classes);
+        }
     }
 }

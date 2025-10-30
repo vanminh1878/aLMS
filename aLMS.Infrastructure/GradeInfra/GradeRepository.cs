@@ -23,25 +23,16 @@ namespace aLMS.Infrastructure.GradeInfra
 
         public async Task<IEnumerable<Grade>> GetAllGradesAsync()
         {
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                var sb = new StringBuilder();
-                sb.AppendLine("SELECT Id, Grade, SchoolYear, SchoolId");
-                sb.AppendLine("FROM \"Grade\"");
-                return await connection.QueryAsync<Grade>(sb.ToString());
-            }
+            using var connection = new NpgsqlConnection(_connectionString);
+            var sql = "SELECT \"Id\", \"GradeName\", \"SchoolYear\", \"SchoolId\" FROM \"grade\"";
+            return await connection.QueryAsync<Grade>(sql);
         }
 
         public async Task<Grade> GetGradeByIdAsync(Guid id)
         {
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                var sb = new StringBuilder();
-                sb.AppendLine("SELECT Id, Grade, SchoolYear, SchoolId");
-                sb.AppendLine("FROM \"Grade\"");
-                sb.AppendLine("WHERE Id = @Id");
-                return await connection.QuerySingleOrDefaultAsync<Grade>(sb.ToString(), new { Id = id });
-            }
+            using var connection = new NpgsqlConnection(_connectionString);
+            var sql = "SELECT \"Id\", \"GradeName\", \"SchoolYear\", \"SchoolId\" FROM \"grade\" WHERE \"Id\" = @id";
+            return await connection.QuerySingleOrDefaultAsync<Grade>(sql, new { id });
         }
 
         public async Task AddGradeAsync(Grade grade)
@@ -58,30 +49,21 @@ namespace aLMS.Infrastructure.GradeInfra
 
         public async Task DeleteGradeAsync(Guid id)
         {
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                var sb = new StringBuilder();
-                sb.AppendLine("DELETE FROM \"Grade\"");
-                sb.AppendLine("WHERE Id = @Id");
-                await connection.ExecuteAsync(sb.ToString(), new { Id = id });
-            }
-        }
-
-        public async Task<IEnumerable<Grade>> GetGradesBySchoolIdAsync(Guid schoolId)
-        {
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                var sb = new StringBuilder();
-                sb.AppendLine("SELECT Id, Grade, SchoolYear, SchoolId");
-                sb.AppendLine("FROM \"Grade\"");
-                sb.AppendLine("WHERE SchoolId = @SchoolId");
-                return await connection.QueryAsync<Grade>(sb.ToString(), new { SchoolId = schoolId });
-            }
+            using var connection = new NpgsqlConnection(_connectionString);
+            var sql = "DELETE FROM \"grade\" WHERE \"Id\" = @id";
+            await connection.ExecuteAsync(sql, new { id });
         }
 
         public async Task<bool> GradeExistsAsync(Guid id)
         {
             return await _context.Set<Grade>().AnyAsync(g => g.Id == id);
+        }
+
+        public async Task<IEnumerable<Grade>> GetGradesBySchoolIdAsync(Guid schoolId)
+        {
+            using var connection = new NpgsqlConnection(_connectionString);
+            var sql = "SELECT \"Id\", \"GradeName\", \"SchoolYear\", \"SchoolId\" FROM \"grade\" WHERE \"SchoolId\" = @schoolId";
+            return await connection.QueryAsync<Grade>(sql, new { schoolId });
         }
     }
 }
