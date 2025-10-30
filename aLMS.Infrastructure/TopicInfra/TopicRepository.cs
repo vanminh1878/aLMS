@@ -23,25 +23,16 @@ namespace aLMS.Infrastructure.TopicInfra
 
         public async Task<IEnumerable<Topic>> GetAllTopicsAsync()
         {
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                var sb = new StringBuilder();
-                sb.AppendLine("SELECT Id, Title, DateFrom, DateTo, SubjectId");
-                sb.AppendLine("FROM \"Topic\"");
-                return await connection.QueryAsync<Topic>(sb.ToString());
-            }
+            using var conn = new NpgsqlConnection(_connectionString);
+            var sql = "SELECT \"Id\", \"Title\", \"DateFrom\", \"DateTo\", \"SubjectId\" FROM \"topic\"";
+            return await conn.QueryAsync<Topic>(sql);
         }
 
         public async Task<Topic> GetTopicByIdAsync(Guid id)
         {
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                var sb = new StringBuilder();
-                sb.AppendLine("SELECT Id, Title, DateFrom, DateTo, SubjectId");
-                sb.AppendLine("FROM \"Topic\"");
-                sb.AppendLine("WHERE Id = @Id");
-                return await connection.QuerySingleOrDefaultAsync<Topic>(sb.ToString(), new { Id = id });
-            }
+            using var conn = new NpgsqlConnection(_connectionString);
+            var sql = "SELECT \"Id\", \"Title\", \"DateFrom\", \"DateTo\", \"SubjectId\" FROM \"topic\" WHERE \"Id\" = @id";
+            return await conn.QuerySingleOrDefaultAsync<Topic>(sql, new { id });
         }
 
         public async Task AddTopicAsync(Topic topic)
@@ -58,30 +49,21 @@ namespace aLMS.Infrastructure.TopicInfra
 
         public async Task DeleteTopicAsync(Guid id)
         {
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                var sb = new StringBuilder();
-                sb.AppendLine("DELETE FROM \"Topic\"");
-                sb.AppendLine("WHERE Id = @Id");
-                await connection.ExecuteAsync(sb.ToString(), new { Id = id });
-            }
-        }
-
-        public async Task<IEnumerable<Topic>> GetTopicsBySubjectIdAsync(Guid subjectId)
-        {
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                var sb = new StringBuilder();
-                sb.AppendLine("SELECT Id, Title, DateFrom, DateTo, SubjectId");
-                sb.AppendLine("FROM \"Topic\"");
-                sb.AppendLine("WHERE SubjectId = @SubjectId");
-                return await connection.QueryAsync<Topic>(sb.ToString(), new { SubjectId = subjectId });
-            }
+            using var conn = new NpgsqlConnection(_connectionString);
+            var sql = "DELETE FROM \"topic\" WHERE \"Id\" = @id";
+            await conn.ExecuteAsync(sql, new { id });
         }
 
         public async Task<bool> TopicExistsAsync(Guid id)
         {
             return await _context.Set<Topic>().AnyAsync(t => t.Id == id);
+        }
+
+        public async Task<IEnumerable<Topic>> GetTopicsBySubjectIdAsync(Guid subjectId)
+        {
+            using var conn = new NpgsqlConnection(_connectionString);
+            var sql = "SELECT \"Id\", \"Title\", \"DateFrom\", \"DateTo\", \"SubjectId\" FROM \"topic\" WHERE \"SubjectId\" = @subjectId";
+            return await conn.QueryAsync<Topic>(sql, new { subjectId });
         }
     }
 }
