@@ -1,6 +1,7 @@
 ﻿using aLMS.Application.Common.Dtos;
 using aLMS.Domain.ClassEntity;
 using aLMS.Domain.GradeEntity;
+using aLMS.Domain.LessonEntity;
 using aLMS.Domain.SchoolEntity;
 using aLMS.Domain.SubjectEntity;
 using aLMS.Domain.TopicEntity;
@@ -36,6 +37,12 @@ namespace aLMS.Application.Common.Mappings
             CreateMap<Topic, TopicDto>();
             CreateMap<CreateTopicDto, Topic>();
             CreateMap<UpdateTopicDto, Topic>();
+
+            // Lesson
+            CreateMap<Lesson, LessonDto>();
+            CreateMap<CreateLessonDto, Lesson>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore());
+            CreateMap<UpdateLessonDto, Lesson>();
         }
     }
 }

@@ -9,10 +9,10 @@ namespace aLMS.Application.Common.Interfaces
     {
         Task<IEnumerable<Lesson>> GetAllLessonsAsync();
         Task<Lesson> GetLessonByIdAsync(Guid id);
+        Task<IEnumerable<Lesson>> GetLessonsByTopicIdAsync(Guid topicId);
         Task AddLessonAsync(Lesson lesson);
         Task UpdateLessonAsync(Lesson lesson);
         Task DeleteLessonAsync(Guid id);
-        Task<IEnumerable<Lesson>> GetLessonsByTopicIdAsync(Guid topicId);
         Task<bool> LessonExistsAsync(Guid id);
     }
 }

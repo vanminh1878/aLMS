@@ -1,11 +1,11 @@
-﻿using aLMS.Application.Common.Interfaces;
+﻿// aLMS.Infrastructure.LessonInfra/LessonRepository.cs
+using aLMS.Application.Common.Interfaces;
 using aLMS.Domain.LessonEntity;
 using Dapper;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace aLMS.Infrastructure.LessonInfra
@@ -23,25 +23,34 @@ namespace aLMS.Infrastructure.LessonInfra
 
         public async Task<IEnumerable<Lesson>> GetAllLessonsAsync()
         {
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                var sb = new StringBuilder();
-                sb.AppendLine("SELECT Id, Title, Description, ResourceType, Content, IsRequired, TopicId");
-                sb.AppendLine("FROM \"Lesson\"");
-                return await connection.QueryAsync<Lesson>(sb.ToString());
-            }
+            using var conn = new NpgsqlConnection(_connectionString);
+            var sql = @"
+                SELECT ""Id"", ""Title"", ""Description"", ""ResourceType"", ""Content"", 
+                       ""IsRequired"", ""TopicId""
+                FROM ""lesson""";
+            return await conn.QueryAsync<Lesson>(sql);
         }
 
         public async Task<Lesson> GetLessonByIdAsync(Guid id)
         {
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                var sb = new StringBuilder();
-                sb.AppendLine("SELECT Id, Title, Description, ResourceType, Content, IsRequired, TopicId");
-                sb.AppendLine("FROM \"Lesson\"");
-                sb.AppendLine("WHERE Id = @Id");
-                return await connection.QuerySingleOrDefaultAsync<Lesson>(sb.ToString(), new { Id = id });
-            }
+            using var conn = new NpgsqlConnection(_connectionString);
+            var sql = @"
+                SELECT ""Id"", ""Title"", ""Description"", ""ResourceType"", ""Content"", 
+                       ""IsRequired"", ""TopicId""
+                FROM ""lesson""
+                WHERE ""Id"" = @id";
+            return await conn.QuerySingleOrDefaultAsync<Lesson>(sql, new { id });
+        }
+
+        public async Task<IEnumerable<Lesson>> GetLessonsByTopicIdAsync(Guid topicId)
+        {
+            using var conn = new NpgsqlConnection(_connectionString);
+            var sql = @"
+                SELECT ""Id"", ""Title"", ""Description"", ""ResourceType"", ""Content"", 
+                       ""IsRequired"", ""TopicId""
+                FROM ""lesson""
+                WHERE ""TopicId"" = @topicId";
+            return await conn.QueryAsync<Lesson>(sql, new { topicId });
         }
 
         public async Task AddLessonAsync(Lesson lesson)
@@ -58,25 +67,9 @@ namespace aLMS.Infrastructure.LessonInfra
 
         public async Task DeleteLessonAsync(Guid id)
         {
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                var sb = new StringBuilder();
-                sb.AppendLine("DELETE FROM \"Lesson\"");
-                sb.AppendLine("WHERE Id = @Id");
-                await connection.ExecuteAsync(sb.ToString(), new { Id = id });
-            }
-        }
-
-        public async Task<IEnumerable<Lesson>> GetLessonsByTopicIdAsync(Guid topicId)
-        {
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                var sb = new StringBuilder();
-                sb.AppendLine("SELECT Id, Title, Description, ResourceType, Content, IsRequired, TopicId");
-                sb.AppendLine("FROM \"Lesson\"");
-                sb.AppendLine("WHERE TopicId = @TopicId");
-                return await connection.QueryAsync<Lesson>(sb.ToString(), new { TopicId = topicId });
-            }
+            using var conn = new NpgsqlConnection(_connectionString);
+            var sql = "DELETE FROM \"lesson\" WHERE \"Id\" = @id";
+            await conn.ExecuteAsync(sql, new { id });
         }
 
         public async Task<bool> LessonExistsAsync(Guid id)
