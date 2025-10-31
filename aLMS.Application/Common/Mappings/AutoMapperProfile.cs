@@ -4,6 +4,7 @@ using aLMS.Domain.ClassEntity;
 using aLMS.Domain.ExerciseEntity;
 using aLMS.Domain.GradeEntity;
 using aLMS.Domain.LessonEntity;
+using aLMS.Domain.PermissionEntity;
 using aLMS.Domain.QuestionEntity;
 using aLMS.Domain.RoleEntity;
 using aLMS.Domain.SchoolEntity;
@@ -80,10 +81,15 @@ namespace aLMS.Application.Common.Mappings
 
             CreateMap<StudentAnswer, StudentAnswerDto>();
 
-            // Role.cs
+            // Role
             CreateMap<Role, RoleDto>();
             CreateMap<CreateRoleDto, Role>().ForMember(d => d.Id, o => o.Ignore());
             CreateMap<UpdateRoleDto, Role>();
+
+            //Permission
+            CreateMap<Permission, PermissionDto>();
+            CreateMap<CreatePermissionDto, Permission>().ForMember(d => d.Id, o => o.Ignore());
+            CreateMap<UpdatePermissionDto, Permission>();
         }
     }
 }
