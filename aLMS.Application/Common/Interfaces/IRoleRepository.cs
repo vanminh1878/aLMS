@@ -13,5 +13,6 @@ namespace aLMS.Application.Common.Interfaces
         Task UpdateRoleAsync(Role role);
         Task DeleteRoleAsync(Guid id);
         Task<bool> RoleExistsAsync(Guid id);
+        Task<bool> RoleNameExistsAsync(string roleName, Guid? excludeId = null);
     }
 }

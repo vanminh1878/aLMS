@@ -1,11 +1,11 @@
-﻿using aLMS.Application.Common.Interfaces;
+﻿// aLMS.Infrastructure.RoleInfra/RoleRepository.cs
+using aLMS.Application.Common.Interfaces;
 using aLMS.Domain.RoleEntity;
 using Dapper;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace aLMS.Infrastructure.RoleInfra
@@ -23,25 +23,16 @@ namespace aLMS.Infrastructure.RoleInfra
 
         public async Task<IEnumerable<Role>> GetAllRolesAsync()
         {
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                var sb = new StringBuilder();
-                sb.AppendLine("SELECT Id, RoleName");
-                sb.AppendLine("FROM \"Role\"");
-                return await connection.QueryAsync<Role>(sb.ToString());
-            }
+            using var conn = new NpgsqlConnection(_connectionString);
+            var sql = "SELECT \"Id\", \"RoleName\" FROM \"role\"";
+            return await conn.QueryAsync<Role>(sql);
         }
 
         public async Task<Role> GetRoleByIdAsync(Guid id)
         {
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                var sb = new StringBuilder();
-                sb.AppendLine("SELECT Id, RoleName");
-                sb.AppendLine("FROM \"Role\"");
-                sb.AppendLine("WHERE Id = @Id");
-                return await connection.QuerySingleOrDefaultAsync<Role>(sb.ToString(), new { Id = id });
-            }
+            using var conn = new NpgsqlConnection(_connectionString);
+            var sql = "SELECT \"Id\", \"RoleName\" FROM \"role\" WHERE \"Id\" = @id";
+            return await conn.QuerySingleOrDefaultAsync<Role>(sql, new { id });
         }
 
         public async Task AddRoleAsync(Role role)
@@ -58,18 +49,23 @@ namespace aLMS.Infrastructure.RoleInfra
 
         public async Task DeleteRoleAsync(Guid id)
         {
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                var sb = new StringBuilder();
-                sb.AppendLine("DELETE FROM \"Role\"");
-                sb.AppendLine("WHERE Id = @Id");
-                await connection.ExecuteAsync(sb.ToString(), new { Id = id });
-            }
+            using var conn = new NpgsqlConnection(_connectionString);
+            var sql = "DELETE FROM \"role\" WHERE \"Id\" = @id";
+            await conn.ExecuteAsync(sql, new { id });
         }
 
         public async Task<bool> RoleExistsAsync(Guid id)
         {
             return await _context.Set<Role>().AnyAsync(r => r.Id == id);
+        }
+
+        public async Task<bool> RoleNameExistsAsync(string roleName, Guid? excludeId = null)
+        {
+            using var conn = new NpgsqlConnection(_connectionString);
+            var sql = excludeId.HasValue
+                ? "SELECT COUNT(1) FROM \"role\" WHERE \"RoleName\" = @roleName AND \"Id\" != @excludeId"
+                : "SELECT COUNT(1) FROM \"role\" WHERE \"RoleName\" = @roleName";
+            return await conn.ExecuteScalarAsync<int>(sql, new { roleName, excludeId }) > 0;
         }
     }
 }

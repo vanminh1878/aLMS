@@ -15,6 +15,9 @@ namespace aLMS.Domain.RoleEntity
 
         public ICollection<User> Users { get; set; }
         public ICollection<RolePermission> RolePermissions { get; set; }
+        public void RaiseRoleCreatedEvent() => AddDomainEvent(new RoleCreatedEvent(Id, RoleName));
+        public void RaiseRoleUpdatedEvent() => AddDomainEvent(new RoleUpdatedEvent(Id, RoleName));
+        public void RaiseRoleDeletedEvent() => AddDomainEvent(new RoleDeletedEvent(Id));
     }
 
 }

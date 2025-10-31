@@ -5,7 +5,10 @@ using aLMS.Domain.ExerciseEntity;
 using aLMS.Domain.GradeEntity;
 using aLMS.Domain.LessonEntity;
 using aLMS.Domain.QuestionEntity;
+using aLMS.Domain.RoleEntity;
 using aLMS.Domain.SchoolEntity;
+using aLMS.Domain.StudentAnswerEntity;
+using aLMS.Domain.StudentExerciseEntity;
 using aLMS.Domain.SubjectEntity;
 using aLMS.Domain.TopicEntity;
 using AutoMapper;
@@ -17,6 +20,7 @@ namespace aLMS.Application.Common.Mappings
     {
         public AutoMapperProfile()
         {
+            //School
             CreateMap<School, SchoolDto>();
             CreateMap<CreateSchoolDto, School>()
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => Guid.Empty)); // Thay Ignore() tạm thời
@@ -69,6 +73,17 @@ namespace aLMS.Application.Common.Mappings
                 .ForMember(dest => dest.QuestionId, opt => opt.Ignore());
             CreateMap<UpdateAnswerDto, Answer>()
                 .ForMember(dest => dest.QuestionId, opt => opt.Ignore());
+
+            //StudentExercise
+            CreateMap<StudentExercise, StudentExerciseDto>()
+                .ForMember(dest => dest.ExerciseTitle, opt => opt.MapFrom(src => src.Exercise.Title));
+
+            CreateMap<StudentAnswer, StudentAnswerDto>();
+
+            // Role.cs
+            CreateMap<Role, RoleDto>();
+            CreateMap<CreateRoleDto, Role>().ForMember(d => d.Id, o => o.Ignore());
+            CreateMap<UpdateRoleDto, Role>();
         }
     }
 }
