@@ -1,11 +1,13 @@
-﻿using aLMS.Application.Common.Interfaces;
+﻿// aLMS.Infrastructure.RolePermissionInfra/RolePermissionRepository.cs
+using aLMS.Application.Common.Interfaces;
+using aLMS.Domain.PermissionEntity;
+using aLMS.Domain.RoleEntity;
 using aLMS.Domain.RolePermissionEntity;
 using Dapper;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace aLMS.Infrastructure.RolePermissionInfra
@@ -21,62 +23,46 @@ namespace aLMS.Infrastructure.RolePermissionInfra
             _connectionString = connectionString;
         }
 
-        public async Task<IEnumerable<RolePermission>> GetAllRolePermissionsAsync()
+        public async Task<IEnumerable<RolePermission>> GetByRoleIdAsync(Guid roleId)
         {
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                var sb = new StringBuilder();
-                sb.AppendLine("SELECT RoleId, PermissionId");
-                sb.AppendLine("FROM \"RolePermission\"");
-                return await connection.QueryAsync<RolePermission>(sb.ToString());
-            }
+            using var conn = new NpgsqlConnection(_connectionString);
+            var sql = @"
+                SELECT rp.*, r.""RoleName"", p.""PermissionName""
+                FROM ""role_permission"" rp
+                JOIN ""role"" r ON rp.""RoleId"" = r.""Id""
+                JOIN ""permission"" p ON rp.""PermissionId"" = p.""Id""
+                WHERE rp.""RoleId"" = @roleId";
+            return await conn.QueryAsync<RolePermission, Role, Permission, RolePermission>(
+                sql,
+                (rp, role, perm) =>
+                {
+                    rp.Role = role;
+                    rp.Permission = perm;
+                    return rp;
+                },
+                new { roleId },
+                splitOn: "Id,Id"
+            );
         }
 
-        public async Task<RolePermission> GetRolePermissionByIdsAsync(Guid roleId, Guid permissionId)
+        public async Task<bool> ExistsAsync(Guid roleId, Guid permissionId)
         {
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                var sb = new StringBuilder();
-                sb.AppendLine("SELECT RoleId, PermissionId");
-                sb.AppendLine("FROM \"RolePermission\"");
-                sb.AppendLine("WHERE RoleId = @RoleId AND PermissionId = @PermissionId");
-                return await connection.QuerySingleOrDefaultAsync<RolePermission>(sb.ToString(), new { RoleId = roleId, PermissionId = permissionId });
-            }
+            using var conn = new NpgsqlConnection(_connectionString);
+            var sql = "SELECT COUNT(1) FROM \"role_permission\" WHERE \"RoleId\" = @roleId AND \"PermissionId\" = @permissionId";
+            return await conn.ExecuteScalarAsync<int>(sql, new { roleId, permissionId }) > 0;
         }
 
-        public async Task AddRolePermissionAsync(RolePermission rolePermission)
+        public async Task AddAsync(RolePermission rp)
         {
-            await _context.Set<RolePermission>().AddAsync(rolePermission);
+            await _context.Set<RolePermission>().AddAsync(rp);
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteRolePermissionAsync(Guid roleId, Guid permissionId)
+        public async Task DeleteAsync(Guid roleId, Guid permissionId)
         {
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                var sb = new StringBuilder();
-                sb.AppendLine("DELETE FROM \"RolePermission\"");
-                sb.AppendLine("WHERE RoleId = @RoleId AND PermissionId = @PermissionId");
-                await connection.ExecuteAsync(sb.ToString(), new { RoleId = roleId, PermissionId = permissionId });
-            }
-        }
-
-        public async Task<IEnumerable<RolePermission>> GetRolePermissionsByRoleIdAsync(Guid roleId)
-        {
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                var sb = new StringBuilder();
-                sb.AppendLine("SELECT RoleId, PermissionId");
-                sb.AppendLine("FROM \"RolePermission\"");
-                sb.AppendLine("WHERE RoleId = @RoleId");
-                return await connection.QueryAsync<RolePermission>(sb.ToString(), new { RoleId = roleId });
-            }
-        }
-
-        public async Task<bool> RolePermissionExistsAsync(Guid roleId, Guid permissionId)
-        {
-            return await _context.Set<RolePermission>()
-                .AnyAsync(rp => rp.RoleId == roleId && rp.PermissionId == permissionId);
+            using var conn = new NpgsqlConnection(_connectionString);
+            var sql = "DELETE FROM \"role_permission\" WHERE \"RoleId\" = @roleId AND \"PermissionId\" = @permissionId";
+            await conn.ExecuteAsync(sql, new { roleId, permissionId });
         }
     }
 }

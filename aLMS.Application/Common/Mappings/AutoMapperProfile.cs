@@ -7,6 +7,7 @@ using aLMS.Domain.LessonEntity;
 using aLMS.Domain.PermissionEntity;
 using aLMS.Domain.QuestionEntity;
 using aLMS.Domain.RoleEntity;
+using aLMS.Domain.RolePermissionEntity;
 using aLMS.Domain.SchoolEntity;
 using aLMS.Domain.StudentAnswerEntity;
 using aLMS.Domain.StudentExerciseEntity;
@@ -90,6 +91,11 @@ namespace aLMS.Application.Common.Mappings
             CreateMap<Permission, PermissionDto>();
             CreateMap<CreatePermissionDto, Permission>().ForMember(d => d.Id, o => o.Ignore());
             CreateMap<UpdatePermissionDto, Permission>();
+
+            // RolePermission
+            CreateMap<RolePermission, RolePermissionDto>()
+                .ForMember(d => d.RoleName, o => o.MapFrom(s => s.Role.RoleName))
+                .ForMember(d => d.PermissionName, o => o.MapFrom(s => s.Permission.PermissionName));
         }
     }
 }

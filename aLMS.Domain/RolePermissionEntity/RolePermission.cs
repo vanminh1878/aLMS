@@ -16,5 +16,8 @@ namespace aLMS.Domain.RolePermissionEntity
 
         public Guid PermissionId { get; set; }
         public Permission Permission { get; set; }
+        public void RaiseRolePermissionAddedEvent() => AddDomainEvent(new RolePermissionAddedEvent(RoleId, PermissionId));
+        public void RaiseRolePermissionRemovedEvent() => AddDomainEvent(new RolePermissionRemovedEvent(RoleId, PermissionId));
+
     }
 }
