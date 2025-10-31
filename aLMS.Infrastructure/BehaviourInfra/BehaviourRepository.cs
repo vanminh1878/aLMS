@@ -1,11 +1,12 @@
-﻿using aLMS.Application.Common.Interfaces;
+﻿// aLMS.Infrastructure.BehaviourInfra/BehaviourRepository.cs
+using aLMS.Application.Common.Interfaces;
 using aLMS.Domain.BehaviourEntity;
 using Dapper;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace aLMS.Infrastructure.BehaviourInfra
@@ -21,67 +22,60 @@ namespace aLMS.Infrastructure.BehaviourInfra
             _connectionString = connectionString;
         }
 
-        public async Task<IEnumerable<Behaviour>> GetAllBehavioursAsync()
+        public async Task<IEnumerable<Behaviour>> GetByStudentIdAsync(Guid studentId)
         {
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                var sb = new StringBuilder();
-                sb.AppendLine("SELECT Id, Video, Result, Order, StudentId");
-                sb.AppendLine("FROM \"Behaviour\"");
-                return await connection.QueryAsync<Behaviour>(sb.ToString());
-            }
+            using var conn = new NpgsqlConnection(_connectionString);
+            var sql = @"
+                SELECT b.*, u.""Name"" as StudentName
+                FROM ""behaviour"" b
+                JOIN ""user"" u ON b.""StudentId"" = u.""Id""
+                WHERE b.""StudentId"" = @studentId
+                ORDER BY b.""Order""";
+            return await conn.QueryAsync<Behaviour>(sql, new { studentId });
         }
 
-        public async Task<Behaviour> GetBehaviourByIdAsync(Guid id)
+        public async Task<Behaviour?> GetByIdAsync(Guid id)
         {
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                var sb = new StringBuilder();
-                sb.AppendLine("SELECT Id, Video, Result, Order, StudentId");
-                sb.AppendLine("FROM \"Behaviour\"");
-                sb.AppendLine("WHERE Id = @Id");
-                return await connection.QuerySingleOrDefaultAsync<Behaviour>(sb.ToString(), new { Id = id });
-            }
+            using var conn = new NpgsqlConnection(_connectionString);
+            var sql = @"
+                SELECT b.*, u.""Name"" as StudentName
+                FROM ""behaviour"" b
+                JOIN ""user"" u ON b.""StudentId"" = u.""Id""
+                WHERE b.""Id"" = @id";
+            return await conn.QuerySingleOrDefaultAsync<Behaviour>(sql, new { id });
         }
 
-        public async Task AddBehaviourAsync(Behaviour behaviour)
+        public async Task AddAsync(Behaviour behaviour)
         {
             await _context.Set<Behaviour>().AddAsync(behaviour);
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateBehaviourAsync(Behaviour behaviour)
+        public async Task UpdateAsync(Behaviour behaviour)
         {
             _context.Set<Behaviour>().Update(behaviour);
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteBehaviourAsync(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                var sb = new StringBuilder();
-                sb.AppendLine("DELETE FROM \"Behaviour\"");
-                sb.AppendLine("WHERE Id = @Id");
-                await connection.ExecuteAsync(sb.ToString(), new { Id = id });
-            }
+            using var conn = new NpgsqlConnection(_connectionString);
+            var sql = "DELETE FROM \"behaviour\" WHERE \"Id\" = @id";
+            await conn.ExecuteAsync(sql, new { id });
         }
 
-        public async Task<IEnumerable<Behaviour>> GetBehavioursByStudentIdAsync(Guid studentId)
+        public async Task<bool> ExistsAsync(Guid id)
         {
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                var sb = new StringBuilder();
-                sb.AppendLine("SELECT Id, Video, Result, Order, StudentId");
-                sb.AppendLine("FROM \"Behaviour\"");
-                sb.AppendLine("WHERE StudentId = @StudentId");
-                return await connection.QueryAsync<Behaviour>(sb.ToString(), new { StudentId = studentId });
-            }
+            using var conn = new NpgsqlConnection(_connectionString);
+            var sql = "SELECT COUNT(1) FROM \"behaviour\" WHERE \"Id\" = @id";
+            return await conn.ExecuteScalarAsync<int>(sql, new { id }) > 0;
         }
 
-        public async Task<bool> BehaviourExistsAsync(Guid id)
+        public async Task<int> GetNextOrderAsync(Guid studentId)
         {
-            return await _context.Set<Behaviour>().AnyAsync(b => b.Id == id);
+            using var conn = new NpgsqlConnection(_connectionString);
+            var sql = "SELECT COALESCE(MAX(\"Order\"), 0) + 1 FROM \"behaviour\" WHERE \"StudentId\" = @studentId";
+            return await conn.ExecuteScalarAsync<int>(sql, new { studentId });
         }
     }
 }

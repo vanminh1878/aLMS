@@ -7,12 +7,12 @@ namespace aLMS.Application.Common.Interfaces
 {
     public interface IBehaviourRepository
     {
-        Task<IEnumerable<Behaviour>> GetAllBehavioursAsync();
-        Task<Behaviour> GetBehaviourByIdAsync(Guid id);
-        Task AddBehaviourAsync(Behaviour behaviour);
-        Task UpdateBehaviourAsync(Behaviour behaviour);
-        Task DeleteBehaviourAsync(Guid id);
-        Task<IEnumerable<Behaviour>> GetBehavioursByStudentIdAsync(Guid studentId);
-        Task<bool> BehaviourExistsAsync(Guid id);
+        Task<IEnumerable<Behaviour>> GetByStudentIdAsync(Guid studentId);
+        Task<Behaviour?> GetByIdAsync(Guid id);
+        Task AddAsync(Behaviour behaviour);
+        Task UpdateAsync(Behaviour behaviour);
+        Task DeleteAsync(Guid id);
+        Task<bool> ExistsAsync(Guid id);
+        Task<int> GetNextOrderAsync(Guid studentId);
     }
 }

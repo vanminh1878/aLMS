@@ -1,6 +1,7 @@
 ﻿using aLMS.Application.Common.Dtos;
 using aLMS.Domain.AccountEntity;
 using aLMS.Domain.AnswerEntity;
+using aLMS.Domain.BehaviourEntity;
 using aLMS.Domain.ClassEntity;
 using aLMS.Domain.DepartmentEntity;
 using aLMS.Domain.ExerciseEntity;
@@ -161,6 +162,10 @@ namespace aLMS.Application.Common.Mappings
                 .ForMember(d => d.Id, o => o.Ignore());
 
             CreateMap<UpdateDepartmentDto, Department>();
+
+            // Behaviour
+            CreateMap<Behaviour, BehaviourDto>()
+                .ForMember(d => d.StudentName, o => o.MapFrom(s => s.Student.Name));
         }
     }
 }

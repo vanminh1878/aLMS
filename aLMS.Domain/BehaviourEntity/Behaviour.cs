@@ -16,5 +16,9 @@ namespace aLMS.Domain.BehaviourEntity
         public string Video { get; set; }
         public string Result { get; set; }
         public int Order { get; set; }
+        public DateTime Date { get; set; }
+        public void RaiseBehaviourCreatedEvent() => AddDomainEvent(new BehaviourCreatedEvent(Id, StudentId, Order, Date));
+        public void RaiseBehaviourUpdatedEvent() => AddDomainEvent(new BehaviourUpdatedEvent(Id, StudentId, Order, Date));
+        public void RaiseBehaviourDeletedEvent() => AddDomainEvent(new BehaviourDeletedEvent(Id));
     }
 }
