@@ -24,5 +24,19 @@ namespace aLMS.Domain.QuestionEntity
 
         public ICollection<Answer> Answers { get; set; }
         public ICollection<StudentAnswer> StudentAnswers { get; set; }
+        public void RaiseQuestionCreatedEvent()
+        {
+            AddDomainEvent(new QuestionCreatedEvent(Id, QuestionContent, ExerciseId));
+        }
+
+        public void RaiseQuestionUpdatedEvent()
+        {
+            AddDomainEvent(new QuestionUpdatedEvent(Id, QuestionContent, ExerciseId));
+        }
+
+        public void RaiseQuestionDeletedEvent()
+        {
+            AddDomainEvent(new QuestionDeletedEvent(Id));
+        }
     }
 }

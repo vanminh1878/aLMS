@@ -1,11 +1,11 @@
-﻿using aLMS.Application.Common.Interfaces;
+﻿// aLMS.Infrastructure.QuestionInfra/QuestionRepository.cs
+using aLMS.Application.Common.Interfaces;
 using aLMS.Domain.QuestionEntity;
 using Dapper;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace aLMS.Infrastructure.QuestionInfra
@@ -23,25 +23,32 @@ namespace aLMS.Infrastructure.QuestionInfra
 
         public async Task<IEnumerable<Question>> GetAllQuestionsAsync()
         {
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                var sb = new StringBuilder();
-                sb.AppendLine("SELECT Id, ExerciseId, QuestionContent, QuestionImage, QuestionType, OrderNumber, Score, Explanation");
-                sb.AppendLine("FROM \"Question\"");
-                return await connection.QueryAsync<Question>(sb.ToString());
-            }
+            using var conn = new NpgsqlConnection(_connectionString);
+            var sql = @"
+                SELECT ""Id"", ""QuestionContent"", ""QuestionImage"", ""QuestionType"", 
+                       ""OrderNumber"", ""Score"", ""Explanation"", ""ExerciseId""
+                FROM ""question""";
+            return await conn.QueryAsync<Question>(sql);
         }
 
         public async Task<Question> GetQuestionByIdAsync(Guid id)
         {
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                var sb = new StringBuilder();
-                sb.AppendLine("SELECT Id, ExerciseId, QuestionContent, QuestionImage, QuestionType, OrderNumber, Score, Explanation");
-                sb.AppendLine("FROM \"Question\"");
-                sb.AppendLine("WHERE Id = @Id");
-                return await connection.QuerySingleOrDefaultAsync<Question>(sb.ToString(), new { Id = id });
-            }
+            using var conn = new NpgsqlConnection(_connectionString);
+            var sql = @"
+                SELECT ""Id"", ""QuestionContent"", ""QuestionImage"", ""QuestionType"", 
+                       ""OrderNumber"", ""Score"", ""Explanation"", ""ExerciseId""
+                FROM ""question"" WHERE ""Id"" = @id";
+            return await conn.QuerySingleOrDefaultAsync<Question>(sql, new { id });
+        }
+
+        public async Task<IEnumerable<Question>> GetQuestionsByExerciseIdAsync(Guid exerciseId)
+        {
+            using var conn = new NpgsqlConnection(_connectionString);
+            var sql = @"
+                SELECT ""Id"", ""QuestionContent"", ""QuestionImage"", ""QuestionType"", 
+                       ""OrderNumber"", ""Score"", ""Explanation"", ""ExerciseId""
+                FROM ""question"" WHERE ""ExerciseId"" = @exerciseId";
+            return await conn.QueryAsync<Question>(sql, new { exerciseId });
         }
 
         public async Task AddQuestionAsync(Question question)
@@ -58,25 +65,9 @@ namespace aLMS.Infrastructure.QuestionInfra
 
         public async Task DeleteQuestionAsync(Guid id)
         {
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                var sb = new StringBuilder();
-                sb.AppendLine("DELETE FROM \"Question\"");
-                sb.AppendLine("WHERE Id = @Id");
-                await connection.ExecuteAsync(sb.ToString(), new { Id = id });
-            }
-        }
-
-        public async Task<IEnumerable<Question>> GetQuestionsByExerciseIdAsync(Guid exerciseId)
-        {
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                var sb = new StringBuilder();
-                sb.AppendLine("SELECT Id, ExerciseId, QuestionContent, QuestionImage, QuestionType, OrderNumber, Score, Explanation");
-                sb.AppendLine("FROM \"Question\"");
-                sb.AppendLine("WHERE ExerciseId = @ExerciseId");
-                return await connection.QueryAsync<Question>(sb.ToString(), new { ExerciseId = exerciseId });
-            }
+            using var conn = new NpgsqlConnection(_connectionString);
+            var sql = "DELETE FROM \"question\" WHERE \"Id\" = @id";
+            await conn.ExecuteAsync(sql, new { id });
         }
 
         public async Task<bool> QuestionExistsAsync(Guid id)

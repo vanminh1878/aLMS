@@ -1,8 +1,10 @@
 ﻿using aLMS.Application.Common.Dtos;
+using aLMS.Domain.AnswerEntity;
 using aLMS.Domain.ClassEntity;
 using aLMS.Domain.ExerciseEntity;
 using aLMS.Domain.GradeEntity;
 using aLMS.Domain.LessonEntity;
+using aLMS.Domain.QuestionEntity;
 using aLMS.Domain.SchoolEntity;
 using aLMS.Domain.SubjectEntity;
 using aLMS.Domain.TopicEntity;
@@ -52,6 +54,21 @@ namespace aLMS.Application.Common.Mappings
                 .ForMember(dest => dest.Id, opt => opt.Ignore()); 
 
             CreateMap<UpdateExerciseDto, Exercise>();
+            // Question
+            CreateMap<Question, QuestionDto>();
+            CreateMap<CreateQuestionDto, Question>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore())
+                .ForMember(dest => dest.Answers, opt => opt.Ignore());
+            CreateMap<UpdateQuestionDto, Question>()
+                .ForMember(dest => dest.Answers, opt => opt.Ignore());
+
+            // Answer
+            CreateMap<Answer, AnswerDto>();
+            CreateMap<CreateAnswerDto, Answer>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore())
+                .ForMember(dest => dest.QuestionId, opt => opt.Ignore());
+            CreateMap<UpdateAnswerDto, Answer>()
+                .ForMember(dest => dest.QuestionId, opt => opt.Ignore());
         }
     }
 }

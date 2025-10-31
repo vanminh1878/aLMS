@@ -19,5 +19,19 @@ namespace aLMS.Domain.AnswerEntity
         public int OrderNumber { get; set; }
 
         public ICollection<StudentAnswer> StudentAnswers { get; set; }
+        public void RaiseAnswerCreatedEvent()
+        {
+            AddDomainEvent(new AnswerCreatedEvent(Id, AnswerContent, IsCorrect, QuestionId));
+        }
+
+        public void RaiseAnswerUpdatedEvent()
+        {
+            AddDomainEvent(new AnswerUpdatedEvent(Id, AnswerContent, IsCorrect, QuestionId));
+        }
+
+        public void RaiseAnswerDeletedEvent()
+        {
+            AddDomainEvent(new AnswerDeletedEvent(Id));
+        }
     }
 }
