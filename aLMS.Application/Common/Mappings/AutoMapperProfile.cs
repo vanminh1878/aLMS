@@ -1,4 +1,5 @@
 ﻿using aLMS.Application.Common.Dtos;
+using aLMS.Domain.AccountEntity;
 using aLMS.Domain.AnswerEntity;
 using aLMS.Domain.ClassEntity;
 using aLMS.Domain.ExerciseEntity;
@@ -96,6 +97,13 @@ namespace aLMS.Application.Common.Mappings
             CreateMap<RolePermission, RolePermissionDto>()
                 .ForMember(d => d.RoleName, o => o.MapFrom(s => s.Role.RoleName))
                 .ForMember(d => d.PermissionName, o => o.MapFrom(s => s.Permission.PermissionName));
+
+            // Account
+            CreateMap<Account, AccountDto>();
+            CreateMap<RegisterDto, Account>()
+                .ForMember(d => d.Id, o => o.Ignore())
+                .ForMember(d => d.Password, o => o.Ignore());
+            CreateMap<UpdateAccountDto, Account>();
         }
     }
 }

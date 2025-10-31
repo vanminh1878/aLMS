@@ -1,13 +1,45 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿// aLMS.API.Controllers/AccountsController.cs
+using aLMS.Application.AccountServices.Commands.DeleteAccount;
+using aLMS.Application.AccountServices.Commands.Register;
+using aLMS.Application.AccountServices.Commands.UpdateAccount;
+using aLMS.Application.AccountServices.Queries.Login;
+using aLMS.Application.Common.Dtos;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
-namespace aLMS.API.Controllers
+[ApiController]
+[Route("api/[controller]")]
+public class AccountsController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class AccountController : ControllerBase
+    private readonly IMediator _mediator;
+
+    public AccountsController(IMediator mediator) => _mediator = mediator;
+
+    [HttpPost("register")]
+    public async Task<ActionResult<RegisterResult>> Register([FromBody] RegisterDto dto)
     {
-        [HttpGet]
-        public IActionResult Get() => Ok(new { Message = "Hello World" });
+        var result = await _mediator.Send(new RegisterCommand { Dto = dto });
+        return result.Success ? Ok(result) : BadRequest(result);
+    }
+
+    [HttpPost("login")]
+    public async Task<ActionResult<LoginResult>> Login([FromBody] LoginDto dto)
+    {
+        var result = await _mediator.Send(new LoginQuery { Dto = dto });
+        return result.Success ? Ok(result) : Unauthorized(result);
+    }
+
+    [HttpPut]
+    public async Task<ActionResult<UpdateAccountResult>> Update([FromBody] UpdateAccountDto dto)
+    {
+        var result = await _mediator.Send(new UpdateAccountCommand { Dto = dto });
+        return result.Success ? Ok(result) : BadRequest(result);
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<ActionResult<DeleteAccountResult>> Delete(Guid id)
+    {
+        var result = await _mediator.Send(new DeleteAccountCommand { Id = id });
+        return result.Success ? Ok(result) : BadRequest(result);
     }
 }

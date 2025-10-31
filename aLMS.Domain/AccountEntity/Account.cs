@@ -12,6 +12,9 @@ namespace aLMS.Domain.AccountEntity
         public string Username { get; set; }
         public string Password { get; set; }
         public bool? Status { get; set; }
-
+        public void RaiseAccountCreatedEvent() => AddDomainEvent(new AccountCreatedEvent(Id, Username));
+        public void RaiseAccountUpdatedEvent() => AddDomainEvent(new AccountUpdatedEvent(Id, Username));
+        public void RaiseAccountDeletedEvent() => AddDomainEvent(new AccountDeletedEvent(Id));
+        public void RaiseAccountDisabledEvent() => AddDomainEvent(new AccountDisabledEvent(Id));
     }
 }

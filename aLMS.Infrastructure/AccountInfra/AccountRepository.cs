@@ -1,11 +1,10 @@
-﻿using aLMS.Application.Common.Interfaces;
+﻿// aLMS.Infrastructure.AccountInfra/AccountRepository.cs
+using aLMS.Application.Common.Interfaces;
 using aLMS.Domain.AccountEntity;
 using Dapper;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace aLMS.Infrastructure.AccountInfra
@@ -21,61 +20,46 @@ namespace aLMS.Infrastructure.AccountInfra
             _connectionString = connectionString;
         }
 
-        public async Task<IEnumerable<Account>> GetAllAccountsAsync()
+        public async Task<Account?> GetByUsernameAsync(string username)
         {
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                var sb = new StringBuilder();
-                sb.AppendLine("SELECT Id, Username, Password, Status");
-                sb.AppendLine("FROM \"Account\"");
-                return await connection.QueryAsync<Account>(sb.ToString());
-            }
+            using var conn = new NpgsqlConnection(_connectionString);
+            var sql = "SELECT \"Id\", \"Username\", \"PasswordHash\", \"Status\" FROM \"account\" WHERE \"Username\" = @username";
+            return await conn.QuerySingleOrDefaultAsync<Account>(sql, new { username });
         }
 
-        public async Task<Account> GetAccountByIdAsync(Guid id)
+        public async Task<Account?> GetByIdAsync(Guid id)
         {
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                var sb = new StringBuilder();
-                sb.AppendLine("SELECT Id, Username, Password, Status");
-                sb.AppendLine("FROM \"Account\"");
-                sb.AppendLine("WHERE Id = @Id");
-                return await connection.QuerySingleOrDefaultAsync<Account>(sb.ToString(), new { Id = id });
-            }
+            using var conn = new NpgsqlConnection(_connectionString);
+            var sql = "SELECT \"Id\", \"Username\", \"PasswordHash\", \"Status\" FROM \"account\" WHERE \"Id\" = @id";
+            return await conn.QuerySingleOrDefaultAsync<Account>(sql, new { id });
         }
 
-        public async Task AddAccountAsync(Account account)
+        public async Task AddAsync(Account account)
         {
             await _context.Set<Account>().AddAsync(account);
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateAccountAsync(Account account)
+        public async Task UpdateAsync(Account account)
         {
             _context.Set<Account>().Update(account);
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteAccountAsync(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                var sb = new StringBuilder();
-                sb.AppendLine("DELETE FROM \"Account\"");
-                sb.AppendLine("WHERE Id = @Id");
-                await connection.ExecuteAsync(sb.ToString(), new { Id = id });
-            }
+            using var conn = new NpgsqlConnection(_connectionString);
+            var sql = "DELETE FROM \"account\" WHERE \"Id\" = @id";
+            await conn.ExecuteAsync(sql, new { id });
         }
 
-        public async Task<Account> GetAccountByUsernameAsync(string username)
+        public async Task<bool> UsernameExistsAsync(string username, Guid? excludeId = null)
         {
-            return await _context.Set<Account>()
-                .FirstOrDefaultAsync(a => a.Username == username);
-        }
-
-        public async Task<bool> AccountExistsAsync(Guid id)
-        {
-            return await _context.Set<Account>().AnyAsync(a => a.Id == id);
+            using var conn = new NpgsqlConnection(_connectionString);
+            var sql = excludeId.HasValue
+                ? "SELECT COUNT(1) FROM \"account\" WHERE \"Username\" = @username AND \"Id\" != @excludeId"
+                : "SELECT COUNT(1) FROM \"account\" WHERE \"Username\" = @username";
+            return await conn.ExecuteScalarAsync<int>(sql, new { username, excludeId }) > 0;
         }
     }
 }
