@@ -12,8 +12,10 @@ using aLMS.Domain.RolePermissionEntity;
 using aLMS.Domain.SchoolEntity;
 using aLMS.Domain.StudentAnswerEntity;
 using aLMS.Domain.StudentExerciseEntity;
+using aLMS.Domain.StudentProfileEntity;
 using aLMS.Domain.SubjectEntity;
 using aLMS.Domain.TopicEntity;
+using aLMS.Domain.UserEntity;
 using AutoMapper;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -104,6 +106,29 @@ namespace aLMS.Application.Common.Mappings
                 .ForMember(d => d.Id, o => o.Ignore())
                 .ForMember(d => d.Password, o => o.Ignore());
             CreateMap<UpdateAccountDto, Account>();
+
+            // User
+            CreateMap<User, UserDto>()
+                .ForMember(d => d.Username, o => o.MapFrom(s => s.Account != null ? s.Account.Username : null))
+                .ForMember(d => d.RoleName, o => o.MapFrom(s => s.Role != null ? s.Role.RoleName : null))
+                .ForMember(d => d.SchoolName, o => o.MapFrom(s => s.School != null ? s.School.Name : null));
+
+            CreateMap<CreateUserDto, User>()
+                .ForMember(d => d.Id, o => o.Ignore())
+                .ForMember(d => d.AccountId, o => o.Ignore())
+                .ForMember(d => d.Account, o => o.Ignore());
+
+            CreateMap<UpdateUserDto, User>();
+
+            // StudentProfile
+            CreateMap<StudentProfile, StudentProfileDto>()
+                .ForMember(d => d.UserName, o => o.MapFrom(s => s.User.Name))
+                .ForMember(d => d.Email, o => o.MapFrom(s => s.User.Email))
+                .ForMember(d => d.SchoolName, o => o.MapFrom(s => s.School != null ? s.School.Name : null))
+                .ForMember(d => d.ClassName, o => o.MapFrom(s => s.Class != null ? s.Class.ClassName : null));
+
+            CreateMap<CreateStudentProfileDto, StudentProfile>();
+            CreateMap<UpdateStudentProfileDto, StudentProfile>();
         }
     }
 }

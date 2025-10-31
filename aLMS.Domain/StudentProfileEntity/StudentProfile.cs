@@ -22,5 +22,9 @@ namespace aLMS.Domain.StudentProfileEntity
         public Class Class { get; set; }
 
         public DateTime EnrollDate { get; set; }
+        public void RaiseStudentProfileCreatedEvent() => AddDomainEvent(new StudentProfileCreatedEvent(UserId, SchoolId, ClassId));
+        public void RaiseStudentProfileUpdatedEvent() => AddDomainEvent(new StudentProfileUpdatedEvent(UserId, SchoolId, ClassId));
+        public void RaiseStudentProfileDeletedEvent() => AddDomainEvent(new StudentProfileDeletedEvent(UserId));
+
     }
 }

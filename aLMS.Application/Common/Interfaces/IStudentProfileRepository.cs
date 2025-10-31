@@ -7,12 +7,10 @@ namespace aLMS.Application.Common.Interfaces
 {
     public interface IStudentProfileRepository
     {
-        Task<IEnumerable<StudentProfile>> GetAllStudentProfilesAsync();
-        Task<StudentProfile> GetStudentProfileByIdAsync(Guid userId);
-        Task AddStudentProfileAsync(StudentProfile studentProfile);
-        Task UpdateStudentProfileAsync(StudentProfile studentProfile);
-        Task DeleteStudentProfileAsync(Guid userId);
-        Task<IEnumerable<StudentProfile>> GetStudentProfilesBySchoolIdAsync(Guid schoolId);
-        Task<bool> StudentProfileExistsAsync(Guid userId);
+        Task<StudentProfile?> GetByUserIdAsync(Guid userId);
+        Task AddAsync(StudentProfile profile);
+        Task UpdateAsync(StudentProfile profile);
+        Task DeleteAsync(Guid userId);
+        Task<bool> ExistsAsync(Guid userId);
     }
 }

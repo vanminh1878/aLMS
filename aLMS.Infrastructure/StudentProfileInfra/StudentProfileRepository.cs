@@ -1,11 +1,10 @@
-﻿using aLMS.Application.Common.Interfaces;
+﻿// aLMS.Infrastructure.StudentProfileInfra/StudentProfileRepository.cs
+using aLMS.Application.Common.Interfaces;
 using aLMS.Domain.StudentProfileEntity;
 using Dapper;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace aLMS.Infrastructure.StudentProfileInfra
@@ -21,67 +20,44 @@ namespace aLMS.Infrastructure.StudentProfileInfra
             _connectionString = connectionString;
         }
 
-        public async Task<IEnumerable<StudentProfile>> GetAllStudentProfilesAsync()
+        public async Task<StudentProfile?> GetByUserIdAsync(Guid userId)
         {
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                var sb = new StringBuilder();
-                sb.AppendLine("SELECT UserId, SchoolId, ClassId, EnrollDate");
-                sb.AppendLine("FROM \"StudentProfile\"");
-                return await connection.QueryAsync<StudentProfile>(sb.ToString());
-            }
+            using var conn = new NpgsqlConnection(_connectionString);
+            var sql = @"
+                SELECT sp.*, u.""Name"" as UserName, u.""Email"", 
+                       s.""Name"" as SchoolName, c.""ClassName""
+                FROM ""student_profile"" sp
+                LEFT JOIN ""user"" u ON sp.""UserId"" = u.""Id""
+                LEFT JOIN ""school"" s ON sp.""SchoolId"" = s.""Id""
+                LEFT JOIN ""class"" c ON sp.""ClassId"" = c.""Id""
+                WHERE sp.""UserId"" = @userId";
+            return await conn.QuerySingleOrDefaultAsync<StudentProfile>(sql, new { userId });
         }
 
-        public async Task<StudentProfile> GetStudentProfileByIdAsync(Guid userId)
+        public async Task AddAsync(StudentProfile profile)
         {
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                var sb = new StringBuilder();
-                sb.AppendLine("SELECT UserId, SchoolId, ClassId, EnrollDate");
-                sb.AppendLine("FROM \"StudentProfile\"");
-                sb.AppendLine("WHERE UserId = @UserId");
-                return await connection.QuerySingleOrDefaultAsync<StudentProfile>(sb.ToString(), new { UserId = userId });
-            }
-        }
-
-        public async Task AddStudentProfileAsync(StudentProfile studentProfile)
-        {
-            await _context.Set<StudentProfile>().AddAsync(studentProfile);
+            await _context.Set<StudentProfile>().AddAsync(profile);
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateStudentProfileAsync(StudentProfile studentProfile)
+        public async Task UpdateAsync(StudentProfile profile)
         {
-            _context.Set<StudentProfile>().Update(studentProfile);
+            _context.Set<StudentProfile>().Update(profile);
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteStudentProfileAsync(Guid userId)
+        public async Task DeleteAsync(Guid userId)
         {
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                var sb = new StringBuilder();
-                sb.AppendLine("DELETE FROM \"StudentProfile\"");
-                sb.AppendLine("WHERE UserId = @UserId");
-                await connection.ExecuteAsync(sb.ToString(), new { UserId = userId });
-            }
+            using var conn = new NpgsqlConnection(_connectionString);
+            var sql = "DELETE FROM \"student_profile\" WHERE \"UserId\" = @userId";
+            await conn.ExecuteAsync(sql, new { userId });
         }
 
-        public async Task<IEnumerable<StudentProfile>> GetStudentProfilesBySchoolIdAsync(Guid schoolId)
+        public async Task<bool> ExistsAsync(Guid userId)
         {
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                var sb = new StringBuilder();
-                sb.AppendLine("SELECT UserId, SchoolId, ClassId, EnrollDate");
-                sb.AppendLine("FROM \"StudentProfile\"");
-                sb.AppendLine("WHERE SchoolId = @SchoolId");
-                return await connection.QueryAsync<StudentProfile>(sb.ToString(), new { SchoolId = schoolId });
-            }
-        }
-
-        public async Task<bool> StudentProfileExistsAsync(Guid userId)
-        {
-            return await _context.Set<StudentProfile>().AnyAsync(sp => sp.UserId == userId);
+            using var conn = new NpgsqlConnection(_connectionString);
+            var sql = "SELECT COUNT(1) FROM \"student_profile\" WHERE \"UserId\" = @userId";
+            return await conn.ExecuteScalarAsync<int>(sql, new { userId }) > 0;
         }
     }
 }

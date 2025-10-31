@@ -40,5 +40,8 @@ namespace aLMS.Domain.UserEntity
 
         public ICollection<StudentExercise> StudentExercises { get; set; }
         public ICollection<Behaviour> Behaviours { get; set; }
+        public void RaiseUserCreatedEvent() => AddDomainEvent(new UserCreatedEvent(Id, Name, AccountId, RoleId));
+        public void RaiseUserUpdatedEvent() => AddDomainEvent(new UserUpdatedEvent(Id, Name, RoleId));
+        public void RaiseUserDeletedEvent() => AddDomainEvent(new UserDeletedEvent(Id));
     }
 }
