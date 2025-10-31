@@ -7,11 +7,12 @@ namespace aLMS.Application.Common.Interfaces
 {
     public interface IDepartmentRepository
     {
-        Task<IEnumerable<Department>> GetAllDepartmentsAsync();
-        Task<Department> GetDepartmentByIdAsync(Guid id);
-        Task AddDepartmentAsync(Department department);
-        Task UpdateDepartmentAsync(Department department);
-        Task DeleteDepartmentAsync(Guid id);
-        Task<bool> DepartmentExistsAsync(Guid id);
+        Task<IEnumerable<Department>> GetAllBySchoolIdAsync(Guid schoolId);
+        Task<Department?> GetByIdAsync(Guid id);
+        Task AddAsync(Department department);
+        Task UpdateAsync(Department department);
+        Task DeleteAsync(Guid id);
+        Task<bool> ExistsAsync(Guid id);
+        Task<bool> NameExistsInSchoolAsync(string name, Guid schoolId, Guid? excludeId = null);
     }
 }

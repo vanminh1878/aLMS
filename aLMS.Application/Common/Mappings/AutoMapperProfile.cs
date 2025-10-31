@@ -2,6 +2,7 @@
 using aLMS.Domain.AccountEntity;
 using aLMS.Domain.AnswerEntity;
 using aLMS.Domain.ClassEntity;
+using aLMS.Domain.DepartmentEntity;
 using aLMS.Domain.ExerciseEntity;
 using aLMS.Domain.GradeEntity;
 using aLMS.Domain.LessonEntity;
@@ -151,6 +152,15 @@ namespace aLMS.Application.Common.Mappings
 
             CreateMap<CreateParentProfileDto, ParentProfile>();
             CreateMap<UpdateParentProfileDto, ParentProfile>();
+
+            // Department
+            CreateMap<Department, DepartmentDto>()
+                .ForMember(d => d.SchoolName, o => o.MapFrom(s => s.School.Name));
+
+            CreateMap<CreateDepartmentDto, Department>()
+                .ForMember(d => d.Id, o => o.Ignore());
+
+            CreateMap<UpdateDepartmentDto, Department>();
         }
     }
 }

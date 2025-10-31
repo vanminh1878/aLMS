@@ -1,11 +1,11 @@
-﻿using aLMS.Application.Common.Interfaces;
+﻿// aLMS.Infrastructure.DepartmentInfra/DepartmentRepository.cs
+using aLMS.Application.Common.Interfaces;
 using aLMS.Domain.DepartmentEntity;
 using Dapper;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace aLMS.Infrastructure.DepartmentInfra
@@ -21,55 +21,61 @@ namespace aLMS.Infrastructure.DepartmentInfra
             _connectionString = connectionString;
         }
 
-        public async Task<IEnumerable<Department>> GetAllDepartmentsAsync()
+        public async Task<IEnumerable<Department>> GetAllBySchoolIdAsync(Guid schoolId)
         {
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                var sb = new StringBuilder();
-                sb.AppendLine("SELECT Id, DepartmentName, HeadId");
-                sb.AppendLine("FROM \"Department\"");
-                return await connection.QueryAsync<Department>(sb.ToString());
-            }
+            using var conn = new NpgsqlConnection(_connectionString);
+            var sql = @"
+                SELECT d.*, s.""Name"" as SchoolName
+                FROM ""department"" d
+                JOIN ""school"" s ON d.""SchoolId"" = s.""Id""
+                WHERE d.""SchoolId"" = @schoolId";
+            return await conn.QueryAsync<Department>(sql, new { schoolId });
         }
 
-        public async Task<Department> GetDepartmentByIdAsync(Guid id)
+        public async Task<Department?> GetByIdAsync(Guid id)
         {
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                var sb = new StringBuilder();
-                sb.AppendLine("SELECT Id, DepartmentName, HeadId");
-                sb.AppendLine("FROM \"Department\"");
-                sb.AppendLine("WHERE Id = @Id");
-                return await connection.QuerySingleOrDefaultAsync<Department>(sb.ToString(), new { Id = id });
-            }
+            using var conn = new NpgsqlConnection(_connectionString);
+            var sql = @"
+                SELECT d.*, s.""Name"" as SchoolName
+                FROM ""department"" d
+                JOIN ""school"" s ON d.""SchoolId"" = s.""Id""
+                WHERE d.""Id"" = @id";
+            return await conn.QuerySingleOrDefaultAsync<Department>(sql, new { id });
         }
 
-        public async Task AddDepartmentAsync(Department department)
+        public async Task AddAsync(Department department)
         {
             await _context.Set<Department>().AddAsync(department);
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateDepartmentAsync(Department department)
+        public async Task UpdateAsync(Department department)
         {
             _context.Set<Department>().Update(department);
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteDepartmentAsync(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                var sb = new StringBuilder();
-                sb.AppendLine("DELETE FROM \"Department\"");
-                sb.AppendLine("WHERE Id = @Id");
-                await connection.ExecuteAsync(sb.ToString(), new { Id = id });
-            }
+            using var conn = new NpgsqlConnection(_connectionString);
+            var sql = "DELETE FROM \"department\" WHERE \"Id\" = @id";
+            await conn.ExecuteAsync(sql, new { id });
         }
 
-        public async Task<bool> DepartmentExistsAsync(Guid id)
+        public async Task<bool> ExistsAsync(Guid id)
         {
-            return await _context.Set<Department>().AnyAsync(d => d.Id == id);
+            using var conn = new NpgsqlConnection(_connectionString);
+            var sql = "SELECT COUNT(1) FROM \"department\" WHERE \"Id\" = @id";
+            return await conn.ExecuteScalarAsync<int>(sql, new { id }) > 0;
+        }
+
+        public async Task<bool> NameExistsInSchoolAsync(string name, Guid schoolId, Guid? excludeId = null)
+        {
+            using var conn = new NpgsqlConnection(_connectionString);
+            var sql = excludeId.HasValue
+                ? "SELECT COUNT(1) FROM \"department\" WHERE \"DepartmentName\" = @name AND \"SchoolId\" = @schoolId AND \"Id\" != @excludeId"
+                : "SELECT COUNT(1) FROM \"department\" WHERE \"DepartmentName\" = @name AND \"SchoolId\" = @schoolId";
+            return await conn.ExecuteScalarAsync<int>(sql, new { name, schoolId, excludeId }) > 0;
         }
     }
 }
