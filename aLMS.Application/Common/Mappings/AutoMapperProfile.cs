@@ -5,6 +5,7 @@ using aLMS.Domain.ClassEntity;
 using aLMS.Domain.ExerciseEntity;
 using aLMS.Domain.GradeEntity;
 using aLMS.Domain.LessonEntity;
+using aLMS.Domain.ParentProfileEntity;
 using aLMS.Domain.PermissionEntity;
 using aLMS.Domain.QuestionEntity;
 using aLMS.Domain.RoleEntity;
@@ -140,6 +141,16 @@ namespace aLMS.Application.Common.Mappings
 
             CreateMap<CreateTeacherProfileDto, TeacherProfile>();
             CreateMap<UpdateTeacherProfileDto, TeacherProfile>();
+
+            // ParentProfile
+            CreateMap<ParentProfile, ParentProfileDto>()
+                .ForMember(d => d.ParentName, o => o.MapFrom(s => s.User.Name))
+                .ForMember(d => d.ParentEmail, o => o.MapFrom(s => s.User.Email))
+                .ForMember(d => d.StudentName, o => o.MapFrom(s => s.Student.Name))
+                .ForMember(d => d.StudentEmail, o => o.MapFrom(s => s.Student.Email));
+
+            CreateMap<CreateParentProfileDto, ParentProfile>();
+            CreateMap<UpdateParentProfileDto, ParentProfile>();
         }
     }
 }

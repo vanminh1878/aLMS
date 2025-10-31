@@ -15,6 +15,10 @@ namespace aLMS.Domain.ParentProfileEntity
 
         public Guid StudentId { get; set; }
         public User Student { get; set; }
+        public void RaiseParentProfileCreatedEvent() => AddDomainEvent(new ParentProfileCreatedEvent(UserId, StudentId));
+        public void RaiseParentProfileUpdatedEvent() => AddDomainEvent(new ParentProfileUpdatedEvent(UserId, StudentId));
+        public void RaiseParentProfileDeletedEvent() => AddDomainEvent(new ParentProfileDeletedEvent(UserId, StudentId));
+
     }
 
 }

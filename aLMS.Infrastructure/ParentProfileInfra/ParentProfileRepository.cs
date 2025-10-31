@@ -1,11 +1,11 @@
-﻿using aLMS.Application.Common.Interfaces;
+﻿// aLMS.Infrastructure.ParentProfileInfra/ParentProfileRepository.cs
+using aLMS.Application.Common.Interfaces;
 using aLMS.Domain.ParentProfileEntity;
 using Dapper;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace aLMS.Infrastructure.ParentProfileInfra
@@ -21,67 +21,58 @@ namespace aLMS.Infrastructure.ParentProfileInfra
             _connectionString = connectionString;
         }
 
-        public async Task<IEnumerable<ParentProfile>> GetAllParentProfilesAsync()
+        public async Task<ParentProfile?> GetByParentIdAsync(Guid parentId)
         {
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                var sb = new StringBuilder();
-                sb.AppendLine("SELECT UserId, StudentId");
-                sb.AppendLine("FROM \"ParentProfile\"");
-                return await connection.QueryAsync<ParentProfile>(sb.ToString());
-            }
+            using var conn = new NpgsqlConnection(_connectionString);
+            var sql = @"
+                SELECT pp.*, 
+                       p.""Name"" as ParentName, p.""Email"" as ParentEmail,
+                       s.""Name"" as StudentName, s.""Email"" as StudentEmail
+                FROM ""parent_profile"" pp
+                JOIN ""user"" p ON pp.""UserId"" = p.""Id""
+                JOIN ""user"" s ON pp.""StudentId"" = s.""Id""
+                WHERE pp.""UserId"" = @parentId";
+            return await conn.QuerySingleOrDefaultAsync<ParentProfile>(sql, new { parentId });
         }
 
-        public async Task<ParentProfile> GetParentProfileByIdAsync(Guid userId)
+        public async Task<IEnumerable<ParentProfile>> GetByStudentIdAsync(Guid studentId)
         {
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                var sb = new StringBuilder();
-                sb.AppendLine("SELECT UserId, StudentId");
-                sb.AppendLine("FROM \"ParentProfile\"");
-                sb.AppendLine("WHERE UserId = @UserId");
-                return await connection.QuerySingleOrDefaultAsync<ParentProfile>(sb.ToString(), new { UserId = userId });
-            }
+            using var conn = new NpgsqlConnection(_connectionString);
+            var sql = @"
+                SELECT pp.*, 
+                       p.""Name"" as ParentName, p.""Email"" as ParentEmail,
+                       s.""Name"" as StudentName, s.""Email"" as StudentEmail
+                FROM ""parent_profile"" pp
+                JOIN ""user"" p ON pp.""UserId"" = p.""Id""
+                JOIN ""user"" s ON pp.""StudentId"" = s.""Id""
+                WHERE pp.""StudentId"" = @studentId";
+            return await conn.QueryAsync<ParentProfile>(sql, new { studentId });
         }
 
-        public async Task AddParentProfileAsync(ParentProfile parentProfile)
+        public async Task AddAsync(ParentProfile profile)
         {
-            await _context.Set<ParentProfile>().AddAsync(parentProfile);
+            await _context.Set<ParentProfile>().AddAsync(profile);
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateParentProfileAsync(ParentProfile parentProfile)
+        public async Task UpdateAsync(ParentProfile profile)
         {
-            _context.Set<ParentProfile>().Update(parentProfile);
+            _context.Set<ParentProfile>().Update(profile);
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteParentProfileAsync(Guid userId)
+        public async Task DeleteAsync(Guid parentId, Guid studentId)
         {
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                var sb = new StringBuilder();
-                sb.AppendLine("DELETE FROM \"ParentProfile\"");
-                sb.AppendLine("WHERE UserId = @UserId");
-                await connection.ExecuteAsync(sb.ToString(), new { UserId = userId });
-            }
+            using var conn = new NpgsqlConnection(_connectionString);
+            var sql = "DELETE FROM \"parent_profile\" WHERE \"UserId\" = @parentId AND \"StudentId\" = @studentId";
+            await conn.ExecuteAsync(sql, new { parentId, studentId });
         }
 
-        public async Task<IEnumerable<ParentProfile>> GetParentProfilesByStudentIdAsync(Guid studentId)
+        public async Task<bool> ExistsAsync(Guid parentId, Guid studentId)
         {
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                var sb = new StringBuilder();
-                sb.AppendLine("SELECT UserId, StudentId");
-                sb.AppendLine("FROM \"ParentProfile\"");
-                sb.AppendLine("WHERE StudentId = @StudentId");
-                return await connection.QueryAsync<ParentProfile>(sb.ToString(), new { StudentId = studentId });
-            }
-        }
-
-        public async Task<bool> ParentProfileExistsAsync(Guid userId)
-        {
-            return await _context.Set<ParentProfile>().AnyAsync(pp => pp.UserId == userId);
+            using var conn = new NpgsqlConnection(_connectionString);
+            var sql = "SELECT COUNT(1) FROM \"parent_profile\" WHERE \"UserId\" = @parentId AND \"StudentId\" = @studentId";
+            return await conn.ExecuteScalarAsync<int>(sql, new { parentId, studentId }) > 0;
         }
     }
 }

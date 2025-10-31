@@ -7,12 +7,11 @@ namespace aLMS.Application.Common.Interfaces
 {
     public interface IParentProfileRepository
     {
-        Task<IEnumerable<ParentProfile>> GetAllParentProfilesAsync();
-        Task<ParentProfile> GetParentProfileByIdAsync(Guid userId);
-        Task AddParentProfileAsync(ParentProfile parentProfile);
-        Task UpdateParentProfileAsync(ParentProfile parentProfile);
-        Task DeleteParentProfileAsync(Guid userId);
-        Task<IEnumerable<ParentProfile>> GetParentProfilesByStudentIdAsync(Guid studentId);
-        Task<bool> ParentProfileExistsAsync(Guid userId);
+        Task<ParentProfile?> GetByParentIdAsync(Guid parentId);
+        Task<IEnumerable<ParentProfile>> GetByStudentIdAsync(Guid studentId);
+        Task AddAsync(ParentProfile profile);
+        Task UpdateAsync(ParentProfile profile);
+        Task DeleteAsync(Guid parentId, Guid studentId);
+        Task<bool> ExistsAsync(Guid parentId, Guid studentId);
     }
 }
