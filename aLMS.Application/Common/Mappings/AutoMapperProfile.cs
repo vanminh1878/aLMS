@@ -14,6 +14,7 @@ using aLMS.Domain.StudentAnswerEntity;
 using aLMS.Domain.StudentExerciseEntity;
 using aLMS.Domain.StudentProfileEntity;
 using aLMS.Domain.SubjectEntity;
+using aLMS.Domain.TeacherProfileEntity;
 using aLMS.Domain.TopicEntity;
 using aLMS.Domain.UserEntity;
 using AutoMapper;
@@ -129,6 +130,16 @@ namespace aLMS.Application.Common.Mappings
 
             CreateMap<CreateStudentProfileDto, StudentProfile>();
             CreateMap<UpdateStudentProfileDto, StudentProfile>();
+
+            // TeacherProfile
+            CreateMap<TeacherProfile, TeacherProfileDto>()
+                .ForMember(d => d.UserName, o => o.MapFrom(s => s.User.Name))
+                .ForMember(d => d.Email, o => o.MapFrom(s => s.User.Email))
+                .ForMember(d => d.SchoolName, o => o.MapFrom(s => s.School != null ? s.School.Name : null))
+                .ForMember(d => d.DepartmentName, o => o.MapFrom(s => s.Department != null ? s.Department.DepartmentName : null));
+
+            CreateMap<CreateTeacherProfileDto, TeacherProfile>();
+            CreateMap<UpdateTeacherProfileDto, TeacherProfile>();
         }
     }
 }

@@ -23,5 +23,9 @@ namespace aLMS.Domain.TeacherProfileEntity
 
         public DateTime HireDate { get; set; }
         public string Specialization { get; set; }
+        public void RaiseTeacherProfileCreatedEvent() => AddDomainEvent(new TeacherProfileCreatedEvent(UserId, SchoolId, DepartmentId));
+        public void RaiseTeacherProfileUpdatedEvent() => AddDomainEvent(new TeacherProfileUpdatedEvent(UserId, SchoolId, DepartmentId));
+        public void RaiseTeacherProfileDeletedEvent() => AddDomainEvent(new TeacherProfileDeletedEvent(UserId));
+
     }
 }
