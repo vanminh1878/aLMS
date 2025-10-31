@@ -12,5 +12,8 @@ namespace aLMS.Domain.PermissionEntity
     {
         public string PermissionName { get; set; }
         public ICollection<RolePermission> RolePermissions { get; set; }
+        public void RaisePermissionCreatedEvent() => AddDomainEvent(new PermissionCreatedEvent(Id, PermissionName));
+        public void RaisePermissionUpdatedEvent() => AddDomainEvent(new PermissionUpdatedEvent(Id, PermissionName));
+        public void RaisePermissionDeletedEvent() => AddDomainEvent(new PermissionDeletedEvent(Id));
     }
 }

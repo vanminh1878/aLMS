@@ -13,5 +13,6 @@ namespace aLMS.Application.Common.Interfaces
         Task UpdatePermissionAsync(Permission permission);
         Task DeletePermissionAsync(Guid id);
         Task<bool> PermissionExistsAsync(Guid id);
+        Task<bool> PermissionNameExistsAsync(string name, Guid? excludeId = null);
     }
 }

@@ -1,11 +1,11 @@
-﻿using aLMS.Application.Common.Interfaces;
+﻿// aLMS.Infrastructure.PermissionInfra/PermissionRepository.cs
+using aLMS.Application.Common.Interfaces;
 using aLMS.Domain.PermissionEntity;
 using Dapper;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace aLMS.Infrastructure.PermissionInfra
@@ -23,25 +23,16 @@ namespace aLMS.Infrastructure.PermissionInfra
 
         public async Task<IEnumerable<Permission>> GetAllPermissionsAsync()
         {
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                var sb = new StringBuilder();
-                sb.AppendLine("SELECT Id, PermissionName");
-                sb.AppendLine("FROM \"Permission\"");
-                return await connection.QueryAsync<Permission>(sb.ToString());
-            }
+            using var conn = new NpgsqlConnection(_connectionString);
+            var sql = "SELECT \"Id\", \"PermissionName\" FROM \"permission\"";
+            return await conn.QueryAsync<Permission>(sql);
         }
 
         public async Task<Permission> GetPermissionByIdAsync(Guid id)
         {
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                var sb = new StringBuilder();
-                sb.AppendLine("SELECT Id, PermissionName");
-                sb.AppendLine("FROM \"Permission\"");
-                sb.AppendLine("WHERE Id = @Id");
-                return await connection.QuerySingleOrDefaultAsync<Permission>(sb.ToString(), new { Id = id });
-            }
+            using var conn = new NpgsqlConnection(_connectionString);
+            var sql = "SELECT \"Id\", \"PermissionName\" FROM \"permission\" WHERE \"Id\" = @id";
+            return await conn.QuerySingleOrDefaultAsync<Permission>(sql, new { id });
         }
 
         public async Task AddPermissionAsync(Permission permission)
@@ -58,18 +49,23 @@ namespace aLMS.Infrastructure.PermissionInfra
 
         public async Task DeletePermissionAsync(Guid id)
         {
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                var sb = new StringBuilder();
-                sb.AppendLine("DELETE FROM \"Permission\"");
-                sb.AppendLine("WHERE Id = @Id");
-                await connection.ExecuteAsync(sb.ToString(), new { Id = id });
-            }
+            using var conn = new NpgsqlConnection(_connectionString);
+            var sql = "DELETE FROM \"permission\" WHERE \"Id\" = @id";
+            await conn.ExecuteAsync(sql, new { id });
         }
 
         public async Task<bool> PermissionExistsAsync(Guid id)
         {
             return await _context.Set<Permission>().AnyAsync(p => p.Id == id);
+        }
+
+        public async Task<bool> PermissionNameExistsAsync(string name, Guid? excludeId = null)
+        {
+            using var conn = new NpgsqlConnection(_connectionString);
+            var sql = excludeId.HasValue
+                ? "SELECT COUNT(1) FROM \"permission\" WHERE \"PermissionName\" = @name AND \"Id\" != @excludeId"
+                : "SELECT COUNT(1) FROM \"permission\" WHERE \"PermissionName\" = @name";
+            return await conn.ExecuteScalarAsync<int>(sql, new { name, excludeId }) > 0;
         }
     }
 }
