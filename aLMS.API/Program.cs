@@ -1,4 +1,5 @@
 ﻿using aLMS.Application.Common.Interfaces;
+using aLMS.Application.Common.Jwt;
 using aLMS.Application.Common.Mappings;
 using aLMS.Infrastructure.AccountInfra;
 using aLMS.Infrastructure.AnswerInfra;
@@ -228,31 +229,6 @@ namespace aLMS.API
                     });
                 });
 
-                // Thêm authentication với JWT
-                //builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                //    .AddJwtBearer(options =>
-                //    {
-                //        options.TokenValidationParameters = new TokenValidationParameters
-                //        {
-                //            ValidateIssuer = true,
-                //            ValidateAudience = true,
-                //            ValidateLifetime = true,
-                //            ValidateIssuerSigningKey = true,
-                //            ValidIssuer = builder.Configuration["Jwt:Issuer"],
-                //            ValidAudience = builder.Configuration["Jwt:Audience"],
-                //            IssuerSigningKey = new SymmetricSecurityKey(
-                //                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
-                //        };
-                //        options.Events = new JwtBearerEvents
-                //        {
-                //            OnAuthenticationFailed = context =>
-                //            {
-                //                Log.Error("Authentication failed: {Message}", context.Exception.Message);
-                //                return Task.CompletedTask;
-                //            }
-                //        };
-                //    });
-
                 // Thêm localization
                 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
 
@@ -261,6 +237,39 @@ namespace aLMS.API
                 builder.Services.AddEndpointsApiExplorer();
                 builder.Services.AddSwaggerGen();
                 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
+
+                // Đăng ký JwtSettings
+                builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
+                builder.Services.AddScoped<IJwtService, JwtService>();
+
+                // Đăng ký Authentication + Authorization
+                builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                    .AddJwtBearer(options =>
+                    {
+                        var jwtSettings = builder.Configuration.GetSection("Jwt").Get<JwtSettings>();
+
+                        options.TokenValidationParameters = new TokenValidationParameters
+                        {
+                            ValidateIssuer = true,
+                            ValidateAudience = true,
+                            ValidateLifetime = true,
+                            ValidateIssuerSigningKey = true,
+                            ValidIssuer = jwtSettings.Issuer,
+                            ValidAudience = jwtSettings.Audience,
+                            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Secret))
+                        };
+
+                        options.Events = new JwtBearerEvents
+                        {
+                            OnAuthenticationFailed = context =>
+                            {
+                                Log.Error("JWT Authentication failed: {Message}", context.Exception.Message);
+                                return Task.CompletedTask;
+                            }
+                        };
+                    });
+
+                builder.Services.AddAuthorization();
 
                 var app = builder.Build();
 

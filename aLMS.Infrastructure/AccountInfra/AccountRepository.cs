@@ -61,5 +61,11 @@ namespace aLMS.Infrastructure.AccountInfra
                 : "SELECT COUNT(1) FROM \"account\" WHERE \"Username\" = @username";
             return await conn.ExecuteScalarAsync<int>(sql, new { username, excludeId }) > 0;
         }
+        public async Task<Account?> GetByRefreshTokenAsync(string refreshToken)
+        {
+            using var conn = new NpgsqlConnection(_connectionString);
+            var sql = "SELECT * FROM \"account\" WHERE \"RefreshToken\" = @refreshToken";
+            return await conn.QuerySingleOrDefaultAsync<Account>(sql, new { refreshToken });
+        }
     }
 }

@@ -12,6 +12,19 @@ namespace aLMS.Domain.AccountEntity
         public string Username { get; set; }
         public string Password { get; set; }
         public bool? Status { get; set; }
+        public string? RefreshToken { get; set; }
+        public DateTime? RefreshTokenExpiry { get; set; }
+        public void SetRefreshToken(string token, int expiryHours)
+        {
+            RefreshToken = token;
+            RefreshTokenExpiry = DateTime.UtcNow.AddHours(expiryHours);
+        }
+
+        public void ClearRefreshToken()
+        {
+            RefreshToken = null;
+            RefreshTokenExpiry = null;
+        }
         public void RaiseAccountCreatedEvent() => AddDomainEvent(new AccountCreatedEvent(Id, Username));
         public void RaiseAccountUpdatedEvent() => AddDomainEvent(new AccountUpdatedEvent(Id, Username));
         public void RaiseAccountDeletedEvent() => AddDomainEvent(new AccountDeletedEvent(Id));
