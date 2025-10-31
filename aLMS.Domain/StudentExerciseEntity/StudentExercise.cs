@@ -25,5 +25,15 @@ namespace aLMS.Domain.StudentExerciseEntity
         public int AttemptNumber { get; set; }
 
         public ICollection<StudentAnswer> StudentAnswers { get; set; }
+        public void RaiseStartedEvent()
+        {
+            AddDomainEvent(new StudentExerciseStartedEvent(Id, StudentId, ExerciseId));
+        }
+
+        public void RaiseSubmittedEvent()
+        {
+            AddDomainEvent(new StudentExerciseSubmittedEvent(Id, Score, IsCompleted, EndTime));
+        }
+
     }
 }

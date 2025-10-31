@@ -7,12 +7,9 @@ namespace aLMS.Application.Common.Interfaces
 {
     public interface IStudentExerciseRepository
     {
-        Task<IEnumerable<StudentExercise>> GetAllStudentExercisesAsync();
-        Task<StudentExercise> GetStudentExerciseByIdAsync(Guid id);
-        Task AddStudentExerciseAsync(StudentExercise studentExercise);
-        Task UpdateStudentExerciseAsync(StudentExercise studentExercise);
-        Task DeleteStudentExerciseAsync(Guid id);
-        Task<IEnumerable<StudentExercise>> GetStudentExercisesByStudentIdAsync(Guid studentId);
-        Task<bool> StudentExerciseExistsAsync(Guid id);
+        Task<StudentExercise?> GetActiveByStudentAndExerciseAsync(Guid studentId, Guid exerciseId);
+        Task<StudentExercise?> GetByIdAsync(Guid id);
+        Task AddAsync(StudentExercise se);
+        Task UpdateAsync(StudentExercise se);
     }
 }

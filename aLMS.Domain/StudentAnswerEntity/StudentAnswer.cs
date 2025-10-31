@@ -25,5 +25,18 @@ namespace aLMS.Domain.StudentAnswerEntity
         public string AnswerText { get; set; }
         public bool IsCorrect { get; set; } = false;
         public DateTime SubmittedAt { get; set; }
+        public void RaiseSubmittedEvent()
+        {
+            AddDomainEvent(new StudentAnswerSubmittedEvent(
+                Id,
+                StudentExerciseId,
+                QuestionId,
+                AnswerId,
+                AnswerText,
+                IsCorrect,
+                SubmittedAt
+            ));
+        }
+
     }
 }
