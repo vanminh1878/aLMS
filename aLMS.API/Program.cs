@@ -217,17 +217,18 @@ namespace aLMS.API
                 //builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 
 
-                // Thêm CORS cho Angular frontend
+                // Thêm CORS
                 builder.Services.AddCors(options =>
                 {
-                    options.AddPolicy("AllowAngularApp", policy =>
+                    options.AddPolicy("AllowReactApp", policy =>
                     {
-                        policy.WithOrigins("http://localhost:4200")
+                        policy.WithOrigins("http://localhost:3000") // FE của bạn
                               .AllowAnyHeader()
                               .AllowAnyMethod()
-                              .AllowCredentials();
+                              .AllowCredentials(); // nếu dùng JWT trong cookie/localStorage
                     });
                 });
+
 
                 // Thêm localization
                 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
@@ -287,7 +288,7 @@ namespace aLMS.API
                     SupportedUICultures = new[] { new CultureInfo("vi-VN") }
                 });
 
-                app.UseCors("AllowAngularApp");
+                app.UseCors("AllowReactApp");
                 app.UseAuthentication();
                 app.UseAuthorization();
                 //app.UseMiddleware<EventualConsistencyMiddleware>();
