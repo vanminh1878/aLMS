@@ -29,7 +29,7 @@ namespace aLMS.Infrastructure.AccountInfra
                 .HasColumnType("integer");
 
             builder.HasOne(x => x.Question)
-                .WithMany()
+                .WithMany(q => q.Answers)
                 .HasForeignKey(x => x.QuestionId)
                 .OnDelete(DeleteBehavior.Cascade);
         }

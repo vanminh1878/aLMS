@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using aLMS.Infrastructure.Common;
@@ -11,9 +12,11 @@ using aLMS.Infrastructure.Common;
 namespace aLMS.Infrastructure.Migrations
 {
     [DbContext(typeof(aLMSDbContext))]
-    partial class aLMSDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251112151727_FixForeignKeyConflicts")]
+    partial class FixForeignKeyConflicts
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -58,7 +61,7 @@ namespace aLMS.Infrastructure.Migrations
                         .IsUnique()
                         .HasDatabaseName("IX_Accounts_Username");
 
-                    b.ToTable("account", (string)null);
+                    b.ToTable("Account", (string)null);
                 });
 
             modelBuilder.Entity("aLMS.Domain.AnswerEntity.Answer", b =>

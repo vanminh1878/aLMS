@@ -294,7 +294,7 @@ namespace aLMS.API
                 //app.UseMiddleware<EventualConsistencyMiddleware>();
                 app.MapControllers();
 
-                app.Run();
+                    app.Run();
             }
             catch (Exception ex)
             {
