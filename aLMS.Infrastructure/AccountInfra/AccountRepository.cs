@@ -30,7 +30,7 @@ namespace aLMS.Infrastructure.AccountInfra
         public async Task<Account?> GetByIdAsync(Guid id)
         {
             using var conn = new NpgsqlConnection(_connectionString);
-            var sql = "SELECT \"Id\", \"Username\", \"PasswordHash\", \"Status\" FROM \"account\" WHERE \"Id\" = @id";
+            var sql = "SELECT \"Id\", \"Username\", \"Password\", \"Status\" FROM \"account\" WHERE \"Id\" = @id";
             return await conn.QuerySingleOrDefaultAsync<Account>(sql, new { id });
         }
 
