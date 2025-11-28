@@ -14,17 +14,13 @@ namespace aLMS.Domain.TeacherProfileEntity
     {
         public Guid UserId { get; set; }
         public User User { get; set; }
-
-        public Guid SchoolId { get; set; }
-        public School School { get; set; }
-
         public Guid DepartmentId { get; set; }
         public Department Department { get; set; }
 
         public DateTime HireDate { get; set; }
         public string Specialization { get; set; }
-        public void RaiseTeacherProfileCreatedEvent() => AddDomainEvent(new TeacherProfileCreatedEvent(UserId, SchoolId, DepartmentId));
-        public void RaiseTeacherProfileUpdatedEvent() => AddDomainEvent(new TeacherProfileUpdatedEvent(UserId, SchoolId, DepartmentId));
+        public void RaiseTeacherProfileCreatedEvent() => AddDomainEvent(new TeacherProfileCreatedEvent(UserId, DepartmentId));
+        public void RaiseTeacherProfileUpdatedEvent() => AddDomainEvent(new TeacherProfileUpdatedEvent(UserId, DepartmentId));
         public void RaiseTeacherProfileDeletedEvent() => AddDomainEvent(new TeacherProfileDeletedEvent(UserId));
 
     }

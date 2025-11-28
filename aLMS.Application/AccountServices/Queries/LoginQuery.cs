@@ -1,5 +1,4 @@
-﻿// aLMS.Application.AccountServices.Queries.Login/LoginQuery.cs
-using aLMS.Application.Common.Dtos;
+﻿using aLMS.Application.Common.Dtos;
 using aLMS.Application.Common.Interfaces;
 using MediatR;
 using System;

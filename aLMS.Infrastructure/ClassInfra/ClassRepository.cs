@@ -1,87 +1,117 @@
-﻿using aLMS.Application.Common.Interfaces;
+﻿// aLMS.Infrastructure/ClassInfra/ClassRepository.cs
+using aLMS.Application.Common.Interfaces;
 using aLMS.Domain.ClassEntity;
 using Dapper;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
-using System;
-using System.Collections.Generic;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace aLMS.Infrastructure.ClassInfra
+public class ClassRepository : IClassRepository
 {
-    public class ClassRepository : IClassRepository
+    private readonly DbContext _context;
+    private readonly string _connectionString;
+
+    public ClassRepository(DbContext context, string connectionString)
     {
-        private readonly DbContext _context;
-        private readonly string _connectionString;
+        _context = context;
+        _connectionString = connectionString;
+    }
+ 
+    public async Task<IEnumerable<Class>> GetClassesFilteredAsync(string? grade, string? schoolYear)
+    {
+        using var connection = new NpgsqlConnection(_connectionString);
+        var sql = new StringBuilder("""
+        SELECT "Id", "ClassName", "Grade", "SchoolYear"
+        FROM "class"
+        WHERE 1=1
+        """);
 
-        public ClassRepository(DbContext context, string connectionString)
+        var parameters = new DynamicParameters();
+
+        if (!string.IsNullOrWhiteSpace(grade))
         {
-            _context = context;
-            _connectionString = connectionString;
+            sql.AppendLine("AND \"Grade\" = @Grade");
+            parameters.Add("Grade", grade.Trim());
         }
 
-        public async Task<IEnumerable<Class>> GetAllClassesAsync()
+        if (!string.IsNullOrWhiteSpace(schoolYear))
         {
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                var sb = new StringBuilder();
-                sb.AppendLine("SELECT \"Id\", \"ClassName\", \"GradeId\"");
-                sb.AppendLine("FROM \"class\"");
-                return await connection.QueryAsync<Class>(sb.ToString());
-            }
+            sql.AppendLine("AND \"SchoolYear\" = @SchoolYear");
+            parameters.Add("SchoolYear", schoolYear.Trim());
         }
 
-        public async Task<Class> GetClassByIdAsync(Guid id)
-        {
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                var sb = new StringBuilder();
-                sb.AppendLine("SELECT \"Id\", \"ClassName\", \"GradeId\"");
-                sb.AppendLine("FROM \"class\"");
-                sb.AppendLine("WHERE \"Id\" = @id");
-                return await connection.QuerySingleOrDefaultAsync<Class>(sb.ToString(), new { id });
-            }
-        }
+        sql.AppendLine("ORDER BY \"SchoolYear\" DESC, \"Grade\", \"ClassName\"");
 
-        public async Task AddClassAsync(Class classEntity)
+        return await connection.QueryAsync<Class>(sql.ToString(), parameters);
+    }
+    public async Task<IEnumerable<Class>> GetAllClassesAsync()
+    {
+        using var connection = new NpgsqlConnection(_connectionString);
+        var sql = @"
+            SELECT ""Id"", ""ClassName"", ""Grade"", ""SchoolYear""
+            FROM ""class"" 
+            ORDER BY ""SchoolYear"" DESC, ""Grade"", ""ClassName""";
+
+        return await connection.QueryAsync<Class>(sql);
+    }
+
+    public async Task<Class?> GetClassByIdAsync(Guid id)
+    {
+        using var connection = new NpgsqlConnection(_connectionString);
+        var sql = @"
+            SELECT ""Id"", ""ClassName"", ""Grade"", ""SchoolYear""
+            FROM ""class""
+            WHERE ""Id"" = @id";
+
+        return await connection.QuerySingleOrDefaultAsync<Class>(sql, new { id });
+    }
+
+    public async Task AddClassAsync(Class classEntity)
+    {
+        await _context.Set<Class>().AddAsync(classEntity);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task UpdateClassAsync(Class classEntity)
+    {
+        _context.Set<Class>().Update(classEntity);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task DeleteClassAsync(Guid id)
+    {
+        var entity = await _context.Set<Class>().FindAsync(id);
+        if (entity != null)
         {
-            await _context.Set<Class>().AddAsync(classEntity);
+            _context.Set<Class>().Remove(entity);
             await _context.SaveChangesAsync();
         }
+    }
 
-        public async Task UpdateClassAsync(Class classEntity)
-        {
-            _context.Set<Class>().Update(classEntity);
-            await _context.SaveChangesAsync();
-        }
 
-        public async Task DeleteClassAsync(Guid id)
-        {
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                var sb = new StringBuilder();
-                sb.AppendLine("DELETE FROM \"class\"");
-                sb.AppendLine("WHERE \"Id\" = @id");
-                await connection.ExecuteAsync(sb.ToString(), new { id });
-            }
-        }
+    // Infrastructure/ClassInfra/ClassRepository.cs
 
-        public async Task<IEnumerable<Class>> GetClassesByGradeIdAsync(Guid gradeId)
-        {
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                var sb = new StringBuilder();
-                sb.AppendLine("SELECT \"Id\", \"ClassName\", \"GradeId\"");
-                sb.AppendLine("FROM \"class\"");
-                sb.AppendLine("WHERE \"GradeId\" = @gradeId");
-                return await connection.QueryAsync<Class>(sb.ToString(), new { gradeId });
-            }
-        }
+    public async Task SoftDeleteClassAsync(Guid id)
+    {
+        using var connection = new NpgsqlConnection(_connectionString);
+        var sql = @"
+        UPDATE ""class"" 
+        SET ""IsDeleted"" = true, ""DeletedAt"" = NOW() 
+        WHERE ""Id"" = @id AND ""IsDeleted"" = false";
 
-        public async Task<bool> ClassExistsAsync(Guid id)
-        {
-            return await _context.Set<Class>().AnyAsync(c => c.Id == id);
-        }
+        await connection.ExecuteAsync(sql, new { id });
+    }
+
+    // Nếu muốn lấy cả lớp đã xóa (admin)
+    public async Task<IEnumerable<Class>> GetAllIncludingDeletedAsync()
+    {
+        using var connection = new NpgsqlConnection(_connectionString);
+        return await connection.QueryAsync<Class>(
+            @"SELECT ""Id"", ""ClassName"", ""Grade"", ""SchoolYear"", ""IsDeleted"", ""DeletedAt""
+          FROM ""class"" ORDER BY ""SchoolYear"" DESC");
+    }
+    public async Task<bool> ClassExistsAsync(Guid id)
+    {
+        return await _context.Set<Class>().AnyAsync(c => c.Id == id);
     }
 }

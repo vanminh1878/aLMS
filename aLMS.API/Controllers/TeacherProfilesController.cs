@@ -1,5 +1,4 @@
-﻿// aLMS.API.Controllers/TeacherProfilesController.cs
-using aLMS.Application.Common.Dtos;
+﻿using aLMS.Application.Common.Dtos;
 using aLMS.Application.TeacherProfileServices.Commands.CreateTeacherProfile;
 using aLMS.Application.TeacherProfileServices.Commands.DeleteTeacherProfile;
 using aLMS.Application.TeacherProfileServices.Commands.UpdateTeacherProfile;

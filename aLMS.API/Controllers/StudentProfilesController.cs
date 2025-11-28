@@ -1,5 +1,4 @@
-﻿// aLMS.API.Controllers/StudentProfilesController.cs
-using aLMS.Application.Common.Dtos;
+﻿using aLMS.Application.Common.Dtos;
 using aLMS.Application.StudentProfileServices.Commands.CreateStudentProfile;
 using aLMS.Application.StudentProfileServices.Commands.DeleteStudentProfile;
 using aLMS.Application.StudentProfileServices.Commands.UpdateStudentProfile;

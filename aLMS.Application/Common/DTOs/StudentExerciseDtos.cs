@@ -1,5 +1,4 @@
-﻿// aLMS.Application.Common.Dtos/StudentExerciseDtos.cs
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace aLMS.Application.Common.Dtos
@@ -12,8 +11,8 @@ namespace aLMS.Application.Common.Dtos
     public class SubmitAnswerDto
     {
         public Guid QuestionId { get; set; }
-        public Guid? AnswerId { get; set; } // trắc nghiệm
-        public string? AnswerText { get; set; } // tự luận
+        public Guid? AnswerId { get; set; } 
+        public string? AnswerText { get; set; } 
     }
 
     public class SubmitExerciseDto

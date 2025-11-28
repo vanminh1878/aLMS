@@ -1,5 +1,4 @@
-﻿// aLMS.Application.ExerciseServices.Commands.DeleteExercise/DeleteExerciseCommand.cs
-using aLMS.Application.Common.Interfaces;
+﻿using aLMS.Application.Common.Interfaces;
 using MediatR;
 using System;
 using System.Threading;

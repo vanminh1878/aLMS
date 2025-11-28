@@ -1,5 +1,4 @@
-﻿// aLMS.Application.RolePermissionServices.Commands.AssignPermission/AssignPermissionCommand.cs
-using aLMS.Application.Common.Dtos;
+﻿using aLMS.Application.Common.Dtos;
 using aLMS.Application.Common.Interfaces;
 using aLMS.Domain.RolePermissionEntity;
 using MediatR;

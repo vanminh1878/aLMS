@@ -1,5 +1,4 @@
-﻿// aLMS.Application.LessonServices.Commands.UpdateLesson/UpdateLessonCommand.cs
-using aLMS.Application.Common.Dtos;
+﻿using aLMS.Application.Common.Dtos;
 using aLMS.Application.Common.Interfaces;
 using aLMS.Domain.LessonEntity;
 using AutoMapper;

@@ -1,5 +1,4 @@
-﻿// aLMS.Application.PermissionServices.Commands.DeletePermission/DeletePermissionCommand.cs
-using aLMS.Application.Common.Interfaces;
+﻿using aLMS.Application.Common.Interfaces;
 using MediatR;
 using System;
 using System.Threading;

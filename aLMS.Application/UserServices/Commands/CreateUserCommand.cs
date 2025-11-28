@@ -1,5 +1,4 @@
-﻿// aLMS.Application.UserServices.Commands.CreateUser/CreateUserCommand.cs
-using aLMS.Application.Common.Dtos;
+﻿using aLMS.Application.Common.Dtos;
 using aLMS.Application.Common.Interfaces;
 using aLMS.Domain.AccountEntity;
 using aLMS.Domain.UserEntity;

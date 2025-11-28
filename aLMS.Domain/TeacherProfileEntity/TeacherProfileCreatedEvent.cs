@@ -1,5 +1,4 @@
-﻿// aLMS.Domain.TeacherProfileEntity/TeacherProfileEvents.cs
-using aLMS.Domain.Common;
+﻿using aLMS.Domain.Common;
 using System;
 
 namespace aLMS.Domain.TeacherProfileEntity
@@ -10,10 +9,9 @@ namespace aLMS.Domain.TeacherProfileEntity
         public Guid? SchoolId { get; }
         public Guid? DepartmentId { get; }
 
-        public TeacherProfileCreatedEvent(Guid userId, Guid? schoolId, Guid? departmentId)
+        public TeacherProfileCreatedEvent(Guid userId, Guid? departmentId)
         {
             UserId = userId;
-            SchoolId = schoolId;
             DepartmentId = departmentId;
         }
     }
@@ -24,10 +22,9 @@ namespace aLMS.Domain.TeacherProfileEntity
         public Guid? SchoolId { get; }
         public Guid? DepartmentId { get; }
 
-        public TeacherProfileUpdatedEvent(Guid userId, Guid? schoolId, Guid? departmentId)
+        public TeacherProfileUpdatedEvent(Guid userId,Guid? departmentId)
         {
             UserId = userId;
-            SchoolId = schoolId;
             DepartmentId = departmentId;
         }
     }

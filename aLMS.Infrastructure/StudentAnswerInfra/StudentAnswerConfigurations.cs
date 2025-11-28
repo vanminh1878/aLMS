@@ -35,17 +35,17 @@ namespace aLMS.Infrastructure.AccountInfra
                 .HasColumnType("timestamp");
 
             builder.HasOne(x => x.StudentExercise)
-                .WithMany()
+                .WithMany(se => se.StudentAnswers)
                 .HasForeignKey(x => x.StudentExerciseId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne(x => x.Question)
-                .WithMany()
+                .WithMany(x => x.StudentAnswers)
                 .HasForeignKey(x => x.QuestionId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne(x => x.Answer)
-                .WithMany()
+                .WithMany(x => x.StudentAnswers)
                 .HasForeignKey(x => x.AnswerId)
                 .OnDelete(DeleteBehavior.SetNull);
         }

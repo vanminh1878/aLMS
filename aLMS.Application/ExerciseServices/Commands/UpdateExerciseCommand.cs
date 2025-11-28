@@ -1,5 +1,4 @@
-﻿// aLMS.Application.ExerciseServices.Commands.UpdateExercise/UpdateExerciseCommand.cs
-using aLMS.Application.Common.Dtos;
+﻿using aLMS.Application.Common.Dtos;
 using aLMS.Application.Common.Interfaces;
 using aLMS.Domain.ExerciseEntity;
 using AutoMapper;

@@ -1,5 +1,4 @@
-﻿// aLMS.API.Controllers/LessonsController.cs
-using aLMS.Application.Common.Dtos;
+﻿using aLMS.Application.Common.Dtos;
 using aLMS.Application.LessonServices.Commands;
 using aLMS.Application.LessonServices.Commands.CreateLesson;
 using aLMS.Application.LessonServices.Commands.DeleteLesson;

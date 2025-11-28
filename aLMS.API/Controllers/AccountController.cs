@@ -1,5 +1,4 @@
-﻿// aLMS.API.Controllers/AccountsController.cs
-using aLMS.Application.AccountServices.Commands.DeleteAccount;
+﻿using aLMS.Application.AccountServices.Commands.DeleteAccount;
 using aLMS.Application.AccountServices.Commands.Register;
 using aLMS.Application.AccountServices.Commands.UpdateAccount;
 using aLMS.Application.AccountServices.Queries.Login;

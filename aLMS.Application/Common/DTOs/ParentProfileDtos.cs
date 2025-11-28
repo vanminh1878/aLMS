@@ -1,5 +1,4 @@
-﻿// aLMS.Application.Common.Dtos/ParentProfileDtos.cs
-using System;
+﻿using System;
 
 namespace aLMS.Application.Common.Dtos
 {

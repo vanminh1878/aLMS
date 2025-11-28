@@ -1,5 +1,4 @@
-﻿// aLMS.Domain.ParentProfileEntity/ParentProfileEvents.cs
-using aLMS.Domain.Common;
+﻿using aLMS.Domain.Common;
 using System;
 
 namespace aLMS.Domain.ParentProfileEntity

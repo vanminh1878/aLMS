@@ -1,5 +1,4 @@
-﻿// aLMS.Application.StudentProfileServices.Commands.CreateStudentProfile/CreateStudentProfileCommand.cs
-using aLMS.Application.Common.Dtos;
+﻿using aLMS.Application.Common.Dtos;
 using aLMS.Application.Common.Interfaces;
 using aLMS.Domain.StudentProfileEntity;
 using AutoMapper;

@@ -1,5 +1,4 @@
-﻿// aLMS.Domain.DepartmentEntity/DepartmentEvents.cs
-using aLMS.Domain.Common;
+﻿using aLMS.Domain.Common;
 using System;
 
 namespace aLMS.Domain.DepartmentEntity
@@ -8,13 +7,11 @@ namespace aLMS.Domain.DepartmentEntity
     {
         public Guid DepartmentId { get; }
         public string DepartmentName { get; }
-        public Guid SchoolId { get; }
 
-        public DepartmentCreatedEvent(Guid departmentId, string departmentName, Guid schoolId)
+        public DepartmentCreatedEvent(Guid departmentId, string departmentName)
         {
             DepartmentId = departmentId;
             DepartmentName = departmentName;
-            SchoolId = schoolId;
         }
     }
 
@@ -22,13 +19,11 @@ namespace aLMS.Domain.DepartmentEntity
     {
         public Guid DepartmentId { get; }
         public string DepartmentName { get; }
-        public Guid SchoolId { get; }
 
-        public DepartmentUpdatedEvent(Guid departmentId, string departmentName, Guid schoolId)
+        public DepartmentUpdatedEvent(Guid departmentId, string departmentName)
         {
             DepartmentId = departmentId;
             DepartmentName = departmentName;
-            SchoolId = schoolId;
         }
     }
 

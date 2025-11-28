@@ -15,8 +15,6 @@ namespace aLMS.Infrastructure.AccountInfra
             builder.Property(x => x.UserId)
                 .HasColumnType("uuid");
 
-            builder.Property(x => x.SchoolId)
-                .HasColumnType("uuid");
 
             builder.Property(x => x.DepartmentId)
                 .HasColumnType("uuid");
@@ -33,13 +31,9 @@ namespace aLMS.Infrastructure.AccountInfra
                 .HasForeignKey<TeacherProfile>(x => x.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.HasOne(x => x.School)
-                .WithMany()
-                .HasForeignKey(x => x.SchoolId)
-                .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne(x => x.Department)
-                .WithMany()
+                .WithMany( x=> x.TeacherProfiles)
                 .HasForeignKey(x => x.DepartmentId)
                 .OnDelete(DeleteBehavior.Cascade);
         }

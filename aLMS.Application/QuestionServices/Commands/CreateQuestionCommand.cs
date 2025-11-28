@@ -1,5 +1,4 @@
-﻿// aLMS.Application.QuestionServices.Commands.CreateQuestion/CreateQuestionCommand.cs
-using aLMS.Application.Common.Dtos;
+﻿using aLMS.Application.Common.Dtos;
 using aLMS.Application.Common.Interfaces;
 using aLMS.Domain.QuestionEntity;
 using aLMS.Domain.AnswerEntity;

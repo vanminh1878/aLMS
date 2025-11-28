@@ -1,11 +1,6 @@
-﻿using aLMS.Application.Common.Dtos;
-using aLMS.Application.Common.Interfaces;
+﻿using aLMS.Application.Common.Interfaces;
+using aLMS.Domain.ClassEntity;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace aLMS.Application.ClassServices.Commands.DeleteClass
 {
@@ -18,28 +13,30 @@ namespace aLMS.Application.ClassServices.Commands.DeleteClass
             _classRepository = classRepository;
         }
 
-        public async Task<DeleteClassResult> Handle(DeleteClassCommand request, CancellationToken cancellationToken)
+        public async Task<DeleteClassResult> Handle(DeleteClassCommand request, CancellationToken ct)
         {
+            var classEntity = await _classRepository.GetClassByIdAsync(request.Id);
+
+            if (classEntity == null || classEntity.IsDeleted)
+            {
+                return new DeleteClassResult
+                {
+                    Success = false,
+                    Message = "Lớp học không tồn tại hoặc đã bị khóa trước đó."
+                };
+            }
+
             try
             {
-                var classExists = await _classRepository.ClassExistsAsync(request.Id);
-                if (!classExists)
-                {
-                    return new DeleteClassResult
-                    {
-                        Success = false,
-                        Message = "Class not found."
-                    };
-                }
+                classEntity.SoftDelete(); // Đánh dấu xóa + raise event
 
-                var classEntity = await _classRepository.GetClassByIdAsync(request.Id);
-                classEntity.RaiseClassDeletedEvent();
-                await _classRepository.DeleteClassAsync(request.Id);
+                // Dùng Update thay vì Delete
+                await _classRepository.UpdateClassAsync(classEntity);
 
                 return new DeleteClassResult
                 {
                     Success = true,
-                    Message = "Class deleted successfully."
+                    Message = "Lớp học đã được khóa thành công (không thể sử dụng nữa)."
                 };
             }
             catch (Exception ex)
@@ -47,7 +44,7 @@ namespace aLMS.Application.ClassServices.Commands.DeleteClass
                 return new DeleteClassResult
                 {
                     Success = false,
-                    Message = $"Failed to delete class: {ex.Message}"
+                    Message = $"Lỗi khi khóa lớp: {ex.Message}"
                 };
             }
         }

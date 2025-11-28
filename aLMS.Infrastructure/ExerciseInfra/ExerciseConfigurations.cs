@@ -45,7 +45,7 @@ namespace aLMS.Infrastructure.AccountInfra
                 .HasColumnType("uuid");
 
             builder.HasOne(x => x.Lesson)
-                .WithMany()
+                .WithMany(x => x.Exercises)
                 .HasForeignKey(x => x.LessonId)
                 .OnDelete(DeleteBehavior.Cascade);
         }

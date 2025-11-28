@@ -8,11 +8,13 @@ namespace aLMS.Application.Common.Interfaces
     public interface IClassRepository
     {
         Task<IEnumerable<Class>> GetAllClassesAsync();
-        Task<Class> GetClassByIdAsync(Guid id);
+        Task<Class?> GetClassByIdAsync(Guid id);
         Task AddClassAsync(Class classEntity);
         Task UpdateClassAsync(Class classEntity);
         Task DeleteClassAsync(Guid id);
-        Task<IEnumerable<Class>> GetClassesByGradeIdAsync(Guid gradeId);
+        Task<IEnumerable<Class>> GetClassesFilteredAsync(string? grade, string? schoolYear);
         Task<bool> ClassExistsAsync(Guid id);
+        Task SoftDeleteClassAsync(Guid id);
+        Task<IEnumerable<Class>> GetAllIncludingDeletedAsync();
     }
 }

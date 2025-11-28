@@ -1,5 +1,4 @@
-﻿// aLMS.Domain.StudentExerciseEntity/StudentExerciseEvents.cs
-using aLMS.Domain.Common;
+﻿using aLMS.Domain.Common;
 using System;
 
 namespace aLMS.Domain.StudentExerciseEntity

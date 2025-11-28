@@ -15,20 +15,19 @@ namespace aLMS.Application.ClassServices.Commands.CreateClass
         private readonly IClassRepository _classRepository;
         private readonly IMapper _mapper;
 
-        public CreateClassCommandHandler(IClassRepository classRepository, IMapper mapper)
+        public CreateClassCommandHandler(IClassRepository repo, IMapper mapper)
         {
-            _classRepository = classRepository;
+            _classRepository = repo;
             _mapper = mapper;
         }
 
-        public async Task<Guid> Handle(CreateClassCommand request, CancellationToken cancellationToken)
+        public async Task<Guid> Handle(CreateClassCommand request, CancellationToken ct)
         {
-            var classEntity = _mapper.Map<Class>(request.ClassDto);
+            var entity = _mapper.Map<Class>(request.ClassDto);
+            entity.RaiseClassCreatedEvent();
 
-            classEntity.RaiseClassCreatedEvent();
-            await _classRepository.AddClassAsync(classEntity);
-
-            return classEntity.Id;
+            await _classRepository.AddClassAsync(entity);
+            return entity.Id;
         }
     }
 }

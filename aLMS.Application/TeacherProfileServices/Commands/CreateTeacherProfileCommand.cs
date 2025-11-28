@@ -1,5 +1,4 @@
-﻿// aLMS.Application.TeacherProfileServices.Commands.CreateTeacherProfile/CreateTeacherProfileCommand.cs
-using aLMS.Application.Common.Dtos;
+﻿using aLMS.Application.Common.Dtos;
 using aLMS.Application.Common.Interfaces;
 using aLMS.Domain.TeacherProfileEntity;
 using AutoMapper;

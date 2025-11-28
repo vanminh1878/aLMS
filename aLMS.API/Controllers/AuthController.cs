@@ -1,5 +1,4 @@
-﻿// aLMS.API.Controllers/AuthController.cs
-using aLMS.Application.AuthServices.Commands.Login;
+﻿using aLMS.Application.AuthServices.Commands.Login;
 using aLMS.Application.AuthServices.Commands.RefreshToken;
 using aLMS.Application.Common.Dtos;
 using MediatR;

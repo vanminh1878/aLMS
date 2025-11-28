@@ -1,5 +1,4 @@
-﻿// aLMS.API.Controllers/StudentExercisesController.cs
-using aLMS.Application.Common.Dtos;
+﻿using aLMS.Application.Common.Dtos;
 using aLMS.Application.StudentExerciseServices.Commands.SubmitExercise;
 using aLMS.Application.StudentExerciseServices.Queries;
 using aLMS.Domain.UserEntity;
@@ -17,7 +16,7 @@ public class StudentExercisesController : ControllerBase
     //[HttpPost("start")]
     //public async Task<ActionResult<Guid>> Start(Guid exerciseId)
     //{
-    //    var studentId = User.GetUserId(); // từ JWT
+    //    var studentId = User.GetUserId(); 
     //    var id = await _mediator.Send(new StartExerciseCommand { ExerciseId = exerciseId, StudentId = studentId });
     //    return Ok(id);
     //}

@@ -1,5 +1,4 @@
-﻿// aLMS.Application.PermissionServices.Commands.UpdatePermission/UpdatePermissionCommand.cs
-using aLMS.Application.Common.Dtos;
+﻿using aLMS.Application.Common.Dtos;
 using aLMS.Application.Common.Interfaces;
 using aLMS.Domain.PermissionEntity;
 using AutoMapper;

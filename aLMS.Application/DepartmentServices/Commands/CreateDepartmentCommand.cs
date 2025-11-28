@@ -1,5 +1,4 @@
-﻿// aLMS.Application.DepartmentServices.Commands.CreateDepartment/CreateDepartmentCommand.cs
-using aLMS.Application.Common.Dtos;
+﻿using aLMS.Application.Common.Dtos;
 using aLMS.Application.Common.Interfaces;
 using aLMS.Domain.DepartmentEntity;
 using AutoMapper;

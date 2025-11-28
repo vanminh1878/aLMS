@@ -1,5 +1,4 @@
-﻿// src/Infrastructure/AccountInfra/AccountConfigurations.cs
-using aLMS.Domain.AccountEntity;
+﻿using aLMS.Domain.AccountEntity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -9,8 +8,8 @@ namespace aLMS.Infrastructure.AccountInfra
     {
         public void Configure(EntityTypeBuilder<Account> builder)
         {
-            builder.ToTable("account"); 
-            // === PRIMARY KEY ===
+            builder.ToTable("account");
+
             builder.HasKey(x => x.Id);
 
             builder.Property(x => x.Id)
@@ -18,7 +17,6 @@ namespace aLMS.Infrastructure.AccountInfra
                 .HasDefaultValueSql("gen_random_uuid()")
                 .ValueGeneratedOnAdd();
 
-            // === USERNAME (hoặc Email) ===
             builder.Property(x => x.Username)
                 .IsRequired()
                 .HasMaxLength(100)
@@ -28,19 +26,16 @@ namespace aLMS.Infrastructure.AccountInfra
                 .IsUnique()
                 .HasDatabaseName("IX_Accounts_Username");
 
-            // === PASSWORD HASH ===
             builder.Property(x => x.Password)
                 .IsRequired()
                 .HasMaxLength(255)
                 .HasColumnType("varchar(255)");
 
-            // === STATUS (active/inactive) ===
             builder.Property(x => x.Status)
                 .IsRequired()
                 .HasDefaultValue(true)
                 .HasColumnType("boolean");
 
-            // === REFRESH TOKEN ===
             builder.Property(x => x.RefreshToken)
                 .IsRequired(false)
                 .HasMaxLength(512)
@@ -49,9 +44,6 @@ namespace aLMS.Infrastructure.AccountInfra
             builder.Property(x => x.RefreshTokenExpiry)
                 .IsRequired(false)
                 .HasColumnType("timestamp with time zone");
-
-            // === SOFT DELETE (nếu dùng) ===
-            // builder.Property(x => x.DeletedAt).HasColumnType("timestamp with time zone");
         }
     }
 }

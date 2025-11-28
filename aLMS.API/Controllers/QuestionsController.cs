@@ -1,5 +1,4 @@
-﻿// aLMS.API.Controllers/QuestionsController.cs
-using aLMS.Application.Common.Dtos;
+﻿using aLMS.Application.Common.Dtos;
 using aLMS.Application.QuestionServices.Commands.CreateQuestion;
 using aLMS.Application.QuestionServices.Commands.DeleteQuestion;
 using aLMS.Application.QuestionServices.Commands.UpdateQuestion;

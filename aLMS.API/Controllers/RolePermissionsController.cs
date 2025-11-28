@@ -1,5 +1,4 @@
-﻿// aLMS.API.Controllers/RolePermissionsController.cs
-using aLMS.Application.Common.Dtos;
+﻿using aLMS.Application.Common.Dtos;
 using aLMS.Application.RolePermissionServices.Commands.AssignPermission;
 using aLMS.Application.RolePermissionServices.Commands.RemovePermission;
 using aLMS.Application.RolePermissionServices.Queries;

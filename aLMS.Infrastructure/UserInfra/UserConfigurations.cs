@@ -52,7 +52,7 @@ namespace aLMS.Infrastructure.AccountInfra
                 .HasColumnType("uuid");
 
             builder.HasOne(x => x.School)
-                .WithMany()
+                .WithMany(x => x.Users)
                 .HasForeignKey(x => x.SchoolId)
                 .OnDelete(DeleteBehavior.Cascade);
 
@@ -62,7 +62,7 @@ namespace aLMS.Infrastructure.AccountInfra
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne(x => x.Role)
-                .WithMany()
+                .WithMany(x => x.Users)
                 .HasForeignKey(x => x.RoleId)
                 .OnDelete(DeleteBehavior.Cascade);
         }

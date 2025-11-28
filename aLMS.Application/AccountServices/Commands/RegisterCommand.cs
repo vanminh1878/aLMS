@@ -1,5 +1,4 @@
-﻿// aLMS.Application.AccountServices.Commands.Register/RegisterCommand.cs
-using aLMS.Application.Common.Dtos;
+﻿using aLMS.Application.Common.Dtos;
 using aLMS.Application.Common.Interfaces;
 using aLMS.Domain.AccountEntity;
 using AutoMapper;

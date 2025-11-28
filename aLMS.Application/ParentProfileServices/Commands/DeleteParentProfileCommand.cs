@@ -1,5 +1,4 @@
-﻿// aLMS.Application.ParentProfileServices.Commands.DeleteParentProfile/DeleteParentProfileCommand.cs
-using aLMS.Application.Common.Interfaces;
+﻿using aLMS.Application.Common.Interfaces;
 using MediatR;
 using System;
 using System.Threading;

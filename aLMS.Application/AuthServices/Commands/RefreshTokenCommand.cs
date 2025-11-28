@@ -1,5 +1,4 @@
-﻿// aLMS.Application.AuthServices.Commands.RefreshToken/RefreshTokenCommand.cs
-using aLMS.Application.Common.Dtos;
+﻿using aLMS.Application.Common.Dtos;
 using aLMS.Application.Common.Interfaces;
 using aLMS.Application.Common.Jwt;
 using MediatR;

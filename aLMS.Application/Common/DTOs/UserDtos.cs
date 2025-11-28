@@ -13,11 +13,9 @@ namespace aLMS.Application.Common.Dtos
         public string? Email { get; set; }
         public string? Address { get; set; }
         public Guid? SchoolId { get; set; }
-        public string? SchoolName { get; set; }
         public Guid? AccountId { get; set; }
         public string? Username { get; set; }
         public Guid? RoleId { get; set; }
-        public string? RoleName { get; set; }
     }
 
     public class CreateUserDto

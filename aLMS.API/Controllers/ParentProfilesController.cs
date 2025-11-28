@@ -1,5 +1,4 @@
-﻿// aLMS.API.Controllers/ParentProfilesController.cs
-using aLMS.Application.Common.Dtos;
+﻿using aLMS.Application.Common.Dtos;
 using aLMS.Application.ParentProfileServices.Commands.CreateParentProfile;
 using aLMS.Application.ParentProfileServices.Commands.DeleteParentProfile;
 using aLMS.Application.ParentProfileServices.Commands.UpdateParentProfile;
@@ -57,8 +56,6 @@ public class ParentProfilesController : ControllerBase
         return result.Success ? Ok(result) : BadRequest(result);
     }
 }
-
-// DTO cho Delete
 public class DeleteParentProfileDto
 {
     public Guid ParentId { get; set; }

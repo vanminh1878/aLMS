@@ -1,5 +1,4 @@
-﻿// aLMS.API.Controllers/PermissionsController.cs
-using aLMS.Application.Common.Dtos;
+﻿using aLMS.Application.Common.Dtos;
 using aLMS.Application.PermissionServices.Commands.CreatePermission;
 using aLMS.Application.PermissionServices.Commands.DeletePermission;
 using aLMS.Application.PermissionServices.Commands.UpdatePermission;

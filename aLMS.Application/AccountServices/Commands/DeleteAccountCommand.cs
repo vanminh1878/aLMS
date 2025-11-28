@@ -1,5 +1,4 @@
-﻿// aLMS.Application.AccountServices.Commands.DeleteAccount/DeleteAccountCommand.cs
-using aLMS.Application.Common.Interfaces;
+﻿using aLMS.Application.Common.Interfaces;
 using MediatR;
 using System;
 using System.Threading;

@@ -1,8 +1,9 @@
-﻿using aLMS.Domain.ClassEntity;
+﻿// aLMS.Infrastructure/ClassInfra/ClassConfigurations.cs
+using aLMS.Domain.ClassEntity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace aLMS.Infrastructure.AccountInfra
+namespace aLMS.Infrastructure.ClassInfra
 {
     public class ClassConfigurations : IEntityTypeConfiguration<Class>
     {
@@ -15,17 +16,17 @@ namespace aLMS.Infrastructure.AccountInfra
                 .HasColumnType("uuid")
                 .HasDefaultValueSql("gen_random_uuid()");
 
-            builder.Property(x => x.GradeId)
-                .HasColumnType("uuid");
+            builder.Property(x => x.ClassName).IsRequired().HasMaxLength(100);
+            builder.Property(x => x.Grade).IsRequired().HasMaxLength(20);
+            builder.Property(x => x.SchoolYear).IsRequired().HasMaxLength(20);
 
-            builder.Property(x => x.ClassName)
-                .IsRequired()
-                .HasMaxLength(100)
-                .HasColumnType("varchar(100)");
+            // Soft delete
+            builder.Property(x => x.IsDeleted).HasDefaultValue(false);
+            builder.Property(x => x.DeletedAt);
 
-            builder.HasOne(x => x.Grade)
-                .WithMany()
-                .HasForeignKey(x => x.GradeId)
+            builder.HasMany(x => x.Subjects)
+                .WithOne(s => s.Class)
+                .HasForeignKey("ClassId")
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }

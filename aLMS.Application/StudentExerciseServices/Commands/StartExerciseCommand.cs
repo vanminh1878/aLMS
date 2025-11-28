@@ -1,5 +1,4 @@
-﻿// aLMS.Application.StudentExerciseServices.Commands.StartExercise/StartExerciseCommand.cs
-using aLMS.Application.Common.Interfaces;
+﻿using aLMS.Application.Common.Interfaces;
 using aLMS.Domain.StudentExerciseEntity;
 using AutoMapper;
 using MediatR;

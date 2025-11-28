@@ -5,7 +5,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using aLMS.Domain.GradeEntity;
 using aLMS.Domain.UserEntity;
 
 namespace aLMS.Domain.SchoolEntity
@@ -17,7 +16,6 @@ namespace aLMS.Domain.SchoolEntity
         public string Email { get; set; }
         public bool Status { get; set; } = true;
 
-        public ICollection<Grade> Grades { get; set; }
         public ICollection<User> Users { get; set; }
 
         public void RaiseSchoolCreatedEvent()

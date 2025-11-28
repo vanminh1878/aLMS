@@ -1,5 +1,4 @@
-﻿// aLMS.API.Controllers/BehavioursController.cs
-using aLMS.Application.BehaviourServices.Queries;
+﻿using aLMS.Application.BehaviourServices.Queries;
 using aLMS.Application.Common.Dtos;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;

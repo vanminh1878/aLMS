@@ -1,5 +1,4 @@
-﻿// aLMS.Application.DepartmentServices.Commands.UpdateDepartment/UpdateDepartmentCommand.cs
-using aLMS.Application.Common.Dtos;
+﻿using aLMS.Application.Common.Dtos;
 using aLMS.Application.Common.Interfaces;
 using aLMS.Domain.DepartmentEntity;
 using AutoMapper;

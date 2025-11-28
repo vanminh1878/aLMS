@@ -1,5 +1,4 @@
-﻿// aLMS.Application.Common.Dtos/QuestionDtos.cs
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace aLMS.Application.Common.Dtos

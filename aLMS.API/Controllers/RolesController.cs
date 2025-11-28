@@ -1,5 +1,4 @@
-﻿// aLMS.API.Controllers/RolesController.cs
-using aLMS.Application.Common.Dtos;
+﻿using aLMS.Application.Common.Dtos;
 using aLMS.Application.RoleServices.Commands.CreateRole;
 using aLMS.Application.RoleServices.Commands.DeleteRole;
 using aLMS.Application.RoleServices.Commands.UpdateRole;

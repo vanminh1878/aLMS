@@ -19,20 +19,35 @@ namespace aLMS.Application.ClassServices.Commands.UpdateClass
             _mapper = mapper;
         }
 
-        public async Task<UpdateClassResult> Handle(UpdateClassCommand request, CancellationToken cancellationToken)
+        public async Task<UpdateClassResult> Handle(UpdateClassCommand request, CancellationToken ct)
         {
-            var classEntity = _mapper.Map<Class>(request.ClassDto);
+            var dto = request.ClassDto;
+
+            // Bước 1: Lấy entity hiện có từ DB (rất quan trọng!)
+            var existingClass = await _classRepository.GetClassByIdAsync(dto.Id);
+            if (existingClass == null)
+            {
+                return new UpdateClassResult
+                {
+                    Success = false,
+                    Message = "Lớp học không tồn tại."
+                };
+            }
+
+            // Bước 2: Map dữ liệu từ DTO đè lên entity cũ (giữ nguyên Tracking)
+            _mapper.Map(dto, existingClass);
 
             try
             {
-                classEntity.RaiseClassUpdatedEvent();
-                await _classRepository.UpdateClassAsync(classEntity);
+                // Bước 3: Raise event + Update
+                existingClass.RaiseClassUpdatedEvent();
+                await _classRepository.UpdateClassAsync(existingClass);
 
                 return new UpdateClassResult
                 {
                     Success = true,
-                    Message = "Class updated successfully.",
-                    ClassId = classEntity.Id
+                    Message = "Cập nhật lớp học thành công.",
+                    ClassId = existingClass.Id
                 };
             }
             catch (Exception ex)
@@ -40,7 +55,7 @@ namespace aLMS.Application.ClassServices.Commands.UpdateClass
                 return new UpdateClassResult
                 {
                     Success = false,
-                    Message = $"Failed to update class: {ex.Message}"
+                    Message = $"Lỗi không xác định: {ex.Message}"
                 };
             }
         }

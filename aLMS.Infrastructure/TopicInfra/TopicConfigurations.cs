@@ -30,7 +30,7 @@ namespace aLMS.Infrastructure.AccountInfra
                 .HasColumnType("uuid");
 
             builder.HasOne(x => x.Subject)
-                .WithMany()
+                .WithMany(x=> x.Topics)
                 .HasForeignKey(x => x.SubjectId)
                 .OnDelete(DeleteBehavior.Cascade);
         }

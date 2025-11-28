@@ -39,7 +39,7 @@ namespace aLMS.Infrastructure.AccountInfra
                 .HasColumnType("text");
 
             builder.HasOne(x => x.Exercise)
-                .WithMany()
+                .WithMany(x=> x.Questions)
                 .HasForeignKey(x => x.ExerciseId)
                 .OnDelete(DeleteBehavior.Cascade);
         }

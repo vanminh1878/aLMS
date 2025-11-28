@@ -1,5 +1,4 @@
-﻿// aLMS.API.Controllers/DepartmentsController.cs
-using aLMS.Application.Common.Dtos;
+﻿using aLMS.Application.Common.Dtos;
 using aLMS.Application.DepartmentServices.Commands.CreateDepartment;
 using aLMS.Application.DepartmentServices.Commands.DeleteDepartment;
 using aLMS.Application.DepartmentServices.Commands.UpdateDepartment;

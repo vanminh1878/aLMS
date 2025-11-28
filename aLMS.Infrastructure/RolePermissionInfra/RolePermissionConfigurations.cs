@@ -19,12 +19,12 @@ namespace aLMS.Infrastructure.AccountInfra
                 .HasColumnType("uuid");
 
             builder.HasOne(x => x.Role)
-                .WithMany()
+                .WithMany(x=> x.RolePermissions)
                 .HasForeignKey(x => x.RoleId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne(x => x.Permission)
-                .WithMany()
+                .WithMany(x=> x.RolePermissions)
                 .HasForeignKey(x => x.PermissionId)
                 .OnDelete(DeleteBehavior.Cascade);
         }

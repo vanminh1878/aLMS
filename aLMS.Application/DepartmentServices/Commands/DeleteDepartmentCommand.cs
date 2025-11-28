@@ -1,5 +1,4 @@
-﻿// aLMS.Application.DepartmentServices.Commands.DeleteDepartment/DeleteDepartmentCommand.cs
-using aLMS.Application.Common.Interfaces;
+﻿using aLMS.Application.Common.Interfaces;
 using MediatR;
 using System;
 using System.Threading;

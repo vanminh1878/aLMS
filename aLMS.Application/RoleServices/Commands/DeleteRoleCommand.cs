@@ -1,5 +1,4 @@
-﻿// aLMS.Application.RoleServices.Commands.DeleteRole/DeleteRoleCommand.cs
-using aLMS.Application.Common.Interfaces;
+﻿using aLMS.Application.Common.Interfaces;
 using MediatR;
 using System;
 using System.Threading;

@@ -1,5 +1,4 @@
-﻿// aLMS.Application.UserServices.Commands.UpdateUser/UpdateUserCommand.cs
-using aLMS.Application.Common.Dtos;
+﻿using aLMS.Application.Common.Dtos;
 using aLMS.Application.Common.Interfaces;
 using aLMS.Domain.UserEntity;
 using AutoMapper;

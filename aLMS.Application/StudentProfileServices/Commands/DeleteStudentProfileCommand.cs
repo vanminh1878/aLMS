@@ -1,5 +1,4 @@
-﻿// aLMS.Application.StudentProfileServices.Commands.DeleteStudentProfile/DeleteStudentProfileCommand.cs
-using aLMS.Application.Common.Interfaces;
+﻿using aLMS.Application.Common.Interfaces;
 using MediatR;
 using System;
 using System.Threading;

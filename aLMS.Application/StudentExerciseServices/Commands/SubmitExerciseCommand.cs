@@ -1,5 +1,4 @@
-﻿// aLMS.Application.StudentExerciseServices.Commands.SubmitExercise/SubmitExerciseCommand.cs
-using aLMS.Application.Common.Dtos;
+﻿using aLMS.Application.Common.Dtos;
 using aLMS.Application.Common.Interfaces;
 using aLMS.Domain.StudentAnswerEntity;
 using aLMS.Domain.StudentExerciseEntity;

@@ -1,36 +1,38 @@
 ﻿using aLMS.Domain.Common;
-using aLMS.Domain.GradeEntity;
 using aLMS.Domain.SubjectEntity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace aLMS.Domain.ClassEntity
 {
     public class Class : Entity
     {
-        public string ClassName { get; set; }
+        public string ClassName { get; set; } = null!;
+        public string Grade { get; set; } = null!;
+        public string SchoolYear { get; set; } = null!;
 
-        public Guid GradeId { get; set; }
-        public Grade Grade { get; set; }
+        public ICollection<Subject> Subjects { get; set; } = new List<Subject>();
 
-        public ICollection<Subject> Subjects { get; set; }
+        public bool IsDeleted { get; private set; }
+        public DateTime? DeletedAt { get; private set; }
 
+        // Domain events
         public void RaiseClassCreatedEvent()
-        {
-            AddDomainEvent(new ClassCreatedEvent(Id, ClassName, GradeId));
-        }
+            => AddDomainEvent(new ClassCreatedEvent(Id, ClassName, Grade, SchoolYear));
 
         public void RaiseClassUpdatedEvent()
-        {
-            AddDomainEvent(new ClassUpdatedEvent(Id, ClassName, GradeId));
-        }
+            => AddDomainEvent(new ClassUpdatedEvent(Id, ClassName, Grade, SchoolYear));
 
-        public void RaiseClassDeletedEvent()
+        public void SoftDelete()
         {
-            AddDomainEvent(new ClassDeletedEvent(Id));
+            if (IsDeleted) return;
+
+            IsDeleted = true;
+            DeletedAt = DateTime.UtcNow;
+            AddDomainEvent(new ClassSoftDeletedEvent(Id));
+        }
+        public void Restore()
+        {
+            IsDeleted = false;
+            DeletedAt = null;
         }
     }
 }

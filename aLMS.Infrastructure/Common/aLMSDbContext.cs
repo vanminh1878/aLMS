@@ -5,7 +5,6 @@ using aLMS.Domain.ClassEntity;
 using aLMS.Domain.Common;
 using aLMS.Domain.DepartmentEntity;
 using aLMS.Domain.ExerciseEntity;
-using aLMS.Domain.GradeEntity;
 using aLMS.Domain.LessonEntity;
 using aLMS.Domain.ParentProfileEntity;
 using aLMS.Domain.PermissionEntity;
@@ -50,7 +49,6 @@ namespace aLMS.Infrastructure.Common
 
         // DbSet cho các entity
         public DbSet<School> School { get; set; } = null!;
-        public DbSet<Grade> Grade { get; set; } = null!;
         public DbSet<Class> Classe { get; set; } = null!;
         public DbSet<Subject> Subject { get; set; } = null!;
         public DbSet<Topic> Topic { get; set; } = null!;

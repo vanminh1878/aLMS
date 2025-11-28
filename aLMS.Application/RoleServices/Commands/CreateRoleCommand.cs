@@ -1,5 +1,4 @@
-﻿// aLMS.Application.RoleServices.Commands.CreateRole/CreateRoleCommand.cs
-using aLMS.Application.Common.Dtos;
+﻿using aLMS.Application.Common.Dtos;
 using aLMS.Application.Common.Interfaces;
 using aLMS.Domain.RoleEntity;
 using AutoMapper;

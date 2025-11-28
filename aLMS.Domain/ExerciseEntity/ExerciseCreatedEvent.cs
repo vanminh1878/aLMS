@@ -1,5 +1,4 @@
-﻿// aLMS.Domain.ExerciseEntity/ExerciseEvents.cs
-using aLMS.Domain.Common;
+﻿using aLMS.Domain.Common;
 using System;
 
 namespace aLMS.Domain.ExerciseEntity

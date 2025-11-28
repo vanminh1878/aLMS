@@ -1,5 +1,4 @@
-﻿// GetAllUsersQuery.cs
-using aLMS.Application.Common.Dtos;
+﻿using aLMS.Application.Common.Dtos;
 using aLMS.Application.Common.Interfaces;
 using AutoMapper;
 using MediatR;

@@ -8,7 +8,6 @@ using aLMS.Infrastructure.ClassInfra;
 using aLMS.Infrastructure.Common;
 using aLMS.Infrastructure.DepartmentInfra;
 using aLMS.Infrastructure.ExerciseInfra;
-using aLMS.Infrastructure.GradeInfra;
 using aLMS.Infrastructure.LessonInfra;
 using aLMS.Infrastructure.ParentProfileInfra;
 using aLMS.Infrastructure.PermissionInfra;
@@ -41,7 +40,7 @@ namespace aLMS.API
     {
         public static void Main(string[] args)
         {
-            // Cấu hình Serilog
+  
             Log.Logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(new ConfigurationBuilder()
                     .AddJsonFile("appsettings.json")
@@ -54,19 +53,19 @@ namespace aLMS.API
             try
             {
                 var builder = WebApplication.CreateBuilder(args);
-                builder.Host.UseSerilog(); // Sử dụng Serilog thay cho logging mặc định
+                builder.Host.UseSerilog(); 
 
-                // Đăng ký DbContext
+       
                 builder.Services.AddDbContext<aLMSDbContext>(options =>
                     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-                // Đăng ký MediatR - đăng ký assembly chứa các handlers (aLMS.Application)
+            
                 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(aLMS.Application.SchoolServices.Commands.CreateSchool.CreateSchoolCommandHandler).Assembly));
 
-                // Đăng ký IHttpContextAccessor
+       
                 builder.Services.AddHttpContextAccessor();
 
-                // Đăng ký các repository với DI, truyền aLMSDbContext và connectionString
+
                 builder.Services.AddScoped<IUsersRepository>(provider =>
                     new UsersRepository(
                         provider.GetRequiredService<aLMSDbContext>(),
@@ -90,13 +89,6 @@ namespace aLMS.API
 
                 builder.Services.AddScoped<ISchoolRepository>(provider =>
                     new SchoolRepository(
-                        provider.GetRequiredService<aLMSDbContext>(),
-                        provider.GetRequiredService<IConfiguration>().GetConnectionString("DefaultConnection")
-                            ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.")
-                    ));
-
-                builder.Services.AddScoped<IGradeRepository>(provider =>
-                    new GradeRepository(
                         provider.GetRequiredService<aLMSDbContext>(),
                         provider.GetRequiredService<IConfiguration>().GetConnectionString("DefaultConnection")
                             ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.")
@@ -217,33 +209,33 @@ namespace aLMS.API
                 //builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 
 
-                // Thêm CORS
+  
                 builder.Services.AddCors(options =>
                 {
                     options.AddPolicy("AllowReactApp", policy =>
                     {
-                        policy.WithOrigins("http://localhost:3000") // FE của bạn
+                        policy.WithOrigins("http://localhost:3000")
                               .AllowAnyHeader()
                               .AllowAnyMethod()
-                              .AllowCredentials(); // nếu dùng JWT trong cookie/localStorage
+                              .AllowCredentials(); 
                     });
                 });
 
 
-                // Thêm localization
+       
                 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
 
-                // Thêm controllers và Swagger
+         
                 builder.Services.AddControllers();
                 builder.Services.AddEndpointsApiExplorer();
                 builder.Services.AddSwaggerGen();
                 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
-                // Đăng ký JwtSettings
+     
                 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
                 builder.Services.AddScoped<IJwtService, JwtService>();
 
-                // Đăng ký Authentication + Authorization
+           
                 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                     .AddJwtBearer(options =>
                     {
@@ -274,7 +266,7 @@ namespace aLMS.API
 
                 var app = builder.Build();
 
-                // Cấu hình middleware
+               
                 if (app.Environment.IsDevelopment())
                 {
                     app.UseSwagger();

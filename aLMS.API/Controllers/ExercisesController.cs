@@ -1,5 +1,4 @@
-﻿// aLMS.API.Controllers/ExercisesController.cs
-using aLMS.Application.Common.Dtos;
+﻿using aLMS.Application.Common.Dtos;
 using aLMS.Application.ExerciseServices.Commands.CreateExercise;
 using aLMS.Application.ExerciseServices.Commands.DeleteExercise;
 using aLMS.Application.ExerciseServices.Commands.UpdateExercise;

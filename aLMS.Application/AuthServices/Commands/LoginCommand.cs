@@ -1,5 +1,4 @@
-﻿// aLMS.Application.AuthServices.Commands.Login/LoginCommand.cs
-using aLMS.Application.AccountServices.Queries.Login;
+﻿using aLMS.Application.AccountServices.Queries.Login;
 using aLMS.Application.Common.Dtos;
 using aLMS.Application.Common.Interfaces;
 using aLMS.Application.Common.Jwt;
@@ -82,7 +81,6 @@ namespace aLMS.Application.AuthServices.Commands.Login
                     Name = user.Name,
                     Email = user.Email,
                     RoleId = user.RoleId,
-                    RoleName = user.Role?.RoleName
                 },
                 Permissions = permissionNames
             };

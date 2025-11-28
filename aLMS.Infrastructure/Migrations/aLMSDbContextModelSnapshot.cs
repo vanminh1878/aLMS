@@ -138,19 +138,27 @@ namespace aLMS.Infrastructure.Migrations
                     b.Property<string>("ClassName")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
+                        .HasColumnType("character varying(100)");
 
-                    b.Property<Guid>("GradeId")
-                        .HasColumnType("uuid");
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid?>("GradeId1")
-                        .HasColumnType("uuid");
+                    b.Property<string>("Grade")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
+
+                    b.Property<string>("SchoolYear")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("GradeId");
-
-                    b.HasIndex("GradeId1");
 
                     b.ToTable("class", (string)null);
                 });
@@ -170,14 +178,9 @@ namespace aLMS.Infrastructure.Migrations
                     b.Property<Guid>("HeadId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("SchoolId")
-                        .HasColumnType("uuid");
-
                     b.HasKey("Id");
 
                     b.HasIndex("HeadId");
-
-                    b.HasIndex("SchoolId");
 
                     b.ToTable("department", (string)null);
                 });
@@ -200,9 +203,6 @@ namespace aLMS.Infrastructure.Migrations
                         .HasDefaultValue(false);
 
                     b.Property<Guid>("LessonId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("LessonId1")
                         .HasColumnType("uuid");
 
                     b.Property<int>("OrderNumber")
@@ -228,41 +228,7 @@ namespace aLMS.Infrastructure.Migrations
 
                     b.HasIndex("LessonId");
 
-                    b.HasIndex("LessonId1");
-
                     b.ToTable("exercise", (string)null);
-                });
-
-            modelBuilder.Entity("aLMS.Domain.GradeEntity.Grade", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasDefaultValueSql("gen_random_uuid()");
-
-                    b.Property<string>("GradeName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
-
-                    b.Property<Guid>("SchoolId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("SchoolId1")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("SchoolYear")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("varchar(20)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SchoolId");
-
-                    b.HasIndex("SchoolId1");
-
-                    b.ToTable("grade", (string)null);
                 });
 
             modelBuilder.Entity("aLMS.Domain.LessonEntity.Lesson", b =>
@@ -298,14 +264,9 @@ namespace aLMS.Infrastructure.Migrations
                     b.Property<Guid>("TopicId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("TopicId1")
-                        .HasColumnType("uuid");
-
                     b.HasKey("Id");
 
                     b.HasIndex("TopicId");
-
-                    b.HasIndex("TopicId1");
 
                     b.ToTable("lesson", (string)null);
                 });
@@ -358,9 +319,6 @@ namespace aLMS.Infrastructure.Migrations
                     b.Property<Guid>("ExerciseId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("ExerciseId1")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("Explanation")
                         .IsRequired()
                         .HasColumnType("text");
@@ -388,8 +346,6 @@ namespace aLMS.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ExerciseId");
-
-                    b.HasIndex("ExerciseId1");
 
                     b.ToTable("question", (string)null);
                 });
@@ -425,19 +381,9 @@ namespace aLMS.Infrastructure.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("PermissionId1")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("RoleId1")
-                        .HasColumnType("uuid");
-
                     b.HasKey("RoleId", "PermissionId");
 
                     b.HasIndex("PermissionId");
-
-                    b.HasIndex("PermissionId1");
-
-                    b.HasIndex("RoleId1");
 
                     b.ToTable("role_permission", (string)null);
                 });
@@ -484,9 +430,6 @@ namespace aLMS.Infrastructure.Migrations
                     b.Property<Guid>("AnswerId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("AnswerId1")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("AnswerText")
                         .IsRequired()
                         .HasColumnType("text");
@@ -499,13 +442,7 @@ namespace aLMS.Infrastructure.Migrations
                     b.Property<Guid>("QuestionId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("QuestionId1")
-                        .HasColumnType("uuid");
-
                     b.Property<Guid>("StudentExerciseId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("StudentExerciseId1")
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("SubmittedAt")
@@ -515,15 +452,9 @@ namespace aLMS.Infrastructure.Migrations
 
                     b.HasIndex("AnswerId");
 
-                    b.HasIndex("AnswerId1");
-
                     b.HasIndex("QuestionId");
 
-                    b.HasIndex("QuestionId1");
-
                     b.HasIndex("StudentExerciseId");
-
-                    b.HasIndex("StudentExerciseId1");
 
                     b.ToTable("student_answer", (string)null);
                 });
@@ -542,9 +473,6 @@ namespace aLMS.Infrastructure.Migrations
                         .HasColumnType("timestamp");
 
                     b.Property<Guid>("ExerciseId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("ExerciseId1")
                         .HasColumnType("uuid");
 
                     b.Property<bool>("IsCompleted")
@@ -567,8 +495,6 @@ namespace aLMS.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ExerciseId");
-
-                    b.HasIndex("ExerciseId1");
 
                     b.HasIndex("StudentId");
 
@@ -618,9 +544,6 @@ namespace aLMS.Infrastructure.Migrations
                     b.Property<Guid>("ClassId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("ClassId1")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("text");
@@ -634,8 +557,6 @@ namespace aLMS.Infrastructure.Migrations
 
                     b.HasIndex("ClassId");
 
-                    b.HasIndex("ClassId1");
-
                     b.ToTable("subject", (string)null);
                 });
 
@@ -647,16 +568,10 @@ namespace aLMS.Infrastructure.Migrations
                     b.Property<Guid>("DepartmentId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("DepartmentId1")
-                        .HasColumnType("uuid");
-
                     b.Property<DateTime>("HireDate")
                         .HasColumnType("date");
 
                     b.Property<Guid>("Id")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("SchoolId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("Specialization")
@@ -667,10 +582,6 @@ namespace aLMS.Infrastructure.Migrations
                     b.HasKey("UserId");
 
                     b.HasIndex("DepartmentId");
-
-                    b.HasIndex("DepartmentId1");
-
-                    b.HasIndex("SchoolId");
 
                     b.ToTable("teacher_profile", (string)null);
                 });
@@ -691,9 +602,6 @@ namespace aLMS.Infrastructure.Migrations
                     b.Property<Guid>("SubjectId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("SubjectId1")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -702,8 +610,6 @@ namespace aLMS.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("SubjectId");
-
-                    b.HasIndex("SubjectId1");
 
                     b.ToTable("topic", (string)null);
                 });
@@ -752,13 +658,7 @@ namespace aLMS.Infrastructure.Migrations
                     b.Property<Guid?>("RoleId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("RoleId1")
-                        .HasColumnType("uuid");
-
                     b.Property<Guid?>("SchoolId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("SchoolId1")
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("StudentProfileUserId")
@@ -779,11 +679,7 @@ namespace aLMS.Infrastructure.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.HasIndex("RoleId1");
-
                     b.HasIndex("SchoolId");
-
-                    b.HasIndex("SchoolId1");
 
                     b.HasIndex("StudentProfileUserId");
 
@@ -818,21 +714,6 @@ namespace aLMS.Infrastructure.Migrations
                     b.Navigation("Student");
                 });
 
-            modelBuilder.Entity("aLMS.Domain.ClassEntity.Class", b =>
-                {
-                    b.HasOne("aLMS.Domain.GradeEntity.Grade", "Grade")
-                        .WithMany()
-                        .HasForeignKey("GradeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("aLMS.Domain.GradeEntity.Grade", null)
-                        .WithMany("Classes")
-                        .HasForeignKey("GradeId1");
-
-                    b.Navigation("Grade");
-                });
-
             modelBuilder.Entity("aLMS.Domain.DepartmentEntity.Department", b =>
                 {
                     b.HasOne("aLMS.Domain.UserEntity.User", "Head")
@@ -841,58 +722,27 @@ namespace aLMS.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.SetNull)
                         .IsRequired();
 
-                    b.HasOne("aLMS.Domain.SchoolEntity.School", "School")
-                        .WithMany()
-                        .HasForeignKey("SchoolId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Head");
-
-                    b.Navigation("School");
                 });
 
             modelBuilder.Entity("aLMS.Domain.ExerciseEntity.Exercise", b =>
                 {
                     b.HasOne("aLMS.Domain.LessonEntity.Lesson", "Lesson")
-                        .WithMany()
+                        .WithMany("Exercises")
                         .HasForeignKey("LessonId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("aLMS.Domain.LessonEntity.Lesson", null)
-                        .WithMany("Exercises")
-                        .HasForeignKey("LessonId1");
-
                     b.Navigation("Lesson");
-                });
-
-            modelBuilder.Entity("aLMS.Domain.GradeEntity.Grade", b =>
-                {
-                    b.HasOne("aLMS.Domain.SchoolEntity.School", "School")
-                        .WithMany()
-                        .HasForeignKey("SchoolId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("aLMS.Domain.SchoolEntity.School", null)
-                        .WithMany("Grades")
-                        .HasForeignKey("SchoolId1");
-
-                    b.Navigation("School");
                 });
 
             modelBuilder.Entity("aLMS.Domain.LessonEntity.Lesson", b =>
                 {
                     b.HasOne("aLMS.Domain.TopicEntity.Topic", "Topic")
-                        .WithMany()
+                        .WithMany("Lessons")
                         .HasForeignKey("TopicId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("aLMS.Domain.TopicEntity.Topic", null)
-                        .WithMany("Lessons")
-                        .HasForeignKey("TopicId1");
 
                     b.Navigation("Topic");
                 });
@@ -919,14 +769,10 @@ namespace aLMS.Infrastructure.Migrations
             modelBuilder.Entity("aLMS.Domain.QuestionEntity.Question", b =>
                 {
                     b.HasOne("aLMS.Domain.ExerciseEntity.Exercise", "Exercise")
-                        .WithMany()
+                        .WithMany("Questions")
                         .HasForeignKey("ExerciseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("aLMS.Domain.ExerciseEntity.Exercise", null)
-                        .WithMany("Questions")
-                        .HasForeignKey("ExerciseId1");
 
                     b.Navigation("Exercise");
                 });
@@ -934,24 +780,16 @@ namespace aLMS.Infrastructure.Migrations
             modelBuilder.Entity("aLMS.Domain.RolePermissionEntity.RolePermission", b =>
                 {
                     b.HasOne("aLMS.Domain.PermissionEntity.Permission", "Permission")
-                        .WithMany()
+                        .WithMany("RolePermissions")
                         .HasForeignKey("PermissionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("aLMS.Domain.PermissionEntity.Permission", null)
-                        .WithMany("RolePermissions")
-                        .HasForeignKey("PermissionId1");
-
                     b.HasOne("aLMS.Domain.RoleEntity.Role", "Role")
-                        .WithMany()
+                        .WithMany("RolePermissions")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("aLMS.Domain.RoleEntity.Role", null)
-                        .WithMany("RolePermissions")
-                        .HasForeignKey("RoleId1");
 
                     b.Navigation("Permission");
 
@@ -961,34 +799,22 @@ namespace aLMS.Infrastructure.Migrations
             modelBuilder.Entity("aLMS.Domain.StudentAnswerEntity.StudentAnswer", b =>
                 {
                     b.HasOne("aLMS.Domain.AnswerEntity.Answer", "Answer")
-                        .WithMany()
+                        .WithMany("StudentAnswers")
                         .HasForeignKey("AnswerId")
                         .OnDelete(DeleteBehavior.SetNull)
                         .IsRequired();
 
-                    b.HasOne("aLMS.Domain.AnswerEntity.Answer", null)
-                        .WithMany("StudentAnswers")
-                        .HasForeignKey("AnswerId1");
-
                     b.HasOne("aLMS.Domain.QuestionEntity.Question", "Question")
-                        .WithMany()
+                        .WithMany("StudentAnswers")
                         .HasForeignKey("QuestionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("aLMS.Domain.QuestionEntity.Question", null)
-                        .WithMany("StudentAnswers")
-                        .HasForeignKey("QuestionId1");
-
                     b.HasOne("aLMS.Domain.StudentExerciseEntity.StudentExercise", "StudentExercise")
-                        .WithMany()
+                        .WithMany("StudentAnswers")
                         .HasForeignKey("StudentExerciseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("aLMS.Domain.StudentExerciseEntity.StudentExercise", null)
-                        .WithMany("StudentAnswers")
-                        .HasForeignKey("StudentExerciseId1");
 
                     b.Navigation("Answer");
 
@@ -1000,14 +826,10 @@ namespace aLMS.Infrastructure.Migrations
             modelBuilder.Entity("aLMS.Domain.StudentExerciseEntity.StudentExercise", b =>
                 {
                     b.HasOne("aLMS.Domain.ExerciseEntity.Exercise", "Exercise")
-                        .WithMany()
+                        .WithMany("StudentExercises")
                         .HasForeignKey("ExerciseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("aLMS.Domain.ExerciseEntity.Exercise", null)
-                        .WithMany("StudentExercises")
-                        .HasForeignKey("ExerciseId1");
 
                     b.HasOne("aLMS.Domain.UserEntity.User", "Student")
                         .WithMany()
@@ -1054,14 +876,10 @@ namespace aLMS.Infrastructure.Migrations
             modelBuilder.Entity("aLMS.Domain.SubjectEntity.Subject", b =>
                 {
                     b.HasOne("aLMS.Domain.ClassEntity.Class", "Class")
-                        .WithMany()
+                        .WithMany("Subjects")
                         .HasForeignKey("ClassId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("aLMS.Domain.ClassEntity.Class", null)
-                        .WithMany("Subjects")
-                        .HasForeignKey("ClassId1");
 
                     b.Navigation("Class");
                 });
@@ -1069,18 +887,8 @@ namespace aLMS.Infrastructure.Migrations
             modelBuilder.Entity("aLMS.Domain.TeacherProfileEntity.TeacherProfile", b =>
                 {
                     b.HasOne("aLMS.Domain.DepartmentEntity.Department", "Department")
-                        .WithMany()
-                        .HasForeignKey("DepartmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("aLMS.Domain.DepartmentEntity.Department", null)
                         .WithMany("TeacherProfiles")
-                        .HasForeignKey("DepartmentId1");
-
-                    b.HasOne("aLMS.Domain.SchoolEntity.School", "School")
-                        .WithMany()
-                        .HasForeignKey("SchoolId")
+                        .HasForeignKey("DepartmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1092,22 +900,16 @@ namespace aLMS.Infrastructure.Migrations
 
                     b.Navigation("Department");
 
-                    b.Navigation("School");
-
                     b.Navigation("User");
                 });
 
             modelBuilder.Entity("aLMS.Domain.TopicEntity.Topic", b =>
                 {
                     b.HasOne("aLMS.Domain.SubjectEntity.Subject", "Subject")
-                        .WithMany()
+                        .WithMany("Topics")
                         .HasForeignKey("SubjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("aLMS.Domain.SubjectEntity.Subject", null)
-                        .WithMany("Topics")
-                        .HasForeignKey("SubjectId1");
 
                     b.Navigation("Subject");
                 });
@@ -1126,22 +928,14 @@ namespace aLMS.Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("aLMS.Domain.RoleEntity.Role", "Role")
-                        .WithMany()
+                        .WithMany("Users")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("aLMS.Domain.RoleEntity.Role", null)
-                        .WithMany("Users")
-                        .HasForeignKey("RoleId1");
-
                     b.HasOne("aLMS.Domain.SchoolEntity.School", "School")
-                        .WithMany()
+                        .WithMany("Users")
                         .HasForeignKey("SchoolId")
                         .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("aLMS.Domain.SchoolEntity.School", null)
-                        .WithMany("Users")
-                        .HasForeignKey("SchoolId1");
 
                     b.HasOne("aLMS.Domain.StudentProfileEntity.StudentProfile", "StudentProfile")
                         .WithMany()
@@ -1190,11 +984,6 @@ namespace aLMS.Infrastructure.Migrations
                     b.Navigation("StudentExercises");
                 });
 
-            modelBuilder.Entity("aLMS.Domain.GradeEntity.Grade", b =>
-                {
-                    b.Navigation("Classes");
-                });
-
             modelBuilder.Entity("aLMS.Domain.LessonEntity.Lesson", b =>
                 {
                     b.Navigation("Exercises");
@@ -1221,8 +1010,6 @@ namespace aLMS.Infrastructure.Migrations
 
             modelBuilder.Entity("aLMS.Domain.SchoolEntity.School", b =>
                 {
-                    b.Navigation("Grades");
-
                     b.Navigation("Users");
                 });
 

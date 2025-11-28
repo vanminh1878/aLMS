@@ -5,7 +5,6 @@ using aLMS.Domain.BehaviourEntity;
 using aLMS.Domain.ClassEntity;
 using aLMS.Domain.DepartmentEntity;
 using aLMS.Domain.ExerciseEntity;
-using aLMS.Domain.GradeEntity;
 using aLMS.Domain.LessonEntity;
 using aLMS.Domain.ParentProfileEntity;
 using aLMS.Domain.PermissionEntity;
@@ -39,11 +38,7 @@ namespace aLMS.Application.Common.Mappings
             CreateMap<CreateClassDto, Class>();
             CreateMap<UpdateClassDto, Class>();
 
-            // Grade
-            CreateMap<Grade, GradeDto>();
-            CreateMap<CreateGradeDto, Grade>();
-            CreateMap<UpdateGradeDto, Grade>();
-
+           
             // Subject
             CreateMap<Subject, SubjectDto>();
             CreateMap<CreateSubjectDto, Subject>();
@@ -113,9 +108,7 @@ namespace aLMS.Application.Common.Mappings
 
             // User
             CreateMap<User, UserDto>()
-                .ForMember(d => d.Username, o => o.MapFrom(s => s.Account != null ? s.Account.Username : null))
-                .ForMember(d => d.RoleName, o => o.MapFrom(s => s.Role != null ? s.Role.RoleName : null))
-                .ForMember(d => d.SchoolName, o => o.MapFrom(s => s.School != null ? s.School.Name : null));
+                .ForMember(d => d.Username, o => o.MapFrom(s => s.Account != null ? s.Account.Username : null));
 
             CreateMap<CreateUserDto, User>()
                 .ForMember(d => d.Id, o => o.Ignore())
@@ -138,7 +131,6 @@ namespace aLMS.Application.Common.Mappings
             CreateMap<TeacherProfile, TeacherProfileDto>()
                 .ForMember(d => d.UserName, o => o.MapFrom(s => s.User.Name))
                 .ForMember(d => d.Email, o => o.MapFrom(s => s.User.Email))
-                .ForMember(d => d.SchoolName, o => o.MapFrom(s => s.School != null ? s.School.Name : null))
                 .ForMember(d => d.DepartmentName, o => o.MapFrom(s => s.Department != null ? s.Department.DepartmentName : null));
 
             CreateMap<CreateTeacherProfileDto, TeacherProfile>();
@@ -153,10 +145,6 @@ namespace aLMS.Application.Common.Mappings
 
             CreateMap<CreateParentProfileDto, ParentProfile>();
             CreateMap<UpdateParentProfileDto, ParentProfile>();
-
-            // Department
-            CreateMap<Department, DepartmentDto>()
-                .ForMember(d => d.SchoolName, o => o.MapFrom(s => s.School.Name));
 
             CreateMap<CreateDepartmentDto, Department>()
                 .ForMember(d => d.Id, o => o.Ignore());
