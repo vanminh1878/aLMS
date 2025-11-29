@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using aLMS.Infrastructure.Common;
@@ -11,9 +12,11 @@ using aLMS.Infrastructure.Common;
 namespace aLMS.Infrastructure.Migrations
 {
     [DbContext(typeof(aLMSDbContext))]
-    partial class aLMSDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251129181813_fixUserColumn")]
+    partial class fixUserColumn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -152,9 +155,6 @@ namespace aLMS.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("boolean")
                         .HasDefaultValue(false);
-
-                    b.Property<Guid>("SchoolId")
-                        .HasColumnType("uuid");
 
                     b.Property<string>("SchoolYear")
                         .IsRequired()

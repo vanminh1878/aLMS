@@ -9,6 +9,7 @@ namespace aLMS.Application.Common.Interfaces
     {
         Task<IEnumerable<Class>> GetAllClassesAsync();
         Task<Class?> GetClassByIdAsync(Guid id);
+        Task<IEnumerable<Class>> GetClassesBySchoolIdAsync(Guid schoolId);
         Task AddClassAsync(Class classEntity);
         Task UpdateClassAsync(Class classEntity);
         Task DeleteClassAsync(Guid id);

@@ -1,4 +1,7 @@
-﻿using aLMS.Domain.UserEntity;
+﻿using aLMS.Domain.ParentProfileEntity;
+using aLMS.Domain.StudentProfileEntity;
+using aLMS.Domain.TeacherProfileEntity;
+using aLMS.Domain.UserEntity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -65,6 +68,19 @@ namespace aLMS.Infrastructure.AccountInfra
                 .WithMany(x => x.Users)
                 .HasForeignKey(x => x.RoleId)
                 .OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(u => u.ParentProfile)
+               .WithOne(p => p.User)
+               .HasForeignKey<ParentProfile>(p => p.UserId)
+               .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasOne(u => u.TeacherProfile)
+               .WithOne(p => p.User)
+               .HasForeignKey<TeacherProfile>(p => p.UserId)
+               .OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(u => u.StudentProfile)
+               .WithOne(p => p.User)
+               .HasForeignKey<StudentProfile>(p => p.UserId)
+               .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

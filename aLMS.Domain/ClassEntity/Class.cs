@@ -1,4 +1,5 @@
-﻿using aLMS.Domain.Common;
+﻿// aLMS.Domain/ClassEntity/Class.cs
+using aLMS.Domain.Common;
 using aLMS.Domain.SubjectEntity;
 
 namespace aLMS.Domain.ClassEntity
@@ -9,6 +10,9 @@ namespace aLMS.Domain.ClassEntity
         public string Grade { get; set; } = null!;
         public string SchoolYear { get; set; } = null!;
 
+        // THÊM DÒNG NÀY
+        public Guid SchoolId { get; set; }
+
         public ICollection<Subject> Subjects { get; set; } = new List<Subject>();
 
         public bool IsDeleted { get; private set; }
@@ -16,10 +20,10 @@ namespace aLMS.Domain.ClassEntity
 
         // Domain events
         public void RaiseClassCreatedEvent()
-            => AddDomainEvent(new ClassCreatedEvent(Id, ClassName, Grade, SchoolYear));
+            => AddDomainEvent(new ClassCreatedEvent(Id, ClassName, Grade, SchoolYear, SchoolId));
 
         public void RaiseClassUpdatedEvent()
-            => AddDomainEvent(new ClassUpdatedEvent(Id, ClassName, Grade, SchoolYear));
+            => AddDomainEvent(new ClassUpdatedEvent(Id, ClassName, Grade, SchoolYear, SchoolId));
 
         public void SoftDelete()
         {
@@ -29,6 +33,7 @@ namespace aLMS.Domain.ClassEntity
             DeletedAt = DateTime.UtcNow;
             AddDomainEvent(new ClassSoftDeletedEvent(Id));
         }
+
         public void Restore()
         {
             IsDeleted = false;

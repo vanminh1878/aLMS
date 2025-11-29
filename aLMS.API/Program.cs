@@ -234,8 +234,9 @@ namespace aLMS.API
      
                 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
                 builder.Services.AddScoped<IJwtService, JwtService>();
+                builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-           
+
                 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                     .AddJwtBearer(options =>
                     {

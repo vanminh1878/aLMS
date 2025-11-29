@@ -19,7 +19,9 @@ namespace aLMS.Infrastructure.ClassInfra
             builder.Property(x => x.ClassName).IsRequired().HasMaxLength(100);
             builder.Property(x => x.Grade).IsRequired().HasMaxLength(20);
             builder.Property(x => x.SchoolYear).IsRequired().HasMaxLength(20);
-
+            builder.Property(x => x.SchoolId)
+                .IsRequired()
+                .HasColumnType("uuid");
             // Soft delete
             builder.Property(x => x.IsDeleted).HasDefaultValue(false);
             builder.Property(x => x.DeletedAt);

@@ -54,6 +54,17 @@ public class ClassRepository : IClassRepository
 
         return await connection.QueryAsync<Class>(sql);
     }
+    public async Task<IEnumerable<Class>> GetClassesBySchoolIdAsync(Guid schoolId)
+    {
+        using var connection = new NpgsqlConnection(_connectionString);
+        var sql = @"
+        SELECT c.""Id"", c.""ClassName"", c.""Grade"", c.""SchoolYear""
+        FROM ""class"" c
+        WHERE c.""SchoolId"" = @schoolId
+        ORDER BY c.""Grade"", c.""ClassName""";
+
+        return await connection.QueryAsync<Class>(sql, new { schoolId });
+    }
 
     public async Task<Class?> GetClassByIdAsync(Guid id)
     {
