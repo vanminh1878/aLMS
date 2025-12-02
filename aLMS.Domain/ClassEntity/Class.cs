@@ -10,7 +10,6 @@ namespace aLMS.Domain.ClassEntity
         public string Grade { get; set; } = null!;
         public string SchoolYear { get; set; } = null!;
 
-        // THÊM DÒNG NÀY
         public Guid SchoolId { get; set; }
 
         public ICollection<Subject> Subjects { get; set; } = new List<Subject>();

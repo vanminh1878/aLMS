@@ -1,5 +1,4 @@
-﻿// aLMS.Application.Common.Interfaces/IJwtService.cs
-using aLMS.Domain.AccountEntity;
+﻿using aLMS.Domain.AccountEntity;
 using System.Security.Claims;
 
 namespace aLMS.Application.Common.Jwt

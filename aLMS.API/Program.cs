@@ -27,6 +27,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using System.Globalization;
@@ -205,8 +206,6 @@ namespace aLMS.API
                         provider.GetRequiredService<IConfiguration>().GetConnectionString("DefaultConnection")
                             ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.")
                     ));
-                //builder.Services.AddScoped<IAuthService, AuthService>();
-                //builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 
 
   
@@ -235,30 +234,47 @@ namespace aLMS.API
                 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
                 builder.Services.AddScoped<IJwtService, JwtService>();
                 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+                builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
 
 
                 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                     .AddJwtBearer(options =>
                     {
-                        var jwtSettings = builder.Configuration.GetSection("Jwt").Get<JwtSettings>();
+                        var jwtSettings = builder.Services.BuildServiceProvider().GetRequiredService<IOptions<JwtSettings>>().Value;
 
                         options.TokenValidationParameters = new TokenValidationParameters
                         {
                             ValidateIssuer = true,
-                            ValidateAudience = true,
-                            ValidateLifetime = true,
-                            ValidateIssuerSigningKey = true,
                             ValidIssuer = jwtSettings.Issuer,
+
+                            ValidateAudience = true,
                             ValidAudience = jwtSettings.Audience,
-                            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Secret))
+
+                            ValidateIssuerSigningKey = true,
+                            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Secret)),
+
+                            ValidateLifetime = true,
+                            ClockSkew = TimeSpan.FromMinutes(1)
                         };
 
                         options.Events = new JwtBearerEvents
                         {
                             OnAuthenticationFailed = context =>
                             {
-                                Log.Error("JWT Authentication failed: {Message}", context.Exception.Message);
+                               
+                                if (context.Exception is SecurityTokenExpiredException)
+                                    context.Response.Headers.Add("Token-Expired", "true");
+
+                                Log.Error(context.Exception, "JWT Authentication failed");
                                 return Task.CompletedTask;
+                            },
+                            OnChallenge = context =>
+                            {
+                                context.HandleResponse();
+                                context.Response.StatusCode = 401;
+                                context.Response.ContentType = "application/json";
+                                var result = System.Text.Json.JsonSerializer.Serialize(new { error = "Unauthorized" });
+                                return context.Response.WriteAsync(result);
                             }
                         };
                     });

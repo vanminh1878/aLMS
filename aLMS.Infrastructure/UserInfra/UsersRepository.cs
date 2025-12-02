@@ -37,7 +37,13 @@ namespace aLMS.Infrastructure.UserInfra
         public async Task<User?> GetByAccountIdAsync(Guid accountId)
         {
             using var conn = new NpgsqlConnection(_connectionString);
-            var sql = "SELECT * FROM \"user\" WHERE \"AccountId\" = @accountId";
+            var sql = @"
+                        SELECT u.*, a.""Username"", r.""RoleName"", s.""Name"" as SchoolName
+                        FROM ""user"" u
+                        LEFT JOIN ""account"" a ON u.""AccountId"" = a.""Id""
+                        LEFT JOIN ""role"" r ON u.""RoleId"" = r.""Id""
+                        LEFT JOIN ""school"" s ON u.""SchoolId"" = s.""Id""
+                        WHERE u.""AccountId"" = @accountId";
             return await conn.QuerySingleOrDefaultAsync<User>(sql, new { accountId });
         }
 

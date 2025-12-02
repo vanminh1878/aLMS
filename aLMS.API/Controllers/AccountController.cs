@@ -3,6 +3,7 @@ using aLMS.Application.AccountServices.Commands.Register;
 using aLMS.Application.AccountServices.Commands.UpdateAccount;
 using aLMS.Application.AccountServices.Queries.Login;
 using aLMS.Application.Common.Dtos;
+using aLMS.Application.UserServices.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -40,5 +41,11 @@ public class AccountsController : ControllerBase
     {
         var result = await _mediator.Send(new DeleteAccountCommand { Id = id });
         return result.Success ? Ok(result) : BadRequest(result);
+    }
+    [HttpGet("by-account/{accountId}")]
+    public async Task<ActionResult<UserDto>> GetByAccountId(Guid accountId)
+    {
+        var user = await _mediator.Send(new GetUserByAccountIdQuery { AccountId = accountId });
+        return user == null ? NotFound("User not found") : Ok(user);
     }
 }

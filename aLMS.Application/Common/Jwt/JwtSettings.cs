@@ -1,5 +1,4 @@
-﻿// aLMS.Application.Common.Models/JwtSettings.cs
-namespace aLMS.Application.Common.Jwt
+﻿namespace aLMS.Application.Common.Jwt
 {
     public class JwtSettings
     {

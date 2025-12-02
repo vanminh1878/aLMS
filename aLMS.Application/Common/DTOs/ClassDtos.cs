@@ -12,6 +12,7 @@
     {
         public string ClassName { get; set; } = string.Empty;
         public string Grade { get; set; } = string.Empty;
+        public string SchoolId { get; set; } = string.Empty;
         public string SchoolYear { get; set; } = string.Empty;
     }
 
