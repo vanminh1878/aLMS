@@ -1,4 +1,5 @@
 ﻿// aLMS.Infrastructure.DepartmentInfra/DepartmentRepository.cs
+using aLMS.Application.Common.Dtos;
 using aLMS.Application.Common.Interfaces;
 using aLMS.Domain.DepartmentEntity;
 using Dapper;
@@ -21,15 +22,15 @@ namespace aLMS.Infrastructure.DepartmentInfra
             _connectionString = connectionString;
         }
 
-        public async Task<IEnumerable<Department>> GetAllBySchoolIdAsync(Guid schoolId)
+        public async Task<IEnumerable<DepartmentDto>> GetAllBySchoolIdAsync(Guid schoolId)
         {
             using var conn = new NpgsqlConnection(_connectionString);
             var sql = @"
-                SELECT d.*, s.""Name"" as SchoolName
+                SELECT d.*
                 FROM ""department"" d
                 JOIN ""school"" s ON d.""SchoolId"" = s.""Id""
                 WHERE d.""SchoolId"" = @schoolId";
-            return await conn.QueryAsync<Department>(sql, new { schoolId });
+            return await conn.QueryAsync<DepartmentDto>(sql, new { schoolId });
         }
 
         public async Task<Department?> GetByIdAsync(Guid id)
@@ -69,13 +70,13 @@ namespace aLMS.Infrastructure.DepartmentInfra
             return await conn.ExecuteScalarAsync<int>(sql, new { id }) > 0;
         }
 
-        public async Task<bool> NameExistsInSchoolAsync(string name, Guid schoolId, Guid? excludeId = null)
+        public async Task<bool> NameExistsInSchoolAsync(string name, Guid? excludeId = null)
         {
             using var conn = new NpgsqlConnection(_connectionString);
             var sql = excludeId.HasValue
-                ? "SELECT COUNT(1) FROM \"department\" WHERE \"DepartmentName\" = @name AND \"SchoolId\" = @schoolId AND \"Id\" != @excludeId"
-                : "SELECT COUNT(1) FROM \"department\" WHERE \"DepartmentName\" = @name AND \"SchoolId\" = @schoolId";
-            return await conn.ExecuteScalarAsync<int>(sql, new { name, schoolId, excludeId }) > 0;
+                ? "SELECT COUNT(1) FROM \"department\" WHERE \"DepartmentName\" = @name AND \"Id\" != @excludeId"
+                : "SELECT COUNT(1) FROM \"department\" WHERE \"DepartmentName\" = @name ";
+            return await conn.ExecuteScalarAsync<int>(sql, new { name, excludeId }) > 0;
         }
     }
 }

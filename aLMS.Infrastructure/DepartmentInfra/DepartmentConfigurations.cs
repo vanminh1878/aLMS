@@ -20,8 +20,15 @@ namespace aLMS.Infrastructure.AccountInfra
                 .HasMaxLength(100)
                 .HasColumnType("varchar(100)");
 
+            builder.Property(x => x.SchoolId)
+                .HasColumnType("uuid");
             builder.Property(x => x.HeadId)
                 .HasColumnType("uuid");
+
+            builder.HasOne(x => x.School)
+                .WithMany(x => x.Departments)
+                .HasForeignKey(x => x.SchoolId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne(x => x.Head)
                 .WithMany()

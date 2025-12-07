@@ -2,6 +2,7 @@
 using aLMS.Application.RoleServices.Commands.CreateRole;
 using aLMS.Application.RoleServices.Commands.DeleteRole;
 using aLMS.Application.RoleServices.Commands.UpdateRole;
+using aLMS.Application.RoleServices.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -46,5 +47,15 @@ public class RolesController : ControllerBase
     {
         var result = await _mediator.Send(new DeleteRoleCommand { Id = id });
         return result.Success ? Ok(result) : BadRequest(result);
+    }
+
+    [HttpGet("by-name/{roleName}")]
+    public async Task<ActionResult<Guid>> GetRoleIdByName(string roleName)
+    {
+        var roleId = await _mediator.Send(new GetRoleIdByNameQuery { RoleName = roleName });
+
+        return roleId.HasValue
+            ? Ok(roleId.Value)
+            : NotFound($"Không tìm thấy role với tên: {roleName}");
     }
 }

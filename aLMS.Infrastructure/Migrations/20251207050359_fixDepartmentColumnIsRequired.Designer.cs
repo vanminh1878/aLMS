@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using aLMS.Infrastructure.Common;
@@ -11,9 +12,11 @@ using aLMS.Infrastructure.Common;
 namespace aLMS.Infrastructure.Migrations
 {
     [DbContext(typeof(aLMSDbContext))]
-    partial class aLMSDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251207050359_fixDepartmentColumnIsRequired")]
+    partial class fixDepartmentColumnIsRequired
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -181,14 +184,9 @@ namespace aLMS.Infrastructure.Migrations
                     b.Property<Guid?>("HeadId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("SchoolId")
-                        .HasColumnType("uuid");
-
                     b.HasKey("Id");
 
                     b.HasIndex("HeadId");
-
-                    b.HasIndex("SchoolId");
 
                     b.ToTable("department", (string)null);
                 });
@@ -712,14 +710,7 @@ namespace aLMS.Infrastructure.Migrations
                         .HasForeignKey("HeadId")
                         .OnDelete(DeleteBehavior.SetNull);
 
-                    b.HasOne("aLMS.Domain.SchoolEntity.School", "School")
-                        .WithMany("Departments")
-                        .HasForeignKey("SchoolId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.Navigation("Head");
-
-                    b.Navigation("School");
                 });
 
             modelBuilder.Entity("aLMS.Domain.ExerciseEntity.Exercise", b =>
@@ -983,8 +974,6 @@ namespace aLMS.Infrastructure.Migrations
 
             modelBuilder.Entity("aLMS.Domain.SchoolEntity.School", b =>
                 {
-                    b.Navigation("Departments");
-
                     b.Navigation("Users");
                 });
 

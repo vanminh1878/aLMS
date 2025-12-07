@@ -13,10 +13,12 @@ namespace aLMS.Domain.DepartmentEntity
     public class Department : Entity
     {
         public string DepartmentName { get; set; }
-        public Guid HeadId { get; set; }
-        public User Head { get; set; }
+        public Guid? HeadId { get; set; }
+        public User? Head { get; set; }
+        public Guid? SchoolId { get; set; }
+        public SchoolEntity.School School { get; set; }
 
-        public ICollection<TeacherProfile> TeacherProfiles { get; set; }
+        public ICollection<TeacherProfile>? TeacherProfiles { get; set; }
         public void RaiseDepartmentCreatedEvent() => AddDomainEvent(new DepartmentCreatedEvent(Id, DepartmentName));
         public void RaiseDepartmentUpdatedEvent() => AddDomainEvent(new DepartmentUpdatedEvent(Id, DepartmentName));
         public void RaiseDepartmentDeletedEvent() => AddDomainEvent(new DepartmentDeletedEvent(Id));

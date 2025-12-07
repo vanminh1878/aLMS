@@ -28,11 +28,10 @@ public class DepartmentsController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<CreateDepartmentResult>> Create(Guid schoolId, [FromBody] CreateDepartmentDto dto)
+    public async Task<ActionResult<CreateDepartmentResult>> Create( [FromBody] CreateDepartmentDto dto)
     {
-        dto.SchoolId = schoolId;
         var result = await _mediator.Send(new CreateDepartmentCommand { Dto = dto });
-        return result.Success ? CreatedAtAction(nameof(GetById), new { schoolId, id = result.DepartmentId }, result) : BadRequest(result);
+        return Ok(new { success = true, data = result });
     }
 
     [HttpPut]

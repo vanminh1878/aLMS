@@ -1,6 +1,7 @@
 ﻿using aLMS.Application.AccountServices.Commands.DeleteAccount;
 using aLMS.Application.AccountServices.Commands.Register;
 using aLMS.Application.AccountServices.Commands.UpdateAccount;
+using aLMS.Application.AccountServices.Queries;
 using aLMS.Application.AccountServices.Queries.Login;
 using aLMS.Application.Common.Dtos;
 using aLMS.Application.UserServices.Queries;
@@ -20,6 +21,12 @@ public class AccountsController : ControllerBase
     {
         var result = await _mediator.Send(new RegisterCommand { Dto = dto });
         return result.Success ? Ok(result) : BadRequest(result);
+    }
+    [HttpGet("{id}")]
+    public async Task<ActionResult<AccountDto>> GetById(Guid id)
+    {
+        var account = await _mediator.Send(new GetAccountByIdQuery { Id = id });
+        return account == null ? NotFound("Không tìm thấy tài khoản") : Ok(account);
     }
 
     [HttpPost("login")]

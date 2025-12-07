@@ -41,4 +41,12 @@ public class StudentProfilesController : ControllerBase
         var result = await _mediator.Send(new DeleteStudentProfileCommand { UserId = userId });
         return result.Success ? Ok(result) : BadRequest(result);
     }
+    [HttpGet("by-class/{classId}")]
+    public async Task<ActionResult<List<StudentProfileDto>>> GetByClassId(Guid classId)
+    {
+        var students = await _mediator.Send(new GetStudentsByClassIdQuery { ClassId = classId });
+        return students == null || students.Count == 0
+            ? NotFound($"Không tìm thấy học sinh nào trong lớp {classId}")
+            : Ok(students);
+    }
 }

@@ -41,11 +41,8 @@ namespace aLMS.Application.DepartmentServices.Commands.CreateDepartment
         {
             try
             {
-                var schoolExists = await _schoolRepo.SchoolExistsAsync(request.Dto.SchoolId);
-                if (!schoolExists)
-                    return new CreateDepartmentResult { Success = false, Message = "School not found." };
 
-                var nameExists = await _repo.NameExistsInSchoolAsync(request.Dto.DepartmentName, request.Dto.SchoolId);
+                var nameExists = await _repo.NameExistsInSchoolAsync(request.Dto.DepartmentName);
                 if (nameExists)
                     return new CreateDepartmentResult { Success = false, Message = "Department name already exists in this school." };
 

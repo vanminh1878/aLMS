@@ -41,4 +41,11 @@ public class TeacherProfilesController : ControllerBase
         var result = await _mediator.Send(new DeleteTeacherProfileCommand { UserId = userId });
         return result.Success ? Ok(result) : BadRequest(result);
     }
+
+    [HttpGet("by-school/{schoolId}")]
+    public async Task<ActionResult<List<TeacherProfileDto>>> GetBySchoolId(Guid schoolId)
+    {
+        var teachers = await _mediator.Send(new GetTeachersBySchoolQuery { SchoolId = schoolId });
+        return Ok(teachers);
+    }
 }

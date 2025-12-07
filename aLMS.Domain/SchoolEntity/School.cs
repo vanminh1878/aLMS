@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using aLMS.Domain.UserEntity;
+using aLMS.Domain.DepartmentEntity;
 
 namespace aLMS.Domain.SchoolEntity
 {
@@ -17,6 +18,7 @@ namespace aLMS.Domain.SchoolEntity
         public bool Status { get; set; } = true;
 
         public ICollection<User> Users { get; set; }
+        public ICollection<Department>? Departments { get; set; }
 
         public void RaiseSchoolCreatedEvent()
         {

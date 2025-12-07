@@ -49,7 +49,7 @@ namespace aLMS.Application.DepartmentServices.Commands.UpdateDepartment
                 if (!schoolExists)
                     return new UpdateDepartmentResult { Success = false, Message = "School not found." };
 
-                var nameExists = await _repo.NameExistsInSchoolAsync(request.Dto.DepartmentName, request.Dto.SchoolId, request.Dto.Id);
+                var nameExists = await _repo.NameExistsInSchoolAsync(request.Dto.DepartmentName, request.Dto.Id);
                 if (nameExists)
                     return new UpdateDepartmentResult { Success = false, Message = "Department name already exists in this school." };
 

@@ -38,7 +38,12 @@ namespace aLMS.Application.Common.Mappings
             CreateMap<CreateClassDto, Class>();
             CreateMap<UpdateClassDto, Class>();
 
-           
+            CreateMap<Department, DepartmentDto>()
+            .ForMember(dest => dest.TeacherProfiles, opt => opt.Ignore()) 
+            .ForMember(dest => dest.HeadId, opt => opt.MapFrom(src => src.HeadId))
+            .ForMember(dest => dest.SchoolId, opt => opt.MapFrom(src => src.SchoolId));
+
+
             // Subject
             CreateMap<Subject, SubjectDto>();
             CreateMap<CreateSubjectDto, Subject>();

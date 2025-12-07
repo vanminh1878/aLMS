@@ -12,5 +12,6 @@ namespace aLMS.Application.Common.Interfaces
         Task UpdateAsync(TeacherProfile profile);
         Task DeleteAsync(Guid userId);
         Task<bool> ExistsAsync(Guid userId);
+        Task<List<TeacherProfile>> GetBySchoolIdAsync(Guid schoolId);
     }
 }

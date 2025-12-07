@@ -12,5 +12,7 @@ namespace aLMS.Application.Common.Interfaces
         Task UpdateAsync(StudentProfile profile);
         Task DeleteAsync(Guid userId);
         Task<bool> ExistsAsync(Guid userId);
+        Task<List<StudentProfile>> GetByClassIdAsync(Guid classId);
+        Task<int> GetMaxStudentOrderInClass(Guid classId);
     }
 }

@@ -28,8 +28,8 @@ public class DepartmentQueryHandler :
 
     public async Task<IEnumerable<DepartmentDto>> Handle(GetDepartmentsBySchoolQuery request, CancellationToken ct)
     {
-        var departments = await _repo.GetAllBySchoolIdAsync(request.SchoolId);
-        return _mapper.Map<IEnumerable<DepartmentDto>>(departments);
+        //var departments = await _repo.GetAllBySchoolIdAsync(request.SchoolId);
+        return await _repo.GetAllBySchoolIdAsync(request.SchoolId);
     }
 
     public async Task<DepartmentDto> Handle(GetDepartmentByIdQuery request, CancellationToken ct)

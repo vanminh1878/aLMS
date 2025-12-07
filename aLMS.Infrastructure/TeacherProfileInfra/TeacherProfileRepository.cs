@@ -59,5 +59,25 @@ namespace aLMS.Infrastructure.TeacherProfileInfra
             var sql = "SELECT COUNT(1) FROM \"teacher_profile\" WHERE \"UserId\" = @userId";
             return await conn.ExecuteScalarAsync<int>(sql, new { userId }) > 0;
         }
+        public async Task<List<TeacherProfile>> GetBySchoolIdAsync(Guid schoolId)
+        {
+            using var conn = new NpgsqlConnection(_connectionString);
+
+            var sql = @"
+        SELECT 
+            tp.*,
+            u.""Name"" AS UserName,
+            u.""Email"",
+            s.""Name"" AS SchoolName,
+            d.""DepartmentName""
+        FROM ""teacher_profile"" tp
+        INNER JOIN ""user"" u ON tp.""UserId"" = u.""Id""
+        LEFT JOIN ""school"" s ON u.""SchoolId"" = s.""Id""
+        LEFT JOIN ""department"" d ON tp.""DepartmentId"" = d.""Id""
+        WHERE u.""SchoolId"" = @schoolId
+        ORDER BY u.""Name""";
+
+            return (await conn.QueryAsync<TeacherProfile>(sql, new { schoolId })).AsList();
+        }
     }
 }

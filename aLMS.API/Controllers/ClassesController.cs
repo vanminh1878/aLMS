@@ -1,4 +1,5 @@
-﻿using aLMS.Application.ClassServices.Commands.CreateClass;
+﻿using aLMS.Application.ClassServices.Commands.AddStudentsToClass;
+using aLMS.Application.ClassServices.Commands.CreateClass;
 using aLMS.Application.ClassServices.Commands.DeleteClass;
 using aLMS.Application.ClassServices.Commands.UpdateClass;
 using aLMS.Application.ClassServices.Queries;
@@ -69,5 +70,20 @@ public class ClassesController : ControllerBase
             SchoolYear = schoolYear
         });
         return Ok(classes);
+    }
+    [HttpPost("{classId}/add-students")]
+    public async Task<ActionResult<AddStudentsToClassResult>> AddStudentsToClass(
+    Guid classId,
+    [FromBody] List<AddStudentToClassDto> dtos)
+    {
+        var result = await _mediator.Send(new AddStudentsToClassCommand
+        {
+            ClassId = classId,
+            Students = dtos
+        });
+
+        return result.Success
+            ? Ok(result)
+            : BadRequest(result);
     }
 }

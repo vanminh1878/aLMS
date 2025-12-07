@@ -34,7 +34,13 @@ namespace aLMS.Infrastructure.RoleInfra
             var sql = "SELECT \"Id\", \"RoleName\" FROM \"role\" WHERE \"Id\" = @id";
             return await conn.QuerySingleOrDefaultAsync<Role>(sql, new { id });
         }
-
+        public async Task<Guid?> GetRoleIdByNameAsync(string roleName)
+        {
+            using var conn = new NpgsqlConnection(_connectionString);
+            var sql = "SELECT \"Id\" FROM \"role\" WHERE LOWER(\"RoleName\") = LOWER(@roleName)";
+            var id = await conn.QuerySingleOrDefaultAsync<Guid?>(sql, new { roleName });
+            return id;
+        }
         public async Task AddRoleAsync(Role role)
         {
             await _context.Set<Role>().AddAsync(role);
