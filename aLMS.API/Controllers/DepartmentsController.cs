@@ -47,4 +47,19 @@ public class DepartmentsController : ControllerBase
         var result = await _mediator.Send(new DeleteDepartmentCommand { Id = id });
         return result.Success ? Ok(result) : BadRequest(result);
     }
+    [HttpPost("{departmentId}/add-teachers")]
+    public async Task<ActionResult<AddTeachersToDepartmentResult>> AddTeachersToDepartment(
+        Guid departmentId,
+        [FromBody] List<AddTeacherToDepartmentDto> dtos)
+    {
+        var result = await _mediator.Send(new AddTeachersToDepartmentCommand
+        {
+            DepartmentId = departmentId,
+            Teachers = dtos
+        });
+
+        return result.Success
+            ? Ok(result)
+            : BadRequest(result);
+    }
 }

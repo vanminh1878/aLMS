@@ -79,5 +79,26 @@ namespace aLMS.Infrastructure.TeacherProfileInfra
 
             return (await conn.QueryAsync<TeacherProfile>(sql, new { schoolId })).AsList();
         }
+        public async Task<List<TeacherProfile>> GetByDepartmentIdAsync(Guid departmentId)
+        {
+            using var conn = new NpgsqlConnection(_connectionString);
+
+            var sql = @"
+        SELECT 
+            tp.*,
+            u.""Name"" AS UserName,
+            u.""Email"",
+            s.""Name"" AS SchoolName,
+            d.""DepartmentName""
+        FROM ""teacher_profile"" tp
+        INNER JOIN ""user"" u ON tp.""UserId"" = u.""Id""
+        LEFT JOIN ""school"" s ON u.""SchoolId"" = s.""Id""
+        LEFT JOIN ""department"" d ON tp.""DepartmentId"" = d.""Id""
+        WHERE tp.""DepartmentId"" = @departmentId
+        ORDER BY u.""Name""";
+
+            var result = await conn.QueryAsync<TeacherProfile>(sql, new { departmentId });
+            return result.AsList();
+        }
     }
 }

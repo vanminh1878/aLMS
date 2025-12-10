@@ -2,6 +2,7 @@
 using aLMS.Application.Common.Dtos;
 using aLMS.Application.Common.Interfaces;
 using aLMS.Domain.DepartmentEntity;
+using aLMS.Domain.TeacherProfileEntity;
 using Dapper;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
@@ -78,5 +79,6 @@ namespace aLMS.Infrastructure.DepartmentInfra
                 : "SELECT COUNT(1) FROM \"department\" WHERE \"DepartmentName\" = @name ";
             return await conn.ExecuteScalarAsync<int>(sql, new { name, excludeId }) > 0;
         }
+        
     }
 }

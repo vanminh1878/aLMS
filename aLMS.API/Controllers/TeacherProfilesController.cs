@@ -48,4 +48,10 @@ public class TeacherProfilesController : ControllerBase
         var teachers = await _mediator.Send(new GetTeachersBySchoolQuery { SchoolId = schoolId });
         return Ok(teachers);
     }
+    [HttpGet("by-department/{departmentId}")]
+    public async Task<ActionResult<List<TeacherProfileDto>>> GetByDepartmentId(Guid departmentId)
+    {
+        var teachers = await _mediator.Send(new GetTeachersByDepartmentQuery { DepartmentId = departmentId });
+        return Ok(teachers);
+    }
 }
