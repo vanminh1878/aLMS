@@ -22,7 +22,7 @@ namespace aLMS.Domain.StudentAnswerEntity
         public Guid AnswerId { get; set; }
         public Answer Answer { get; set; }
 
-        public string AnswerText { get; set; }
+        public string? AnswerText { get; set; }
         public bool IsCorrect { get; set; } = false;
         public DateTime SubmittedAt { get; set; }
         public void RaiseSubmittedEvent()

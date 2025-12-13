@@ -19,8 +19,6 @@ namespace aLMS.Domain.LessonEntity
 
         public Guid TopicId { get; set; }
         public Topic Topic { get; set; }
-
-        public ICollection<Exercise> Exercises { get; set; }
         public void RaiseLessonCreatedEvent()
         {
             AddDomainEvent(new LessonCreatedEvent(Id, Title, TopicId));

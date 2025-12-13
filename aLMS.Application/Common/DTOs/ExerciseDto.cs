@@ -12,7 +12,7 @@ namespace aLMS.Application.Common.Dtos
         public string QuestionLayout { get; set; } = string.Empty;
         public int OrderNumber { get; set; }
         public decimal TotalScore { get; set; }
-        public Guid LessonId { get; set; }
+        public Guid TopicId { get; set; }
     }
 
     public class CreateExerciseDto
@@ -24,7 +24,7 @@ namespace aLMS.Application.Common.Dtos
         public string QuestionLayout { get; set; } = string.Empty;
         public int OrderNumber { get; set; }
         public decimal TotalScore { get; set; }
-        public Guid LessonId { get; set; }
+        public Guid TopicId { get; set; }
     }
 
     public class UpdateExerciseDto
@@ -37,6 +37,6 @@ namespace aLMS.Application.Common.Dtos
         public string QuestionLayout { get; set; } = string.Empty;
         public int OrderNumber { get; set; }
         public decimal TotalScore { get; set; }
-        public Guid LessonId { get; set; }
+        public Guid TopicId { get; set; }
     }
 }

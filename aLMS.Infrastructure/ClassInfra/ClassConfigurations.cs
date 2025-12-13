@@ -22,9 +22,17 @@ namespace aLMS.Infrastructure.ClassInfra
             builder.Property(x => x.SchoolId)
                 .IsRequired()
                 .HasColumnType("uuid");
+            builder.Property(x => x.HomeroomTeacherId)
+                .HasColumnType("uuid")
+                .IsRequired(false);
             // Soft delete
             builder.Property(x => x.IsDeleted).HasDefaultValue(false);
             builder.Property(x => x.DeletedAt);
+
+            builder.HasOne(x => x.HomeroomTeacher)
+                .WithOne(t => t.HomeroomClass)
+                .HasForeignKey<Class>(x => x.HomeroomTeacherId)
+                .OnDelete(DeleteBehavior.SetNull);
 
             builder.HasMany(x => x.Subjects)
                 .WithOne(s => s.Class)

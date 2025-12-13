@@ -33,10 +33,10 @@ namespace aLMS.API.Controllers
             return exercise == null ? NotFound() : Ok(exercise);
         }
 
-        [HttpGet("by-lesson/{lessonId}")]
-        public async Task<ActionResult<IEnumerable<ExerciseDto>>> GetByLessonId(Guid lessonId)
+        [HttpGet("by-topic/{topicId}")]
+        public async Task<ActionResult<IEnumerable<ExerciseDto>>> GetByTopicId(Guid topicId)
         {
-            var exercises = await _mediator.Send(new GetExercisesByLessonIdQuery { LessonId = lessonId });
+            var exercises = await _mediator.Send(new GetExercisesByTopicIdQuery { TopicId = topicId });
             return Ok(exercises);
         }
 

@@ -1,4 +1,5 @@
 ﻿using aLMS.Domain.Common;
+using aLMS.Domain.ExerciseEntity;
 using aLMS.Domain.LessonEntity;
 using aLMS.Domain.SubjectEntity;
 using System;
@@ -19,6 +20,7 @@ namespace aLMS.Domain.TopicEntity
         public Subject Subject { get; set; }
 
         public ICollection<Lesson> Lessons { get; set; }
+        public ICollection<Exercise> Exercises { get; set; }
         public void RaiseTopicCreatedEvent()
         {
             AddDomainEvent(new TopicCreatedEvent(Id, Title, SubjectId));

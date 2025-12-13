@@ -1,4 +1,5 @@
 ﻿using aLMS.Domain.Common;
+using aLMS.Domain.SubjectEntity;
 using System;
 
 namespace aLMS.Domain.ExerciseEntity
@@ -7,13 +8,13 @@ namespace aLMS.Domain.ExerciseEntity
     {
         public Guid ExerciseId { get; }
         public string Title { get; }
-        public Guid LessonId { get; }
+        public Guid TopicId { get; }
 
-        public ExerciseCreatedEvent(Guid exerciseId, string title, Guid lessonId)
+        public ExerciseCreatedEvent(Guid exerciseId, string title, Guid topicId)
         {
             ExerciseId = exerciseId;
             Title = title;
-            LessonId = lessonId;
+            TopicId = topicId;
         }
     }
 
@@ -21,13 +22,13 @@ namespace aLMS.Domain.ExerciseEntity
     {
         public Guid ExerciseId { get; }
         public string Title { get; }
-        public Guid LessonId { get; }
+        public Guid TopicId { get; }
 
-        public ExerciseUpdatedEvent(Guid exerciseId, string title, Guid lessonId)
+        public ExerciseUpdatedEvent(Guid exerciseId, string title, Guid topicId)
         {
             ExerciseId = exerciseId;
             Title = title;
-            LessonId = lessonId;
+            TopicId = topicId;
         }
     }
 

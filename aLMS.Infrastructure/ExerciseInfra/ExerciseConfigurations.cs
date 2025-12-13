@@ -41,12 +41,12 @@ namespace aLMS.Infrastructure.AccountInfra
             builder.Property(x => x.TotalScore)
                 .HasColumnType("decimal(5,2)");
 
-            builder.Property(x => x.LessonId)
+            builder.Property(x => x.TopicId)
                 .HasColumnType("uuid");
 
-            builder.HasOne(x => x.Lesson)
+            builder.HasOne(x => x.Topic)
                 .WithMany(x => x.Exercises)
-                .HasForeignKey(x => x.LessonId)
+                .HasForeignKey(x => x.TopicId)
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }

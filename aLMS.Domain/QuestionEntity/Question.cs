@@ -16,11 +16,11 @@ namespace aLMS.Domain.QuestionEntity
         public Exercise Exercise { get; set; }
 
         public string QuestionContent { get; set; }
-        public string QuestionImage { get; set; }
+        public string? QuestionImage { get; set; }
         public string QuestionType { get; set; }
         public int OrderNumber { get; set; }
         public decimal Score { get; set; }
-        public string Explanation { get; set; }
+        public string? Explanation { get; set; }
 
         public ICollection<Answer> Answers { get; set; }
         public ICollection<StudentAnswer> StudentAnswers { get; set; }

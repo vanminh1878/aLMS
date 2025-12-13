@@ -77,7 +77,7 @@ namespace aLMS.Infrastructure.Migrations
                         .HasColumnType("boolean")
                         .HasDefaultValue(false);
 
-                    b.Property<int>("OrderNumber")
+                    b.Property<int?>("OrderNumber")
                         .HasColumnType("integer");
 
                     b.Property<Guid>("QuestionId")
@@ -148,6 +148,9 @@ namespace aLMS.Infrastructure.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)");
 
+                    b.Property<Guid?>("HomeroomTeacherId")
+                        .HasColumnType("uuid");
+
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("boolean")
@@ -162,6 +165,9 @@ namespace aLMS.Infrastructure.Migrations
                         .HasColumnType("character varying(20)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("HomeroomTeacherId")
+                        .IsUnique();
 
                     b.ToTable("class", (string)null);
                 });
@@ -201,7 +207,6 @@ namespace aLMS.Infrastructure.Migrations
                         .HasDefaultValueSql("gen_random_uuid()");
 
                     b.Property<string>("ExerciseFile")
-                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("varchar(500)");
 
@@ -209,9 +214,6 @@ namespace aLMS.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("boolean")
                         .HasDefaultValue(false);
-
-                    b.Property<Guid>("LessonId")
-                        .HasColumnType("uuid");
 
                     b.Property<int>("OrderNumber")
                         .HasColumnType("integer");
@@ -229,12 +231,15 @@ namespace aLMS.Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("varchar(100)");
 
+                    b.Property<Guid>("TopicId")
+                        .HasColumnType("uuid");
+
                     b.Property<decimal>("TotalScore")
                         .HasColumnType("decimal(5,2)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("LessonId");
+                    b.HasIndex("TopicId");
 
                     b.ToTable("exercise", (string)null);
                 });
@@ -328,7 +333,6 @@ namespace aLMS.Infrastructure.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("Explanation")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<int>("OrderNumber")
@@ -339,7 +343,6 @@ namespace aLMS.Infrastructure.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("QuestionImage")
-                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("varchar(500)");
 
@@ -439,7 +442,6 @@ namespace aLMS.Infrastructure.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("AnswerText")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<bool>("IsCorrect")
@@ -705,6 +707,16 @@ namespace aLMS.Infrastructure.Migrations
                     b.Navigation("Student");
                 });
 
+            modelBuilder.Entity("aLMS.Domain.ClassEntity.Class", b =>
+                {
+                    b.HasOne("aLMS.Domain.TeacherProfileEntity.TeacherProfile", "HomeroomTeacher")
+                        .WithOne("HomeroomClass")
+                        .HasForeignKey("aLMS.Domain.ClassEntity.Class", "HomeroomTeacherId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("HomeroomTeacher");
+                });
+
             modelBuilder.Entity("aLMS.Domain.DepartmentEntity.Department", b =>
                 {
                     b.HasOne("aLMS.Domain.UserEntity.User", "Head")
@@ -724,13 +736,13 @@ namespace aLMS.Infrastructure.Migrations
 
             modelBuilder.Entity("aLMS.Domain.ExerciseEntity.Exercise", b =>
                 {
-                    b.HasOne("aLMS.Domain.LessonEntity.Lesson", "Lesson")
+                    b.HasOne("aLMS.Domain.TopicEntity.Topic", "Topic")
                         .WithMany("Exercises")
-                        .HasForeignKey("LessonId")
+                        .HasForeignKey("TopicId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Lesson");
+                    b.Navigation("Topic");
                 });
 
             modelBuilder.Entity("aLMS.Domain.LessonEntity.Lesson", b =>
@@ -957,11 +969,6 @@ namespace aLMS.Infrastructure.Migrations
                     b.Navigation("StudentExercises");
                 });
 
-            modelBuilder.Entity("aLMS.Domain.LessonEntity.Lesson", b =>
-                {
-                    b.Navigation("Exercises");
-                });
-
             modelBuilder.Entity("aLMS.Domain.PermissionEntity.Permission", b =>
                 {
                     b.Navigation("RolePermissions");
@@ -998,8 +1005,15 @@ namespace aLMS.Infrastructure.Migrations
                     b.Navigation("Topics");
                 });
 
+            modelBuilder.Entity("aLMS.Domain.TeacherProfileEntity.TeacherProfile", b =>
+                {
+                    b.Navigation("HomeroomClass");
+                });
+
             modelBuilder.Entity("aLMS.Domain.TopicEntity.Topic", b =>
                 {
+                    b.Navigation("Exercises");
+
                     b.Navigation("Lessons");
                 });
 

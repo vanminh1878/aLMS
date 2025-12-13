@@ -26,7 +26,7 @@ namespace aLMS.Infrastructure.ExerciseInfra
             using var conn = new NpgsqlConnection(_connectionString);
             var sql = @"
                 SELECT ""Id"", ""Title"", ""ExerciseFile"", ""HasTimeLimit"", ""TimeLimit"", 
-                       ""QuestionLayout"", ""OrderNumber"", ""TotalScore"", ""LessonId""
+                       ""QuestionLayout"", ""OrderNumber"", ""TotalScore""
                 FROM ""exercise""";
             return await conn.QueryAsync<Exercise>(sql);
         }
@@ -36,21 +36,21 @@ namespace aLMS.Infrastructure.ExerciseInfra
             using var conn = new NpgsqlConnection(_connectionString);
             var sql = @"
                 SELECT ""Id"", ""Title"", ""ExerciseFile"", ""HasTimeLimit"", ""TimeLimit"", 
-                       ""QuestionLayout"", ""OrderNumber"", ""TotalScore"", ""LessonId""
+                       ""QuestionLayout"", ""OrderNumber"", ""TotalScore""
                 FROM ""exercise""
                 WHERE ""Id"" = @id";
             return await conn.QuerySingleOrDefaultAsync<Exercise>(sql, new { id });
         }
 
-        public async Task<IEnumerable<Exercise>> GetExercisesByLessonIdAsync(Guid lessonId)
+        public async Task<IEnumerable<Exercise>> GetExercisesByTopicIdAsync(Guid topicId)
         {
             using var conn = new NpgsqlConnection(_connectionString);
             var sql = @"
                 SELECT ""Id"", ""Title"", ""ExerciseFile"", ""HasTimeLimit"", ""TimeLimit"", 
-                       ""QuestionLayout"", ""OrderNumber"", ""TotalScore"", ""LessonId""
+                       ""QuestionLayout"", ""OrderNumber"", ""TotalScore""
                 FROM ""exercise""
-                WHERE ""LessonId"" = @lessonId";
-            return await conn.QueryAsync<Exercise>(sql, new { lessonId });
+                WHERE ""TopicId"" = @topicId";
+            return await conn.QueryAsync<Exercise>(sql, new { topicId });
         }
 
         public async Task AddExerciseAsync(Exercise exercise)

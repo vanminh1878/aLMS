@@ -1,4 +1,5 @@
-﻿using aLMS.Domain.Common;
+﻿using aLMS.Domain.ClassEntity;
+using aLMS.Domain.Common;
 using aLMS.Domain.DepartmentEntity;
 using aLMS.Domain.SchoolEntity;
 using aLMS.Domain.UserEntity;
@@ -19,6 +20,7 @@ namespace aLMS.Domain.TeacherProfileEntity
 
         public DateTime HireDate { get; set; }
         public string Specialization { get; set; }
+        public Class? HomeroomClass { get; set; }
         public void RaiseTeacherProfileCreatedEvent() => AddDomainEvent(new TeacherProfileCreatedEvent(UserId, DepartmentId));
         public void RaiseTeacherProfileUpdatedEvent() => AddDomainEvent(new TeacherProfileUpdatedEvent(UserId, DepartmentId));
         public void RaiseTeacherProfileDeletedEvent() => AddDomainEvent(new TeacherProfileDeletedEvent(UserId));

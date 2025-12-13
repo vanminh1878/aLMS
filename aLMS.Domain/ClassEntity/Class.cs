@@ -1,6 +1,8 @@
 ﻿// aLMS.Domain/ClassEntity/Class.cs
 using aLMS.Domain.Common;
 using aLMS.Domain.SubjectEntity;
+using aLMS.Domain.TeacherProfileEntity;
+using System;
 
 namespace aLMS.Domain.ClassEntity
 {
@@ -11,6 +13,9 @@ namespace aLMS.Domain.ClassEntity
         public string SchoolYear { get; set; } = null!;
 
         public Guid SchoolId { get; set; }
+        public Guid? HomeroomTeacherId { get; set; } 
+
+        public TeacherProfile? HomeroomTeacher { get; set; }
 
         public ICollection<Subject> Subjects { get; set; } = new List<Subject>();
 

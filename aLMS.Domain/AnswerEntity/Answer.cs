@@ -16,7 +16,7 @@ namespace aLMS.Domain.AnswerEntity
 
         public string AnswerContent { get; set; }
         public bool IsCorrect { get; set; } = false;
-        public int OrderNumber { get; set; }
+        public int? OrderNumber { get; set; }
 
         public ICollection<StudentAnswer> StudentAnswers { get; set; }
         public void RaiseAnswerCreatedEvent()
