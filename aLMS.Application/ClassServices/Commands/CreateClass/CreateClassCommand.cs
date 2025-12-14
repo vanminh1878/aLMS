@@ -8,8 +8,15 @@ using System.Threading.Tasks;
 
 namespace aLMS.Application.ClassServices.Commands.CreateClass
 {
-    public class CreateClassCommand : IRequest<Guid>
+    public class CreateClassCommand : IRequest<CreateClassResult>
     {
         public CreateClassDto ClassDto { get; set; }
+    }
+
+    public class CreateClassResult
+    {
+        public bool Success { get; set; }
+        public string Message { get; set; } = string.Empty;
+        public Guid? ClassId { get; set; }
     }
 }

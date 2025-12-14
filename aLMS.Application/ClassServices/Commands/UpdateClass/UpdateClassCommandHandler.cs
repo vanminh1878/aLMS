@@ -1,4 +1,5 @@
-﻿using aLMS.Application.Common.Interfaces;
+﻿using aLMS.Application.ClassServices.Commands.CreateClass;
+using aLMS.Application.Common.Interfaces;
 using aLMS.Domain.ClassEntity;
 using AutoMapper;
 using MediatR;
@@ -23,23 +24,51 @@ namespace aLMS.Application.ClassServices.Commands.UpdateClass
         {
             var dto = request.ClassDto;
 
-            // Bước 1: Lấy entity hiện có từ DB (rất quan trọng!)
             var existingClass = await _classRepository.GetClassByIdAsync(dto.Id);
             if (existingClass == null)
             {
-                return new UpdateClassResult
-                {
-                    Success = false,
-                    Message = "Lớp học không tồn tại."
-                };
+                return new UpdateClassResult { Success = false, Message = "Lớp học không tồn tại." };
             }
 
-            // Bước 2: Map dữ liệu từ DTO đè lên entity cũ (giữ nguyên Tracking)
-            _mapper.Map(dto, existingClass);
+            bool isNameChanged = !string.IsNullOrWhiteSpace(dto.ClassName)
+                                 && dto.ClassName.Trim() != existingClass.ClassName;
+
+            // Chỉ kiểm tra trùng tên nếu người dùng thực sự thay đổi tên lớp
+            if (isNameChanged)
+            {
+                var classNameExists = await _classRepository.ClassNameExistsAsync(dto.ClassName.Trim(), dto.Id); 
+                if (classNameExists)
+                {
+                    return new UpdateClassResult
+                    {
+                        Success = false,
+                        Message = "Tên lớp đã tồn tại"
+                    };
+                }
+            }
+
+            // Ánh xạ có chọn lọc: chỉ update những field được gửi (không null/empty)
+            if (!string.IsNullOrWhiteSpace(dto.ClassName))
+                existingClass.ClassName = dto.ClassName.Trim();
+
+            if (!string.IsNullOrWhiteSpace(dto.Grade))
+                existingClass.Grade = dto.Grade.Trim();
+
+            if (!string.IsNullOrWhiteSpace(dto.SchoolYear))
+                existingClass.SchoolYear = dto.SchoolYear.Trim();
+
+            // Chỉ update IsDeleted nếu được gửi
+            if (dto.IsDelete.HasValue)
+            {
+                if (dto.IsDelete.Value)
+                    existingClass.SoftDelete(); // dùng method domain để raise event đúng
+                else
+                    existingClass.Restore();
+            }
+            existingClass.SchoolId = dto.SchoolId;
 
             try
             {
-                // Bước 3: Raise event + Update
                 existingClass.RaiseClassUpdatedEvent();
                 await _classRepository.UpdateClassAsync(existingClass);
 

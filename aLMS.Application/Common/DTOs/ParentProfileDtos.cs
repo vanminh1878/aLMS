@@ -7,6 +7,9 @@ namespace aLMS.Application.Common.Dtos
         public Guid ParentId { get; set; }
         public string ParentName { get; set; } = string.Empty;
         public string? ParentEmail { get; set; }
+        public string? ParentPhone { get; set; }
+        public DateTime? ParentDateOfBirth { get; set; }
+        public string? ParentGender { get; set; }
         public Guid StudentId { get; set; }
         public string StudentName { get; set; } = string.Empty;
         public string? StudentEmail { get; set; }

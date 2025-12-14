@@ -113,7 +113,6 @@ public class ClassRepository : IClassRepository
         await connection.ExecuteAsync(sql, new { id });
     }
 
-    // Nếu muốn lấy cả lớp đã xóa (admin)
     public async Task<IEnumerable<Class>> GetAllIncludingDeletedAsync()
     {
         using var connection = new NpgsqlConnection(_connectionString);
@@ -124,5 +123,13 @@ public class ClassRepository : IClassRepository
     public async Task<bool> ClassExistsAsync(Guid id)
     {
         return await _context.Set<Class>().AnyAsync(c => c.Id == id);
+    }
+    public async Task<bool> ClassNameExistsAsync(string classname, Guid? excludeId = null)
+    {
+        using var conn = new NpgsqlConnection(_connectionString);
+        var sql = excludeId.HasValue
+            ? "SELECT COUNT(1) FROM \"class\" WHERE \"ClassName\" = @classname AND \"Id\" != @excludeId"
+            : "SELECT COUNT(1) FROM \"class\" WHERE \"ClassName\" = @classname";
+        return await conn.ExecuteScalarAsync<int>(sql, new { classname, excludeId }) > 0;
     }
 }

@@ -6,6 +6,7 @@ using aLMS.Application.ClassServices.Queries;
 using aLMS.Application.Common.Dtos;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using static MassTransit.ValidationResultExtensions;
 
 [ApiController]
 [Route("api/classes")]
@@ -41,8 +42,16 @@ public class ClassesController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<Guid>> CreateClass([FromBody] CreateClassDto dto)
     {
-        var classId = await _mediator.Send(new CreateClassCommand { ClassDto = dto });
-        return CreatedAtAction(nameof(GetClassById), new { id = classId }, classId);
+        var result = await _mediator.Send(new CreateClassCommand { ClassDto = dto });
+        if (!result.Success)
+        {
+            return Problem(
+                title: result.Message,
+                detail: result.Message,
+                statusCode: StatusCodes.Status409Conflict
+            );
+        }
+        return CreatedAtAction(nameof(GetClassById), new { id = result.ClassId}, result.ClassId);
     }
 
     [HttpPut]

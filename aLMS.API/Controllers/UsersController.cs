@@ -34,7 +34,7 @@ public class UsersController : ControllerBase
         return result.Success ? CreatedAtAction(nameof(GetById), new { id = result.UserId }, result) : BadRequest(result);
     }
 
-    [HttpPut]
+    [HttpPut("{id:guid}")]
     public async Task<ActionResult<UpdateUserResult>> Update([FromBody] UpdateUserDto dto)
     {
         var result = await _mediator.Send(new UpdateUserCommand { Dto = dto });

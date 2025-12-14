@@ -120,7 +120,12 @@ namespace aLMS.Application.Common.Mappings
                 .ForMember(d => d.AccountId, o => o.Ignore())
                 .ForMember(d => d.Account, o => o.Ignore());
 
-            CreateMap<UpdateUserDto, User>();
+
+            CreateMap<UpdateUserDto, User>()
+    .ForMember(dest => dest.RoleId, opt => opt.Ignore())
+    .ForMember(dest => dest.SchoolId, opt => opt.Ignore())
+    .ForMember(dest => dest.AccountId, opt => opt.Ignore()) // nếu có
+    ;
 
             // StudentProfile
             CreateMap<StudentProfile, StudentProfileDto>()

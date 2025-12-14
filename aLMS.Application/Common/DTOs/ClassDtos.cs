@@ -5,7 +5,9 @@
         public Guid Id { get; set; }
         public string ClassName { get; set; } = string.Empty;
         public string Grade { get; set; } = string.Empty;        
-        public string SchoolYear { get; set; } = string.Empty;  
+        public string SchoolYear { get; set; } = string.Empty;
+        public bool IsDelete { get; set; }
+        public int NumStudent { get; set; }
     }
 
     public class CreateClassDto
@@ -19,9 +21,11 @@
     public class UpdateClassDto
     {
         public Guid Id { get; set; }
-        public string ClassName { get; set; } = string.Empty;
-        public string Grade { get; set; } = string.Empty;
-        public string SchoolYear { get; set; } = string.Empty;
+        public Guid SchoolId { get; set; }
+        public string? ClassName { get; set; } = string.Empty;
+        public string? Grade { get; set; } = string.Empty;
+        public string? SchoolYear { get; set; } = string.Empty;
+        public bool? IsDelete { get; set; }
     }
 
 

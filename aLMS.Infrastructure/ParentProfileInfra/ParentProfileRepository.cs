@@ -1,4 +1,5 @@
 ﻿// aLMS.Infrastructure.ParentProfileInfra/ParentProfileRepository.cs
+using aLMS.Application.Common.Dtos;
 using aLMS.Application.Common.Interfaces;
 using aLMS.Domain.ParentProfileEntity;
 using Dapper;
@@ -35,18 +36,29 @@ namespace aLMS.Infrastructure.ParentProfileInfra
             return await conn.QuerySingleOrDefaultAsync<ParentProfile>(sql, new { parentId });
         }
 
-        public async Task<IEnumerable<ParentProfile>> GetByStudentIdAsync(Guid studentId)
+        public async Task<IEnumerable<ParentProfileDto>> GetByStudentIdAsync(Guid studentId)
         {
             using var conn = new NpgsqlConnection(_connectionString);
             var sql = @"
-                SELECT pp.*, 
-                       p.""Name"" as ParentName, p.""Email"" as ParentEmail,
-                       s.""Name"" as StudentName, s.""Email"" as StudentEmail
-                FROM ""parent_profile"" pp
-                JOIN ""user"" p ON pp.""UserId"" = p.""Id""
-                JOIN ""user"" s ON pp.""StudentId"" = s.""Id""
-                WHERE pp.""StudentId"" = @studentId";
-            return await conn.QueryAsync<ParentProfile>(sql, new { studentId });
+        SELECT 
+            pp.""UserId"" AS ParentId, 
+            pp.""StudentId"",
+            pu.""Name"" AS ParentName,
+            pu.""Email"" AS ParentEmail,
+            pu.""PhoneNumber"" AS ParentPhone,
+            pu.""DateOfBirth"" AS ParentDateOfBirth,
+            pu.""Gender"" AS ParentGender,
+            pu.""Address"" AS ParentAddress,
+            
+            su.""Name"" AS StudentName,
+            su.""Email"" AS StudentEmail
+        FROM ""parent_profile"" pp
+        JOIN ""user"" pu ON pp.""UserId"" = pu.""Id""        -- pu: parent user
+        JOIN ""user"" su ON pp.""StudentId"" = su.""Id""     -- su: student user
+        WHERE pp.""StudentId"" = @studentId";
+
+            var result = await conn.QueryAsync<ParentProfileDto>(sql, new { studentId });
+            return result;
         }
 
         public async Task AddAsync(ParentProfile profile)

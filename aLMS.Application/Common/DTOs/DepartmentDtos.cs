@@ -11,6 +11,7 @@ namespace aLMS.Application.Common.Dtos
         public Guid? HeadId { get; set; }
         public Guid? SchoolId { get; set; }
         public TeacherProfile? TeacherProfiles { get; set; }
+        public int NumTeachers { get; set; }
     }
 
     public class CreateDepartmentDto
