@@ -38,7 +38,8 @@ namespace aLMS.Application.Common.Dtos
     public class UpdateAccountDto
     {
         public Guid Id { get; set; }
-        public string Username { get; set; } = string.Empty;
-        public bool Status { get; set; }
+        public string? Username { get; set; } = string.Empty;
+        public bool? Status { get; set; }
+        public string? Password { get; set; }
     }
 }

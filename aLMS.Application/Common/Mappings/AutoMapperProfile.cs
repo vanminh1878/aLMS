@@ -109,7 +109,8 @@ namespace aLMS.Application.Common.Mappings
             CreateMap<RegisterDto, Account>()
                 .ForMember(d => d.Id, o => o.Ignore())
                 .ForMember(d => d.Password, o => o.Ignore());
-            CreateMap<UpdateAccountDto, Account>();
+            CreateMap<UpdateAccountDto, Account>()
+            .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 
             // User
             CreateMap<User, UserDto>()

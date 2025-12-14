@@ -40,11 +40,22 @@ namespace aLMS.Application.AccountServices.Commands.UpdateAccount
                 if (account == null)
                     return new UpdateAccountResult { Success = false, Message = "Account not found." };
 
-                var nameExists = await _repo.UsernameExistsAsync(request.Dto.Username, request.Dto.Id);
-                if (nameExists)
-                    return new UpdateAccountResult { Success = false, Message = "Username already exists." };
-
-                _mapper.Map(request.Dto, account);
+                if (!string.IsNullOrWhiteSpace(request.Dto.Username)
+            && request.Dto.Username.Trim() != account.Username)
+                {
+                    var nameExists = await _repo.UsernameExistsAsync(request.Dto.Username.Trim(), request.Dto.Id);
+                    if (nameExists)
+                        return new UpdateAccountResult { Success = false, Message = "Username already exists." };
+                }
+                if (request.Dto.Status.HasValue)
+                {
+                    account.Status = request.Dto.Status.Value;
+                }
+                if (request.Dto.Password != null)
+                {
+                    account.Password = request.Dto?.Password;
+                }
+               
                 account.RaiseAccountUpdatedEvent();
                 await _repo.UpdateAsync(account);
 
