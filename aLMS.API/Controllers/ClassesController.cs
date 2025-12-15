@@ -40,7 +40,7 @@ public class ClassesController : ControllerBase
             HomeroomTeacherId = homeroomTeacherId
         });
 
-        return result == null ? NotFound() : Ok(result);
+        return Ok(result ?? new ClassDto());
     }
     [HttpGet("by-school/{schoolId:guid}")]
     public async Task<ActionResult<IEnumerable<ClassDto>>> GetClassesBySchoolId(Guid schoolId)

@@ -163,8 +163,7 @@ namespace aLMS.Application.Common.Mappings
             CreateMap<UpdateDepartmentDto, Department>();
 
             // Behaviour
-            CreateMap<Behaviour, BehaviourDto>()
-                .ForMember(d => d.StudentName, o => o.MapFrom(s => s.Student.Name));
+            CreateMap<Behaviour, BehaviourDto>();
         }
     }
 }
