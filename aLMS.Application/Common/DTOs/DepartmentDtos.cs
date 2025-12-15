@@ -27,5 +27,6 @@ namespace aLMS.Application.Common.Dtos
         public string DepartmentName { get; set; } = string.Empty;
         public string? Description { get; set; }
         public Guid SchoolId { get; set; }
+        public Guid? HeadId { get; set; }
     }
 }

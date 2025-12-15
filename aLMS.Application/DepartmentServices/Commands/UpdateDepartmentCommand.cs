@@ -52,6 +52,10 @@ namespace aLMS.Application.DepartmentServices.Commands.UpdateDepartment
                 var nameExists = await _repo.NameExistsInSchoolAsync(request.Dto.DepartmentName, request.Dto.Id);
                 if (nameExists)
                     return new UpdateDepartmentResult { Success = false, Message = "Department name already exists in this school." };
+                if(request.Dto.HeadId != null)
+                {
+                    department.HeadId = request.Dto.HeadId;
+                }
 
                 _mapper.Map(request.Dto, department);
                 department.RaiseDepartmentUpdatedEvent();

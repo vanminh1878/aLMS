@@ -58,7 +58,7 @@ public class ClassRepository : IClassRepository
     {
         using var connection = new NpgsqlConnection(_connectionString);
         var sql = @"
-        SELECT c.""Id"", c.""ClassName"", c.""Grade"", c.""SchoolYear""
+        SELECT c.""Id"", c.""ClassName"", c.""Grade"", c.""SchoolYear"", c.""HomeroomTeacherId""
         FROM ""class"" c
         WHERE c.""SchoolId"" = @schoolId
         ORDER BY c.""Grade"", c.""ClassName""";

@@ -66,6 +66,10 @@ namespace aLMS.Application.ClassServices.Commands.UpdateClass
                     existingClass.Restore();
             }
             existingClass.SchoolId = dto.SchoolId;
+            if(dto.HomeroomTeacherId != null)
+            {
+                existingClass.HomeroomTeacherId = dto.HomeroomTeacherId;
+            }
 
             try
             {

@@ -8,6 +8,7 @@
         public string SchoolYear { get; set; } = string.Empty;
         public bool IsDelete { get; set; }
         public int NumStudent { get; set; }
+        public string homeroomTeacherName { get; set; }
     }
 
     public class CreateClassDto
@@ -26,6 +27,7 @@
         public string? Grade { get; set; } = string.Empty;
         public string? SchoolYear { get; set; } = string.Empty;
         public bool? IsDelete { get; set; }
+        public Guid? HomeroomTeacherId { get; set; }
     }
 
 
