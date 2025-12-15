@@ -65,6 +65,17 @@ public class ClassRepository : IClassRepository
 
         return await connection.QueryAsync<Class>(sql, new { schoolId });
     }
+    public async Task<Class?> GetClassByHomeroomTeacherIdAsync(Guid homeroomTeacherId)
+    {
+        using var connection = new NpgsqlConnection(_connectionString);
+        var sql = @"
+        SELECT *
+        FROM ""class""
+        WHERE ""HomeroomTeacherId"" = @homeroomTeacherId
+          AND ""IsDeleted"" = false";
+
+        return await connection.QuerySingleOrDefaultAsync<Class>(sql, new { homeroomTeacherId });
+    }
 
     public async Task<Class?> GetClassByIdAsync(Guid id)
     {

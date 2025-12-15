@@ -32,6 +32,16 @@ public class ClassesController : ControllerBase
         var result = await _mediator.Send(new GetClassByIdQuery { Id = id });
         return result == null ? NotFound() : Ok(result);
     }
+    [HttpGet("by-homeroom-teacher/{homeroomTeacherId:guid}")]
+    public async Task<ActionResult<ClassDto>> GetClassByHomeroomTeacherId(Guid homeroomTeacherId)
+    {
+        var result = await _mediator.Send(new GetClassByHomeroomTeacherIdQuery
+        {
+            HomeroomTeacherId = homeroomTeacherId
+        });
+
+        return result == null ? NotFound() : Ok(result);
+    }
     [HttpGet("by-school/{schoolId:guid}")]
     public async Task<ActionResult<IEnumerable<ClassDto>>> GetClassesBySchoolId(Guid schoolId)
     {
