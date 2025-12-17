@@ -22,8 +22,8 @@ namespace aLMS.Domain.QuestionEntity
         public decimal Score { get; set; }
         public string? Explanation { get; set; }
 
-        public ICollection<Answer> Answers { get; set; }
-        public ICollection<StudentAnswer> StudentAnswers { get; set; }
+        public ICollection<Answer> Answers { get; set; } = new List<Answer>();
+        public ICollection<StudentAnswer> StudentAnswers { get; set; } = new List<StudentAnswer>();
         public void RaiseQuestionCreatedEvent()
         {
             AddDomainEvent(new QuestionCreatedEvent(Id, QuestionContent, ExerciseId));
