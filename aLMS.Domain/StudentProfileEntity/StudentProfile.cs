@@ -1,6 +1,7 @@
 ﻿using aLMS.Domain.ClassEntity;
 using aLMS.Domain.Common;
 using aLMS.Domain.SchoolEntity;
+using aLMS.Domain.StudentClassEnrollmentEntity;
 using aLMS.Domain.UserEntity;
 using System;
 using System.Collections.Generic;
@@ -17,13 +18,10 @@ namespace aLMS.Domain.StudentProfileEntity
 
         public Guid SchoolId { get; set; }
         public School School { get; set; }
-
-        public Guid ClassId { get; set; }
-        public Class Class { get; set; }
-
         public DateTime EnrollDate { get; set; }
-        public void RaiseStudentProfileCreatedEvent() => AddDomainEvent(new StudentProfileCreatedEvent(UserId, SchoolId, ClassId));
-        public void RaiseStudentProfileUpdatedEvent() => AddDomainEvent(new StudentProfileUpdatedEvent(UserId, SchoolId, ClassId));
+        public ICollection<StudentClassEnrollment> ClassEnrollments { get; set; } = new List<StudentClassEnrollment>();
+        public void RaiseStudentProfileCreatedEvent() => AddDomainEvent(new StudentProfileCreatedEvent(UserId, SchoolId));
+        public void RaiseStudentProfileUpdatedEvent() => AddDomainEvent(new StudentProfileUpdatedEvent(UserId, SchoolId));
         public void RaiseStudentProfileDeletedEvent() => AddDomainEvent(new StudentProfileDeletedEvent(UserId));
 
     }

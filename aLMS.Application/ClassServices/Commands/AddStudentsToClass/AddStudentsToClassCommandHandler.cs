@@ -2,6 +2,7 @@
 using aLMS.Application.Common.Interfaces;
 using aLMS.Domain.AccountEntity;
 using aLMS.Domain.ParentProfileEntity;
+using aLMS.Domain.StudentClassEnrollmentEntity;
 using aLMS.Domain.StudentProfileEntity;
 using aLMS.Domain.UserEntity;
 using MediatR;
@@ -22,14 +23,15 @@ namespace aLMS.Application.ClassServices.Commands.AddStudentsToClass
         private readonly IStudentProfileRepository _studentRepo;
         private readonly IParentProfileRepository _parentRepo;
         private readonly IRoleRepository _roleRepo;
-
+        private readonly IStudentClassEnrollmentRepository _enrollmentRepo;
         public AddStudentsToClassCommandHandler(
             IClassRepository classRepo,
             IUsersRepository userRepo,
             IAccountRepository accRepo,
             IStudentProfileRepository studentRepo,
             IParentProfileRepository parentRepo,
-            IRoleRepository roleRepo)
+            IRoleRepository roleRepo,
+            IStudentClassEnrollmentRepository enrollmentRepo)
         {
             _classRepo = classRepo;
             _userRepo = userRepo;
@@ -37,6 +39,7 @@ namespace aLMS.Application.ClassServices.Commands.AddStudentsToClass
             _studentRepo = studentRepo;
             _parentRepo = parentRepo;
             _roleRepo = roleRepo;
+            _enrollmentRepo = enrollmentRepo;
         }
 
         public async Task<AddStudentsToClassResult> Handle(AddStudentsToClassCommand request, CancellationToken ct)
@@ -121,7 +124,6 @@ namespace aLMS.Application.ClassServices.Commands.AddStudentsToClass
                     {
                         UserId = studentUser.Id,
                         SchoolId = dto.SchoolId,
-                        ClassId = cls.Id,
                         EnrollDate = dto.StudentEnrollDate.Date // Dùng ngày nhập học từ DTO
                     };
                     await _studentRepo.AddAsync(studentProfile);
@@ -161,8 +163,14 @@ namespace aLMS.Application.ClassServices.Commands.AddStudentsToClass
                         StudentId = studentUser.Id
                     };
                     await _parentRepo.AddAsync(parentProfile);
+  
+                    var enrollment = new StudentClassEnrollment
+                    {
+                        StudentProfileId = studentProfile.UserId,  
+                        ClassId = request.ClassId
+                    };
+                    await _enrollmentRepo.AddEnrollmentAsync(studentProfile.UserId, request.ClassId);
 
-                    // Ghi kết quả trả về
                     result.CreatedStudents.Add(new StudentCreationResult
                     {
                         StudentName = dto.StudentName,

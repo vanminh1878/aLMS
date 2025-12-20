@@ -132,8 +132,7 @@ namespace aLMS.Application.Common.Mappings
             CreateMap<StudentProfile, StudentProfileDto>()
                 .ForMember(d => d.UserName, o => o.MapFrom(s => s.User.Name))
                 .ForMember(d => d.Email, o => o.MapFrom(s => s.User.Email))
-                .ForMember(d => d.SchoolName, o => o.MapFrom(s => s.School != null ? s.School.Name : null))
-                .ForMember(d => d.ClassName, o => o.MapFrom(s => s.Class != null ? s.Class.ClassName : null));
+                .ForMember(d => d.SchoolName, o => o.MapFrom(s => s.School != null ? s.School.Name : null));
 
             CreateMap<CreateStudentProfileDto, StudentProfile>();
             CreateMap<UpdateStudentProfileDto, StudentProfile>();

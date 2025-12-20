@@ -16,6 +16,7 @@ using aLMS.Infrastructure.RoleInfra;
 using aLMS.Infrastructure.RolePermissionInfra;
 using aLMS.Infrastructure.SchoolInfra;
 using aLMS.Infrastructure.StudentAnswerInfra;
+using aLMS.Infrastructure.StudentClassEnrollmentInfra;
 using aLMS.Infrastructure.StudentExerciseInfra;
 using aLMS.Infrastructure.StudentProfileInfra;
 using aLMS.Infrastructure.SubjectInfra;
@@ -69,6 +70,12 @@ namespace aLMS.API
 
                 builder.Services.AddScoped<IUsersRepository>(provider =>
                     new UsersRepository(
+                        provider.GetRequiredService<aLMSDbContext>(),
+                        provider.GetRequiredService<IConfiguration>().GetConnectionString("DefaultConnection")
+                            ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.")
+                    ));
+                builder.Services.AddScoped<IStudentClassEnrollmentRepository>(provider =>
+                    new StudentClassEnrollmentRepository(
                         provider.GetRequiredService<aLMSDbContext>(),
                         provider.GetRequiredService<IConfiguration>().GetConnectionString("DefaultConnection")
                             ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.")

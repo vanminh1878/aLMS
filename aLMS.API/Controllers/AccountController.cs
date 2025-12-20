@@ -35,6 +35,18 @@ public class AccountsController : ControllerBase
         var result = await _mediator.Send(new LoginQuery { Dto = dto });
         return result.Success ? Ok(result) : Unauthorized(result);
     }
+    [HttpGet("{accountId}/rolename")]
+    public async Task<ActionResult<string>> GetRoleName(Guid accountId)
+    {
+        var roleName = await _mediator.Send(new GetRoleNameByAccountIdQuery { AccountId = accountId });
+
+        if (string.IsNullOrEmpty(roleName))
+        {
+            return NotFound("Không tìm thấy vai trò cho tài khoản này");
+        }
+
+        return Ok(roleName);
+    }
 
     [HttpPut]
     public async Task<ActionResult<UpdateAccountResult>> Update([FromBody] UpdateAccountDto dto)

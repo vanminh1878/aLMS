@@ -19,5 +19,6 @@ namespace aLMS.Application.Common.Interfaces
         Task SoftDeleteClassAsync(Guid id);
         Task<IEnumerable<Class>> GetAllIncludingDeletedAsync();
         Task<bool> ClassNameExistsAsync(string classname, Guid? excludeId = null);
+        Task<IEnumerable<Class>> GetClassesByStudentIdAsync(Guid studentId);
     }
 }

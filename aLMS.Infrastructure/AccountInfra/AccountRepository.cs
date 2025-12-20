@@ -66,6 +66,19 @@ namespace aLMS.Infrastructure.AccountInfra
                 : "SELECT COUNT(1) FROM \"account\" WHERE \"Username\" = @username";
             return await conn.ExecuteScalarAsync<int>(sql, new { username, excludeId }) > 0;
         }
+        public async Task<string?> GetRoleNameByAccountIdAsync(Guid accountId)
+        {
+            using var conn = new NpgsqlConnection(_connectionString);
+
+            var sql = @"
+        SELECT r.""RoleName""
+        FROM ""user"" u
+        INNER JOIN ""role"" r ON u.""RoleId"" = r.""Id""
+        WHERE u.""AccountId"" = @accountId
+        LIMIT 1";
+
+            return await conn.QuerySingleOrDefaultAsync<string?>(sql, new { accountId });
+        }
         public async Task<Account?> GetByRefreshTokenAsync(string refreshToken)
         {
             using var conn = new NpgsqlConnection(_connectionString);

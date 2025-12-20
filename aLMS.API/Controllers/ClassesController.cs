@@ -105,4 +105,16 @@ public class ClassesController : ControllerBase
             ? Ok(result)
             : BadRequest(result);
     }
+    [HttpGet("by-student/{studentId:guid}")]
+    public async Task<ActionResult<IEnumerable<ClassDto>>> GetClassesByStudentId(Guid studentId)
+    {
+        var result = await _mediator.Send(new GetClassesByStudentIdQuery { StudentId = studentId });
+
+        if (result == null || !result.Any())
+        {
+            return NotFound($"Không tìm thấy lớp nào cho học sinh với Id: {studentId}");
+        }
+
+        return Ok(result);
+    }
 }

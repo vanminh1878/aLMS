@@ -7,13 +7,12 @@ namespace aLMS.Domain.StudentProfileEntity
     {
         public Guid UserId { get; }
         public Guid? SchoolId { get; }
-        public Guid? ClassId { get; }
 
-        public StudentProfileCreatedEvent(Guid userId, Guid? schoolId, Guid? classId)
+
+        public StudentProfileCreatedEvent(Guid userId, Guid? schoolId)
         {
             UserId = userId;
             SchoolId = schoolId;
-            ClassId = classId;
         }
     }
 
@@ -21,13 +20,11 @@ namespace aLMS.Domain.StudentProfileEntity
     {
         public Guid UserId { get; }
         public Guid? SchoolId { get; }
-        public Guid? ClassId { get; }
 
-        public StudentProfileUpdatedEvent(Guid userId, Guid? schoolId, Guid? classId)
+        public StudentProfileUpdatedEvent(Guid userId, Guid? schoolId)
         {
             UserId = userId;
             SchoolId = schoolId;
-            ClassId = classId;
         }
     }
 

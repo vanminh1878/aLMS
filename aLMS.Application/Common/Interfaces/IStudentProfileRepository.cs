@@ -1,4 +1,5 @@
-﻿using aLMS.Domain.StudentProfileEntity;
+﻿using aLMS.Domain.ClassEntity;
+using aLMS.Domain.StudentProfileEntity;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;

@@ -143,4 +143,18 @@ public class ClassRepository : IClassRepository
             : "SELECT COUNT(1) FROM \"class\" WHERE \"ClassName\" = @classname";
         return await conn.ExecuteScalarAsync<int>(sql, new { classname, excludeId }) > 0;
     }
+    public async Task<IEnumerable<Class>> GetClassesByStudentIdAsync(Guid studentId)
+    {
+        using var connection = new NpgsqlConnection(_connectionString);
+        var sql = @"
+        SELECT DISTINCT c.""Id"", c.""ClassName"", c.""Grade"", c.""SchoolYear"", 
+               c.""SchoolId"", c.""HomeroomTeacherId"", c.""IsDeleted"", c.""DeletedAt""
+        FROM ""student_class_enrollment"" sce
+        JOIN ""class"" c ON sce.""ClassId"" = c.""Id""
+        WHERE sce.""StudentProfileId"" = @studentId
+          AND c.""IsDeleted"" = false
+        ORDER BY c.""SchoolYear"" DESC, c.""Grade"", c.""ClassName""";
+
+        return await connection.QueryAsync<Class>(sql, new { studentId });
+    }
 }

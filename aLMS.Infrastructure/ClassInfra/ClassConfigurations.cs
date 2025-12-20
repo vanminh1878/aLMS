@@ -38,6 +38,11 @@ namespace aLMS.Infrastructure.ClassInfra
                 .WithOne(s => s.Class)
                 .HasForeignKey("ClassId")
                 .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasMany(x => x.StudentEnrollments)
+                .WithOne(e => e.Class)
+                .HasForeignKey(e => e.ClassId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

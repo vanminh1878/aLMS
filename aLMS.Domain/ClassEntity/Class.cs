@@ -1,5 +1,6 @@
 ﻿// aLMS.Domain/ClassEntity/Class.cs
 using aLMS.Domain.Common;
+using aLMS.Domain.StudentClassEnrollmentEntity;
 using aLMS.Domain.SubjectEntity;
 using aLMS.Domain.TeacherProfileEntity;
 using System;
@@ -21,7 +22,7 @@ namespace aLMS.Domain.ClassEntity
 
         public bool IsDeleted { get; private set; }
         public DateTime? DeletedAt { get; private set; }
-
+        public ICollection<StudentClassEnrollment> StudentEnrollments { get; set; } = new List<StudentClassEnrollment>();
         // Domain events
         public void RaiseClassCreatedEvent()
             => AddDomainEvent(new ClassCreatedEvent(Id, ClassName, Grade, SchoolYear, SchoolId));

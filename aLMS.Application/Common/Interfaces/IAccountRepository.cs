@@ -13,6 +13,7 @@ namespace aLMS.Application.Common.Interfaces
         Task UpdateAsync(Account account);
         Task DeleteAsync(Guid id);
         Task<bool> UsernameExistsAsync(string username, Guid? excludeId = null);
+        Task<string?> GetRoleNameByAccountIdAsync(Guid accountId);
         Task<Account?> GetByRefreshTokenAsync(string refreshToken);
     }
 }
