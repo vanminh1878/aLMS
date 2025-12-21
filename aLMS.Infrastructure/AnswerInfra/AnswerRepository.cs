@@ -29,6 +29,16 @@ namespace aLMS.Infrastructure.AnswerInfra
                 FROM ""answer"" WHERE ""QuestionId"" = @questionId";
             return await conn.QueryAsync<Answer>(sql, new { questionId });
         }
+        public async Task<Answer?> GetByIdAsync(Guid id)
+        {
+            using var conn = new NpgsqlConnection(_connectionString);
+            const string sql = @"
+        SELECT ""Id"", ""AnswerContent"", ""IsCorrect"", ""OrderNumber"", ""QuestionId""
+        FROM ""answer"" 
+        WHERE ""Id"" = @id";
+
+            return await conn.QueryFirstOrDefaultAsync<Answer>(sql, new { id });
+        }
 
         public async Task AddAnswerAsync(Answer answer)
         {

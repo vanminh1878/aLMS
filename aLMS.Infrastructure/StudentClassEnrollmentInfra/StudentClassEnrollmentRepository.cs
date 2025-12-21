@@ -1,6 +1,8 @@
 ﻿using aLMS.Application.Common.Interfaces;
 using aLMS.Domain.StudentClassEnrollmentEntity;
+using Dapper;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,6 +41,20 @@ namespace aLMS.Infrastructure.StudentClassEnrollmentInfra
             });
             _context.Set<StudentClassEnrollment>().AddRange(entities);
             await _context.SaveChangesAsync();
+        }
+        public async Task<bool> IsStudentInClassAsync(Guid studentUserId, Guid classId)
+        {
+            using var conn = new NpgsqlConnection(_connectionString);
+            var sql = @"
+        SELECT EXISTS (
+            SELECT 1 
+            FROM ""student_class_enrollment"" sce
+            JOIN ""student_profile"" sp ON sce.""StudentProfileId"" = sp.""UserId""
+            WHERE sp.""UserId"" = @studentUserId 
+              AND sce.""ClassId"" = @classId
+        )";
+
+            return await conn.QuerySingleAsync<bool>(sql, new { studentUserId, classId });
         }
     }
 }

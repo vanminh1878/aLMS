@@ -13,6 +13,7 @@ namespace aLMS.Application.Common.Dtos
         public int OrderNumber { get; set; }
         public decimal TotalScore { get; set; }
         public Guid TopicId { get; set; }
+        public Guid ClassId { get; set; }
     }
 
     public class CreateExerciseDto

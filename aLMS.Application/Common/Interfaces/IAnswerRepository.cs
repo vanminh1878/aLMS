@@ -12,5 +12,6 @@ namespace aLMS.Application.Common.Interfaces
         Task UpdateAnswerAsync(Answer answer);
         Task DeleteAnswerAsync(Guid id);
         Task<bool> AnswerExistsAsync(Guid id);
+        Task<Answer?> GetByIdAsync(Guid id);
     }
 }

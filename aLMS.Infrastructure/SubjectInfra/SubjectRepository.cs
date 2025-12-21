@@ -65,5 +65,18 @@ namespace aLMS.Infrastructure.SubjectInfra
             var sql = "SELECT \"Id\", \"Name\", \"Description\", \"Category\", \"ClassId\" FROM \"subject\" WHERE \"ClassId\" = @classId";
             return await conn.QueryAsync<Subject>(sql, new { classId });
         }
+        public async Task<Subject?> GetSubjectByTopicIdAsync(Guid topicId)
+        {
+            using var conn = new NpgsqlConnection(_connectionString);
+            var sql = @"
+        SELECT s.""Id"", s.""Name"", s.""Description"", s.""Category"", s.""ClassId"", c.""ClassName""
+        FROM ""subject"" s
+        INNER JOIN ""topic"" t ON s.""Id"" = t.""SubjectId""
+        LEFT JOIN ""class"" c ON s.""ClassId"" = c.""Id""
+        WHERE t.""Id"" = @topicId";
+
+            return await conn.QuerySingleOrDefaultAsync<Subject>(sql, new { topicId });
+        }
+
     }
 }

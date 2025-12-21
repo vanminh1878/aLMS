@@ -1,4 +1,5 @@
 ﻿using aLMS.Application.Common.Dtos;
+using aLMS.Application.Common.DTOs;
 using aLMS.Application.StudentExerciseServices.Commands.StartExercise;
 using aLMS.Application.StudentExerciseServices.Commands.SubmitExercise;
 using aLMS.Application.StudentExerciseServices.Queries;
@@ -32,6 +33,31 @@ public class StudentExercisesController : ControllerBase
     public async Task<ActionResult<StudentExerciseDto>> GetResult(Guid studentExerciseId)
     {
         var result = await _mediator.Send(new GetStudentExerciseResultQuery { Id = studentExerciseId });
+        return result == null ? NotFound() : Ok(result);
+    }
+    // 1. Xem tổng quan cả lớp
+    [HttpGet("classes/{classId}/overview")]
+    public async Task<ActionResult<ClassExerciseOverviewDto>> GetClassOverview(
+        Guid exerciseId, Guid classId)
+    {
+        var result = await _mediator.Send(new GetClassExerciseOverviewQuery
+        {
+            ExerciseId = exerciseId,
+            ClassId = classId
+        });
+
+        return result == null ? NotFound("Bài tập hoặc lớp không tồn tại") : Ok(result);
+    }
+
+    // 2. Xem chi tiết bài làm của 1 học sinh
+    [HttpGet("student-exercises/{studentExerciseId}")]
+    public async Task<ActionResult<StudentExerciseDetailDto>> GetStudentDetail(Guid studentExerciseId)
+    {
+        var result = await _mediator.Send(new GetStudentExerciseDetailQuery
+        {
+            StudentExerciseId = studentExerciseId
+        });
+
         return result == null ? NotFound() : Ok(result);
     }
 }

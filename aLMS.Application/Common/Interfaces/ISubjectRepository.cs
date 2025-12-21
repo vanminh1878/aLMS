@@ -14,5 +14,6 @@ namespace aLMS.Application.Common.Interfaces
         Task DeleteSubjectAsync(Guid id);
         Task<bool> SubjectExistsAsync(Guid id);
         Task<IEnumerable<Subject>> GetSubjectsByClassIdAsync(Guid classId);
+        Task<Subject> GetSubjectByTopicIdAsync(Guid id);
     }
 }

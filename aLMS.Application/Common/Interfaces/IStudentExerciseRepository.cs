@@ -11,5 +11,6 @@ namespace aLMS.Application.Common.Interfaces
         Task<StudentExercise?> GetByIdAsync(Guid id);
         Task AddAsync(StudentExercise se);
         Task UpdateAsync(StudentExercise se);
+        Task<List<StudentExercise>> GetByExerciseAndStudentIdsAsync(Guid exerciseId, List<Guid> studentIds);
     }
 }

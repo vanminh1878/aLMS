@@ -50,5 +50,16 @@ namespace aLMS.Infrastructure.StudentExerciseInfra
             _context.Set<StudentExercise>().Update(se);
             await _context.SaveChangesAsync();
         }
+        public async Task<List<StudentExercise>> GetByExerciseAndStudentIdsAsync(Guid exerciseId, List<Guid> studentIds)
+        {
+            using var conn = new NpgsqlConnection(_connectionString);
+            var sql = @"
+        SELECT * FROM ""student_exercise"" 
+        WHERE ""ExerciseId"" = @exerciseId 
+          AND ""StudentId"" = ANY(@studentIds)
+        ORDER BY ""StartTime"" DESC";
+
+            return (await conn.QueryAsync<StudentExercise>(sql, new { exerciseId, studentIds })).ToList();
+        }
     }
 }

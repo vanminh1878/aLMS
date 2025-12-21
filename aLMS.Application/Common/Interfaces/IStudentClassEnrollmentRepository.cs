@@ -10,5 +10,6 @@ namespace aLMS.Application.Common.Interfaces
     {
         Task AddEnrollmentAsync(Guid studentProfileId, Guid classId);
         Task AddEnrollmentsAsync(IEnumerable<(Guid studentProfileId, Guid classId)> enrollments);
+        Task<bool> IsStudentInClassAsync(Guid studentUserId, Guid classId);
     }
 }

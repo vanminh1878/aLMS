@@ -35,9 +35,25 @@ namespace aLMS.Application.Common.Dtos
 
     public class StudentAnswerDto
     {
+        //public Guid QuestionId { get; set; }
+        //public Guid? AnswerId { get; set; }
+        //public string? AnswerText { get; set; }
+        //public bool IsCorrect { get; set; }
+        //public DateTime SubmittedAt { get; set; }
+        public Guid Id { get; set; }
         public Guid QuestionId { get; set; }
+        public string QuestionContent { get; set; } = string.Empty;
+        public string? QuestionImage { get; set; }
+        public string QuestionType { get; set; } = string.Empty;
+        public decimal Score { get; set; } // Điểm câu hỏi
+
         public Guid? AnswerId { get; set; }
-        public string? AnswerText { get; set; }
+        public string? SelectedAnswerContent { get; set; }
+        public string? AnswerText { get; set; } // Tự luận
+
+        public List<string> CorrectAnswerContents { get; set; } = new();
+        public string? Explanation { get; set; }
+
         public bool IsCorrect { get; set; }
         public DateTime SubmittedAt { get; set; }
     }

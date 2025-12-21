@@ -1,4 +1,5 @@
 ﻿using aLMS.Application.Common.Dtos;
+using aLMS.Application.Common.DTOs;
 using aLMS.Domain.AccountEntity;
 using aLMS.Domain.AnswerEntity;
 using aLMS.Domain.BehaviourEntity;
@@ -86,6 +87,8 @@ namespace aLMS.Application.Common.Mappings
             //StudentExercise
             CreateMap<StudentExercise, StudentExerciseDto>()
                 .ForMember(dest => dest.ExerciseTitle, opt => opt.MapFrom(src => src.Exercise.Title));
+            CreateMap<StudentExercise, StudentExerciseDetailDto>()
+    .IncludeBase<StudentExercise, StudentExerciseDto>();
 
             CreateMap<StudentAnswer, StudentAnswerDto>();
 

@@ -110,9 +110,6 @@ public class ClassRepository : IClassRepository
         }
     }
 
-
-    // Infrastructure/ClassInfra/ClassRepository.cs
-
     public async Task SoftDeleteClassAsync(Guid id)
     {
         using var connection = new NpgsqlConnection(_connectionString);
