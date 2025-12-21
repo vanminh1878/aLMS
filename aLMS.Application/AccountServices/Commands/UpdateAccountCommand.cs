@@ -53,7 +53,7 @@ namespace aLMS.Application.AccountServices.Commands.UpdateAccount
                 }
                 if (request.Dto.Password != null)
                 {
-                    account.Password = request.Dto?.Password;
+                    account.Password = BCrypt.Net.BCrypt.HashPassword(request.Dto.Password.Trim());
                 }
                
                 account.RaiseAccountUpdatedEvent();

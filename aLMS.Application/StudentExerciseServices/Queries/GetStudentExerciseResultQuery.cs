@@ -18,27 +18,31 @@ namespace aLMS.Application.StudentExerciseServices.Queries
     {
         private readonly IStudentExerciseRepository _seRepo;
         private readonly IStudentAnswerRepository _saRepo;
+        private readonly IExerciseRepository _exRepo;
         private readonly IMapper _mapper;
 
         public GetStudentExerciseResultQueryHandler(
             IStudentExerciseRepository seRepo,
             IStudentAnswerRepository saRepo,
+            IExerciseRepository exrepo,
             IMapper mapper)
         {
             _seRepo = seRepo;
             _saRepo = saRepo;
             _mapper = mapper;
+            _exRepo = exrepo;
         }
 
         public async Task<StudentExerciseDto> Handle(GetStudentExerciseResultQuery request, CancellationToken ct)
         {
             var se = await _seRepo.GetByIdAsync(request.Id);
             if (se == null) return null;
-
+            var exercise = await _exRepo.GetExerciseByIdAsync(se.ExerciseId);
+            if (exercise == null) return null;
             var answers = await _saRepo.GetByStudentExerciseIdAsync(request.Id);
             var dto = _mapper.Map<StudentExerciseDto>(se);
             dto.Answers = _mapper.Map<List<StudentAnswerDto>>(answers);
-            dto.ExerciseTitle = se.Exercise.Title;
+            dto.ExerciseTitle = exercise.Title;
             return dto;
         }
     }
