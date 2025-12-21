@@ -87,7 +87,7 @@ namespace aLMS.Application.StudentExerciseServices.Commands.SubmitExercise
                         AnswerId = dto.AnswerId ?? Guid.Empty,
                         AnswerText = dto.AnswerText,
                         IsCorrect = isCorrect,
-                        SubmittedAt = DateTime.UtcNow
+                        SubmittedAt = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Unspecified),
                     };
                     sa.RaiseSubmittedEvent();
                     studentAnswers.Add(sa);
@@ -95,7 +95,7 @@ namespace aLMS.Application.StudentExerciseServices.Commands.SubmitExercise
                     if (isCorrect) totalScore += question.Score;
                 }
 
-                se.EndTime = DateTime.UtcNow;
+                se.EndTime = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Unspecified);
                 se.Score = totalScore;
                 se.IsCompleted = true;
                 se.RaiseSubmittedEvent();

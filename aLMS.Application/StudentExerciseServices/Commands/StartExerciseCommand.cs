@@ -62,7 +62,7 @@ namespace aLMS.Application.StudentExerciseServices.Commands.StartExercise
                     Id = Guid.NewGuid(),
                     StudentId = request.StudentId,
                     ExerciseId = request.ExerciseId,
-                    StartTime = DateTime.UtcNow,
+                    StartTime = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Unspecified),
                     AttemptNumber = 1
                 };
 
