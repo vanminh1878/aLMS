@@ -29,7 +29,7 @@ public class ParentProfilesController : ControllerBase
     }
 
     [HttpGet("parent/{parentId}/children")]
-    public async Task<ActionResult<IEnumerable<ParentProfileDto>>> GetChildrenByParent(Guid parentId)
+    public async Task<ActionResult<ParentProfileDto>> GetChildrenByParent(Guid parentId)
     {
         var profiles = await _mediator.Send(new GetChildrenByParentQuery { ParentId = parentId });
         return Ok(profiles);

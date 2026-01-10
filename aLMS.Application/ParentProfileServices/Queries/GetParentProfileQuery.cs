@@ -14,7 +14,7 @@ namespace aLMS.Application.ParentProfileServices.Queries
         public Guid ParentId { get; set; }
     }
 
-    public class GetChildrenByParentQuery : IRequest<IEnumerable<ParentProfileDto>>
+    public class GetChildrenByParentQuery : IRequest<ParentProfileDto>
     {
         public Guid ParentId { get; set; }
     }
@@ -26,7 +26,7 @@ namespace aLMS.Application.ParentProfileServices.Queries
 
     public class GetParentProfileQueryHandler :
         IRequestHandler<GetParentProfileQuery, ParentProfileDto>,
-        IRequestHandler<GetChildrenByParentQuery, IEnumerable<ParentProfileDto>>,
+        IRequestHandler<GetChildrenByParentQuery, ParentProfileDto>,
         IRequestHandler<GetParentsByStudentQuery, IEnumerable<ParentProfileDto>>
     {
         private readonly IParentProfileRepository _profileRepo;
@@ -44,10 +44,10 @@ namespace aLMS.Application.ParentProfileServices.Queries
             return profile == null ? null : _mapper.Map<ParentProfileDto>(profile);
         }
 
-        public async Task<IEnumerable<ParentProfileDto>> Handle(GetChildrenByParentQuery request, CancellationToken ct)
+        public async Task<ParentProfileDto> Handle(GetChildrenByParentQuery request, CancellationToken ct)
         {
             var profiles = await _profileRepo.GetByParentIdAsync(request.ParentId);
-            return _mapper.Map<IEnumerable<ParentProfileDto>>(profiles);
+            return _mapper.Map<ParentProfileDto>(profiles);
         }
 
         public async Task<IEnumerable<ParentProfileDto>> Handle(GetParentsByStudentQuery request, CancellationToken ct)
