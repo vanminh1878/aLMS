@@ -4,8 +4,10 @@ using aLMS.Application.ClassServices.Commands.DeleteClass;
 using aLMS.Application.ClassServices.Commands.UpdateClass;
 using aLMS.Application.ClassServices.Queries;
 using aLMS.Application.Common.Dtos;
+using ClosedXML.Excel;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using System.Globalization;
 using static MassTransit.ValidationResultExtensions;
 
 [ApiController]
@@ -105,6 +107,122 @@ public class ClassesController : ControllerBase
             ? Ok(result)
             : BadRequest(result);
     }
+    // API mới - Excel
+    [HttpPost("{classId}/add-students/excel")]
+    public async Task<ActionResult<AddStudentsToClassResult>> AddStudentsFromExcel(
+        Guid classId,
+         IFormFile file,
+         [FromForm] AddStudentsFromExcelRequest request) // SchoolId truyền từ form-data
+    {
+        if (file == null || file.Length == 0)
+            return BadRequest("Vui lòng upload file Excel");
+
+        if (!file.FileName.EndsWith(".xlsx", StringComparison.OrdinalIgnoreCase))
+            return BadRequest("Chỉ hỗ trợ định dạng .xlsx");
+
+        var dtos = new List<AddStudentToClassDto>();
+        var errors = new List<string>();
+
+        try
+        {
+            using var stream = file.OpenReadStream();
+            using var workbook = new XLWorkbook(stream);
+            var worksheet = workbook.Worksheet(1); // sheet đầu tiên
+
+            // Bắt đầu từ hàng 5
+            int row = 5;
+
+            while (!worksheet.Cell(row, 2).IsEmpty()) // cột B - Họ tên HS
+            {
+                try
+                {
+                    var dto = new AddStudentToClassDto
+                    {
+                        StudentName = worksheet.Cell(row, 2).GetString().Trim(),
+                        StudentDateOfBirth = ParseDate(worksheet.Cell(row, 3).GetString()),
+                        StudentEnrollDate = ParseDate(worksheet.Cell(row, 4).GetString()),
+                        Address = worksheet.Cell(row, 5).GetString().Trim(),
+
+                        ParentName = worksheet.Cell(row, 6).GetString().Trim(),
+                        ParentDateOfBirth = ParseDate(worksheet.Cell(row, 7).GetString()),
+                        ParentGender = worksheet.Cell(row, 8).GetString().Trim(),
+                        ParentPhone = CleanPhone(worksheet.Cell(row, 9).GetString()),
+                        ParentEmail = worksheet.Cell(row, 10).GetString().Trim(),
+
+                        // Gán SchoolId từ request
+                        SchoolId = request.SchoolId
+                    };
+
+                    // Validate cơ bản
+                    if (string.IsNullOrWhiteSpace(dto.StudentName))
+                        throw new Exception("Thiếu họ tên học sinh");
+                    if (string.IsNullOrWhiteSpace(dto.ParentName))
+                        throw new Exception("Thiếu họ tên phụ huynh");
+                    if (string.IsNullOrWhiteSpace(dto.ParentPhone))
+                        throw new Exception("Thiếu số điện thoại phụ huynh");
+
+                    dtos.Add(dto);
+                }
+                catch (Exception ex)
+                {
+                    errors.Add($"Dòng {row}: {ex.Message}");
+                }
+
+                row++;
+            }
+
+            if (!dtos.Any())
+                return BadRequest("Không tìm thấy dữ liệu học sinh nào trong file Excel (từ hàng 5 trở đi)");
+
+            if (errors.Any())
+            {
+                return BadRequest(new
+                {
+                    Message = "File Excel có lỗi ở một số dòng",
+                    Errors = errors,
+                    TotalRowsRead = row - 5,
+                    ValidRows = dtos.Count
+                });
+            }
+        }
+        catch (Exception ex)
+        {
+            return BadRequest($"Không thể đọc file Excel: {ex.Message}");
+        }
+
+        // Gửi command giống API cũ
+        var command = new AddStudentsToClassCommand
+        {
+            ClassId = classId,
+            Students = dtos
+        };
+
+        var result = await _mediator.Send(command);
+
+        // Có thể thêm thông tin từ Excel vào result nếu muốn
+        if (errors.Any())
+        {
+            result.Message += $"\n(Lưu ý: Excel có {errors.Count} dòng lỗi nhưng vẫn xử lý {dtos.Count} học sinh hợp lệ)";
+        }
+
+        return result.Success ? Ok(result) : BadRequest(result);
+    }
+
+    private static DateTime ParseDate(string value)
+    {
+        var formats = new[] { "dd/MM/yyyy", "dd-MM-yyyy", "d/M/yyyy", "d-M-yyyy" };
+        if (DateTime.TryParseExact(value.Trim(), formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out var date))
+            return date.Date;
+
+        throw new Exception($"Định dạng ngày không hợp lệ: '{value}' (mong đợi dd/MM/yyyy)");
+    }
+
+    private static string CleanPhone(string phone)
+    {
+        return string.IsNullOrWhiteSpace(phone)
+            ? ""
+            : phone.Replace(" ", "").Replace("-", "").Replace(".", "").Replace("+84", "0").Trim();
+    }
     [HttpGet("by-student/{studentId:guid}")]
     public async Task<ActionResult<IEnumerable<ClassDto>>> GetClassesByStudentId(Guid studentId)
     {
@@ -116,5 +234,10 @@ public class ClassesController : ControllerBase
         }
 
         return Ok(result);
+    }
+    public class AddStudentsFromExcelRequest
+    {
+        public IFormFile File { get; set; } = null!;
+        public Guid SchoolId { get; set; }
     }
 }
