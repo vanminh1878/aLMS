@@ -8,13 +8,11 @@ using aLMS.Domain.UserEntity;
 using MediatR;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace aLMS.Application.ClassServices.Commands.AddStudentsToClass
 {
-    // AddStudentsToClassCommandHandler.cs
     public class AddStudentsToClassCommandHandler : IRequestHandler<AddStudentsToClassCommand, AddStudentsToClassResult>
     {
         private readonly IClassRepository _classRepo;
@@ -24,6 +22,8 @@ namespace aLMS.Application.ClassServices.Commands.AddStudentsToClass
         private readonly IParentProfileRepository _parentRepo;
         private readonly IRoleRepository _roleRepo;
         private readonly IStudentClassEnrollmentRepository _enrollmentRepo;
+        private readonly IUnitOfWork _unitOfWork; // ← Thêm vào đây
+
         public AddStudentsToClassCommandHandler(
             IClassRepository classRepo,
             IUsersRepository userRepo,
@@ -31,7 +31,8 @@ namespace aLMS.Application.ClassServices.Commands.AddStudentsToClass
             IStudentProfileRepository studentRepo,
             IParentProfileRepository parentRepo,
             IRoleRepository roleRepo,
-            IStudentClassEnrollmentRepository enrollmentRepo)
+            IStudentClassEnrollmentRepository enrollmentRepo,
+            IUnitOfWork unitOfWork) // ← Inject thêm
         {
             _classRepo = classRepo;
             _userRepo = userRepo;
@@ -40,6 +41,7 @@ namespace aLMS.Application.ClassServices.Commands.AddStudentsToClass
             _parentRepo = parentRepo;
             _roleRepo = roleRepo;
             _enrollmentRepo = enrollmentRepo;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<AddStudentsToClassResult> Handle(AddStudentsToClassCommand request, CancellationToken ct)
@@ -72,18 +74,21 @@ namespace aLMS.Application.ClassServices.Commands.AddStudentsToClass
             // Lấy STT tiếp theo trong lớp
             int nextStt = await _studentRepo.GetMaxStudentOrderInClass(request.ClassId) + 1;
 
-            foreach (var dto in request.Students)
+            // BẮT ĐẦU TRANSACTION
+            await _unitOfWork.BeginTransactionAsync(ct);
+
+            try
             {
-                try
+                foreach (var dto in request.Students)
                 {
                     var studentDob = dto.StudentDateOfBirth.Date;
-                    var ParentDob = dto.ParentDateOfBirth.Date;
-                    var studentPassword = studentDob.ToString("ddMMyyyy"); // 15092012
-                    var ParentPassword = ParentDob.ToString("ddMMyyyy"); // 15092012
-                    var studentUsername = $"{yearPrefix}{classCode}{nextStt:D4}"; // 2410A1001
+                    var parentDob = dto.ParentDateOfBirth.Date;
+                    var studentPassword = studentDob.ToString("ddMMyyyy");
+                    var parentPassword = parentDob.ToString("ddMMyyyy");
+                    var studentUsername = $"{yearPrefix}{classCode}{nextStt:D4}";
                     var parentPhone = dto.ParentPhone.Trim().Replace(" ", "").Replace("-", "");
 
-                    // Kiểm tra trùng username
+                    // Kiểm tra trùng lặp (vẫn throw exception để rollback)
                     if (await _accRepo.UsernameExistsAsync(studentUsername))
                         throw new Exception($"Username học sinh {studentUsername} đã tồn tại");
 
@@ -112,10 +117,7 @@ namespace aLMS.Application.ClassServices.Commands.AddStudentsToClass
                         Gender = dto.Gender ?? "Nam",
                         RoleId = studentRoleId.Value,
                         SchoolId = dto.SchoolId,
-                        //PhoneNumber = parentPhone,
-                        //Email = string.IsNullOrWhiteSpace(dto.ParentEmail) ? null : dto.ParentEmail.Trim(),
                         Address = dto.Address,
-
                     };
                     await _userRepo.AddAsync(studentUser);
 
@@ -124,14 +126,11 @@ namespace aLMS.Application.ClassServices.Commands.AddStudentsToClass
                     {
                         UserId = studentUser.Id,
                         SchoolId = dto.SchoolId,
-                        EnrollDate = dto.StudentEnrollDate.Date // Dùng ngày nhập học từ DTO
+                        EnrollDate = dto.StudentEnrollDate.Date
                     };
                     await _studentRepo.AddAsync(studentProfile);
 
                     // === TẠO ACCOUNT + USER PHỤ HUYNH ===
-                    var parentDob = dto.ParentDateOfBirth.Date;
-                    var parentPassword = ParentPassword; 
-
                     var parentAccount = new Account
                     {
                         Id = Guid.NewGuid(),
@@ -163,14 +162,11 @@ namespace aLMS.Application.ClassServices.Commands.AddStudentsToClass
                         StudentId = studentUser.Id
                     };
                     await _parentRepo.AddAsync(parentProfile);
-  
-                    var enrollment = new StudentClassEnrollment
-                    {
-                        StudentProfileId = studentProfile.UserId,  
-                        ClassId = request.ClassId
-                    };
+
+                    // === TẠO ENROLLMENT ===
                     await _enrollmentRepo.AddEnrollmentAsync(studentProfile.UserId, request.ClassId);
 
+                    // Ghi nhận thành công
                     result.CreatedStudents.Add(new StudentCreationResult
                     {
                         StudentName = dto.StudentName,
@@ -183,16 +179,24 @@ namespace aLMS.Application.ClassServices.Commands.AddStudentsToClass
 
                     nextStt++;
                 }
-                catch (Exception ex)
-                {
-                    result.Errors.Add($"{dto.StudentName}: {ex.Message}");
-                }
-            }
 
-            result.Success = result.Errors.Count == 0;
-            result.Message = result.Success
-                ? $"Thêm thành công {result.SuccessCount} học sinh vào lớp {cls.ClassName}"
-                : $"Thành công: {result.SuccessCount}, Lỗi: {result.ErrorCount}";
+                // Nếu đến đây → mọi thứ ok → commit
+                await _unitOfWork.CommitTransactionAsync(ct);
+
+                result.Success = true;
+                result.Message = $"Thêm thành công {result.CreatedStudents.Count} học sinh vào lớp {cls.ClassName}";
+            }
+            catch (Exception ex)
+            {
+                // Có lỗi → rollback toàn bộ
+                await _unitOfWork.RollbackTransactionAsync(ct);
+
+                result.Success = false;
+                result.Message = "Có lỗi xảy ra khi thêm học sinh. Toàn bộ thao tác đã được hủy.";
+                result.Errors.Add($"Lỗi tổng thể: {ex.Message}");
+
+                // Nếu muốn chi tiết hơn, có thể log ex ở đây
+            }
 
             return result;
         }
