@@ -34,10 +34,6 @@ namespace aLMS.Infrastructure.ClassInfra
                 .HasForeignKey<Class>(x => x.HomeroomTeacherId)
                 .OnDelete(DeleteBehavior.SetNull);
 
-            builder.HasMany(x => x.Subjects)
-                .WithOne(s => s.Class)
-                .HasForeignKey("ClassId")
-                .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasMany(x => x.StudentEnrollments)
                 .WithOne(e => e.Class)

@@ -1,4 +1,5 @@
 ﻿using aLMS.Domain.ClassEntity;
+using aLMS.Domain.ClassSubjectEntity;
 using aLMS.Domain.Common;
 using aLMS.Domain.TopicEntity;
 using System;
@@ -15,18 +16,16 @@ namespace aLMS.Domain.SubjectEntity
         public string Description { get; set; }
         public string Category { get; set; }
 
-        public Guid ClassId { get; set; }
-        public Class Class { get; set; }
-
         public ICollection<Topic> Topics { get; set; }
+        public ICollection<ClassSubject> ClassSubjects { get; set; }
         public void RaiseSubjectCreatedEvent()
         {
-            AddDomainEvent(new SubjectCreatedEvent(Id, Name, ClassId));
+            AddDomainEvent(new SubjectCreatedEvent(Id, Name));
         }
 
         public void RaiseSubjectUpdatedEvent()
         {
-            AddDomainEvent(new SubjectUpdatedEvent(Id, Name, ClassId));
+            AddDomainEvent(new SubjectUpdatedEvent(Id, Name));
         }
 
         public void RaiseSubjectDeletedEvent()

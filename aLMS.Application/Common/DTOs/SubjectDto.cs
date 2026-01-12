@@ -8,7 +8,6 @@ namespace aLMS.Application.Common.Dtos
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public string Category { get; set; } = string.Empty;
-        public Guid ClassId { get; set; }
     }
 
     public class CreateSubjectDto
@@ -16,7 +15,6 @@ namespace aLMS.Application.Common.Dtos
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public string Category { get; set; } = string.Empty;
-        public Guid ClassId { get; set; }
     }
 
     public class UpdateSubjectDto
@@ -25,6 +23,5 @@ namespace aLMS.Application.Common.Dtos
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public string Category { get; set; } = string.Empty;
-        public Guid ClassId { get; set; }
     }
 }

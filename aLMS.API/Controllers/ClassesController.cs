@@ -3,7 +3,10 @@ using aLMS.Application.ClassServices.Commands.CreateClass;
 using aLMS.Application.ClassServices.Commands.DeleteClass;
 using aLMS.Application.ClassServices.Commands.UpdateClass;
 using aLMS.Application.ClassServices.Queries;
+using aLMS.Application.ClassSubjectServices.Commands.AddSubjectToClass;
+using aLMS.Application.ClassSubjectServices.Queries;
 using aLMS.Application.Common.Dtos;
+using aLMS.Application.SubjectServices.Queries;
 using ClosedXML.Excel;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -19,6 +22,32 @@ public class ClassesController : ControllerBase
     public ClassesController(IMediator mediator)
     {
         _mediator = mediator;
+    }
+    [HttpPost("{classId}/subjects")]
+    public async Task<ActionResult<Guid>> AddSubjectToClass(Guid classId, [FromBody] AddSubjectToClassDto dto)
+    {
+        var command = new AddSubjectToClassCommand
+        {
+            ClassId = classId,
+            SubjectId = dto.SubjectId,
+            SchoolYear = dto.SchoolYear
+        };
+
+        var result = await _mediator.Send(command);
+
+        if (!result.Success)
+        {
+            return BadRequest(result.Message);
+        }
+
+        return CreatedAtAction(nameof(GetSubjectsByClassId), new { classId }, result.ClassSubjectId);
+    }
+
+    [HttpGet("{classId}/subjects")]
+    public async Task<ActionResult<IEnumerable<ClassSubjectDto>>> GetSubjectsByClassId(Guid classId)
+    {
+        var subjects = await _mediator.Send(new GetSubjectsByClassQuery { ClassId = classId });
+        return Ok(subjects);
     }
 
     [HttpGet]

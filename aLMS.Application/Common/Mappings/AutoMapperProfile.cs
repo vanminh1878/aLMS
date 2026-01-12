@@ -4,6 +4,7 @@ using aLMS.Domain.AccountEntity;
 using aLMS.Domain.AnswerEntity;
 using aLMS.Domain.BehaviourEntity;
 using aLMS.Domain.ClassEntity;
+using aLMS.Domain.ClassSubjectEntity;
 using aLMS.Domain.DepartmentEntity;
 using aLMS.Domain.ExerciseEntity;
 using aLMS.Domain.LessonEntity;
@@ -166,6 +167,9 @@ namespace aLMS.Application.Common.Mappings
 
             // Behaviour
             CreateMap<Behaviour, BehaviourDto>();
+
+            CreateMap<CreateClassSubjectDto, ClassSubject>();
+            CreateMap<ClassSubject, ClassSubjectDto>();
         }
     }
 }

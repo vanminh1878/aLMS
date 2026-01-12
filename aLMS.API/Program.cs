@@ -5,6 +5,7 @@ using aLMS.Infrastructure.AccountInfra;
 using aLMS.Infrastructure.AnswerInfra;
 using aLMS.Infrastructure.BehaviourInfra;
 using aLMS.Infrastructure.ClassInfra;
+using aLMS.Infrastructure.ClassSubjectInfra;
 using aLMS.Infrastructure.Common;
 using aLMS.Infrastructure.DepartmentInfra;
 using aLMS.Infrastructure.ExerciseInfra;
@@ -24,6 +25,7 @@ using aLMS.Infrastructure.SubjectInfra;
 using aLMS.Infrastructure.TeacherProfileInfra;
 using aLMS.Infrastructure.TopicInfra;
 using aLMS.Infrastructure.UserInfra;
+using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Localization;
@@ -68,7 +70,11 @@ namespace aLMS.API
        
                 builder.Services.AddHttpContextAccessor();
 
-
+                builder.Services.AddScoped<IClassSubjectRepository>(provider =>
+                    new ClassSubjectRepository(
+                        provider.GetRequiredService<aLMSDbContext>(),
+                        provider.GetRequiredService<IConfiguration>().GetConnectionString("DefaultConnection")
+                            ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.")));
                 builder.Services.AddScoped<IUsersRepository>(provider =>
                     new UsersRepository(
                         provider.GetRequiredService<aLMSDbContext>(),

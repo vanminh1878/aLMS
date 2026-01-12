@@ -35,16 +35,16 @@ public class GetExercisesByLessonIdQueryHandler : IRequestHandler<GetExercisesBy
         // 2. Lấy Subject từ TopicId → lấy ClassId
         var subject = await _subjectrepo.GetSubjectByTopicIdAsync(request.TopicId);
 
-        Guid classId = subject.ClassId;
+        //Guid classId = subject.ClassId;
 
         // 3. Map sang DTO
         var exerciseDtos = _mapper.Map<IEnumerable<ExerciseDto>>(exercises);
 
         // 4. Gán ClassId và ClassName cho từng exercise (vì tất cả cùng 1 lớp)
-        foreach (var dto in exerciseDtos)
-        {
-            dto.ClassId = classId;
-        }
+        //foreach (var dto in exerciseDtos)
+        //{
+        //    dto.ClassId = classId;
+        //}
 
         return exerciseDtos;
     }

@@ -27,13 +27,6 @@ namespace aLMS.Infrastructure.AccountInfra
                 .HasMaxLength(50)
                 .HasColumnType("varchar(50)");
 
-            builder.Property(x => x.ClassId)
-                .HasColumnType("uuid");
-
-            builder.HasOne(x => x.Class)
-                .WithMany()
-                .HasForeignKey(x => x.ClassId)
-                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

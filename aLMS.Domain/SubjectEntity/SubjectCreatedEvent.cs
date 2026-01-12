@@ -7,13 +7,11 @@ namespace aLMS.Domain.SubjectEntity
     {
         public Guid SubjectId { get; }
         public string Name { get; }
-        public Guid ClassId { get; }
 
-        public SubjectCreatedEvent(Guid subjectId, string name, Guid classId)
+        public SubjectCreatedEvent(Guid subjectId, string name)
         {
             SubjectId = subjectId;
             Name = name;
-            ClassId = classId;
         }
     }
 
@@ -23,11 +21,10 @@ namespace aLMS.Domain.SubjectEntity
         public string Name { get; }
         public Guid ClassId { get; }
 
-        public SubjectUpdatedEvent(Guid subjectId, string name, Guid classId)
+        public SubjectUpdatedEvent(Guid subjectId, string name)
         {
             SubjectId = subjectId;
             Name = name;
-            ClassId = classId;
         }
     }
 

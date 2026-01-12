@@ -24,14 +24,14 @@ namespace aLMS.Infrastructure.SubjectInfra
         public async Task<IEnumerable<Subject>> GetAllSubjectsAsync()
         {
             using var conn = new NpgsqlConnection(_connectionString);
-            var sql = "SELECT \"Id\", \"Name\", \"Description\", \"Category\", \"ClassId\" FROM \"subject\"";
+            var sql = "SELECT \"Id\", \"Name\", \"Description\", \"Category\" FROM \"subject\""; 
             return await conn.QueryAsync<Subject>(sql);
         }
 
         public async Task<Subject> GetSubjectByIdAsync(Guid id)
         {
             using var conn = new NpgsqlConnection(_connectionString);
-            var sql = "SELECT \"Id\", \"Name\", \"Description\", \"Category\", \"ClassId\" FROM \"subject\" WHERE \"Id\" = @id";
+            var sql = "SELECT \"Id\", \"Name\", \"Description\", \"Category\" FROM \"subject\" WHERE \"Id\" = @id"; 
             return await conn.QuerySingleOrDefaultAsync<Subject>(sql, new { id });
         }
 
@@ -59,10 +59,27 @@ namespace aLMS.Infrastructure.SubjectInfra
             return await _context.Set<Subject>().AnyAsync(s => s.Id == id);
         }
 
+        //public async Task<IEnumerable<Subject>> GetSubjectsByClassIdAsync(Guid classId)
+        //{
+        //    using var conn = new NpgsqlConnection(_connectionString);
+        //    var sql = "SELECT \"Id\", \"Name\", \"Description\", \"Category\", \"ClassId\" FROM \"subject\" WHERE \"ClassId\" = @classId";
+        //    return await conn.QueryAsync<Subject>(sql, new { classId });
+        //}
         public async Task<IEnumerable<Subject>> GetSubjectsByClassIdAsync(Guid classId)
         {
             using var conn = new NpgsqlConnection(_connectionString);
-            var sql = "SELECT \"Id\", \"Name\", \"Description\", \"Category\", \"ClassId\" FROM \"subject\" WHERE \"ClassId\" = @classId";
+
+            var sql = @"
+                        SELECT s.""Id"",
+                               s.""Name"",
+                               s.""Description"",
+                               s.""Category""
+                        FROM ""subject"" s
+                        INNER JOIN ""class_subject"" cs 
+                            ON s.""Id"" = cs.""SubjectId""
+                        WHERE cs.""ClassId"" = @classId
+                    ";
+
             return await conn.QueryAsync<Subject>(sql, new { classId });
         }
         public async Task<Subject?> GetSubjectByTopicIdAsync(Guid topicId)
