@@ -24,6 +24,7 @@ using aLMS.Infrastructure.StudentExerciseInfra;
 using aLMS.Infrastructure.StudentProfileInfra;
 using aLMS.Infrastructure.SubjectInfra;
 using aLMS.Infrastructure.TeacherProfileInfra;
+using aLMS.Infrastructure.TimetableInfra;
 using aLMS.Infrastructure.TopicInfra;
 using aLMS.Infrastructure.UserInfra;
 using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
@@ -73,6 +74,11 @@ namespace aLMS.API
 
                 builder.Services.AddScoped<IClassSubjectRepository>(provider =>
                     new ClassSubjectRepository(
+                        provider.GetRequiredService<aLMSDbContext>(),
+                        provider.GetRequiredService<IConfiguration>().GetConnectionString("DefaultConnection")
+                            ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.")));
+                builder.Services.AddScoped<ITimetableRepository>(provider =>
+                    new TimetableRepository(
                         provider.GetRequiredService<aLMSDbContext>(),
                         provider.GetRequiredService<IConfiguration>().GetConnectionString("DefaultConnection")
                             ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.")));

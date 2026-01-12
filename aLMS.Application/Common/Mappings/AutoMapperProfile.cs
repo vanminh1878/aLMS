@@ -19,6 +19,7 @@ using aLMS.Domain.StudentExerciseEntity;
 using aLMS.Domain.StudentProfileEntity;
 using aLMS.Domain.SubjectEntity;
 using aLMS.Domain.TeacherProfileEntity;
+using aLMS.Domain.TimetableEntity;
 using aLMS.Domain.TopicEntity;
 using aLMS.Domain.UserEntity;
 using AutoMapper;
@@ -174,6 +175,29 @@ namespace aLMS.Application.Common.Mappings
             CreateMap<ClassSubjectTeacher, ClassSubjectTeacherDto>();
             CreateMap<AddClassSubjectTeacherDto, ClassSubjectTeacher>();
 
+            CreateMap<Timetable, TimetableDto>()
+    .ForMember(dest => dest.ClassName, opt => opt.MapFrom(src => src.Class.ClassName))
+    .ForMember(dest => dest.SubjectName, opt => opt.MapFrom(src => src.Subject.Name));
+
+            // Create/Update DTO → Entity
+            CreateMap<CreateTimetableDto, Timetable>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore())
+                .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
+                .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore())
+                .ForMember(dest => dest.Class, opt => opt.Ignore())
+                .ForMember(dest => dest.Subject, opt => opt.Ignore())
+                .ForMember(dest => dest.Teacher, opt => opt.Ignore());
+
+            CreateMap<UpdateTimetableDto, Timetable>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore())
+                .ForMember(dest => dest.ClassId, opt => opt.Ignore())
+                .ForMember(dest => dest.SubjectId, opt => opt.Ignore())
+                .ForMember(dest => dest.TeacherId, opt => opt.Ignore())
+                .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
+                .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore())
+                .ForMember(dest => dest.Class, opt => opt.Ignore())
+                .ForMember(dest => dest.Subject, opt => opt.Ignore())
+                .ForMember(dest => dest.Teacher, opt => opt.Ignore());
         }
     }
 }
