@@ -6,6 +6,7 @@ using aLMS.Infrastructure.AnswerInfra;
 using aLMS.Infrastructure.BehaviourInfra;
 using aLMS.Infrastructure.ClassInfra;
 using aLMS.Infrastructure.ClassSubjectInfra;
+using aLMS.Infrastructure.ClassSubjectTeacherInfra;
 using aLMS.Infrastructure.Common;
 using aLMS.Infrastructure.DepartmentInfra;
 using aLMS.Infrastructure.ExerciseInfra;
@@ -75,6 +76,11 @@ namespace aLMS.API
                         provider.GetRequiredService<aLMSDbContext>(),
                         provider.GetRequiredService<IConfiguration>().GetConnectionString("DefaultConnection")
                             ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.")));
+                builder.Services.AddScoped<IClassSubjectTeacherRepository>(provider =>
+                   new ClassSubjectTeacherRepository(
+                       provider.GetRequiredService<aLMSDbContext>(),
+                       provider.GetRequiredService<IConfiguration>().GetConnectionString("DefaultConnection")
+                           ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.")));
                 builder.Services.AddScoped<IUsersRepository>(provider =>
                     new UsersRepository(
                         provider.GetRequiredService<aLMSDbContext>(),

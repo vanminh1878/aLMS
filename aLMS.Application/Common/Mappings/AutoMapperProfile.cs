@@ -170,6 +170,10 @@ namespace aLMS.Application.Common.Mappings
 
             CreateMap<CreateClassSubjectDto, ClassSubject>();
             CreateMap<ClassSubject, ClassSubjectDto>();
+
+            CreateMap<ClassSubjectTeacher, ClassSubjectTeacherDto>();
+            CreateMap<AddClassSubjectTeacherDto, ClassSubjectTeacher>();
+
         }
     }
 }
