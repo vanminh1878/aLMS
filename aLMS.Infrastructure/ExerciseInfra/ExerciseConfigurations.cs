@@ -44,6 +44,10 @@ namespace aLMS.Infrastructure.AccountInfra
             builder.Property(x => x.TopicId)
                 .HasColumnType("uuid");
 
+            builder.Property(x => x.Type)
+                .HasColumnType("varchar(30)")
+                .HasDefaultValue("practice");
+
             builder.HasOne(x => x.Topic)
                 .WithMany(x => x.Exercises)
                 .HasForeignKey(x => x.TopicId)

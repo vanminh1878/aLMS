@@ -16,6 +16,7 @@ namespace aLMS.Domain.ExerciseEntity
         public string? ExerciseFile { get; set; }
         public bool HasTimeLimit { get; set; } = false;
         public int? TimeLimit { get; set; }
+        public string Type { get; set; }
         public string QuestionLayout { get; set; }
         public int OrderNumber { get; set; }
         public decimal TotalScore { get; set; }

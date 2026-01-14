@@ -8,20 +8,26 @@ using aLMS.Domain.ClassSubjectEntity;
 using aLMS.Domain.DepartmentEntity;
 using aLMS.Domain.ExerciseEntity;
 using aLMS.Domain.LessonEntity;
+using aLMS.Domain.NotificationEntity;
 using aLMS.Domain.ParentProfileEntity;
 using aLMS.Domain.PermissionEntity;
+using aLMS.Domain.QualityEntity;
 using aLMS.Domain.QuestionEntity;
 using aLMS.Domain.RoleEntity;
 using aLMS.Domain.RolePermissionEntity;
 using aLMS.Domain.SchoolEntity;
 using aLMS.Domain.StudentAnswerEntity;
+using aLMS.Domain.StudentEvaluationEntity;
 using aLMS.Domain.StudentExerciseEntity;
 using aLMS.Domain.StudentProfileEntity;
+using aLMS.Domain.StudentQualityEvaluationEntity;
+using aLMS.Domain.StudentSubjectCommentEntity;
 using aLMS.Domain.SubjectEntity;
 using aLMS.Domain.TeacherProfileEntity;
 using aLMS.Domain.TimetableEntity;
 using aLMS.Domain.TopicEntity;
 using aLMS.Domain.UserEntity;
+using aLMS.Domain.VirtualClassroomEntity;
 using AutoMapper;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -174,6 +180,34 @@ namespace aLMS.Application.Common.Mappings
 
             CreateMap<ClassSubjectTeacher, ClassSubjectTeacherDto>();
             CreateMap<AddClassSubjectTeacherDto, ClassSubjectTeacher>();
+
+            // StudentEvaluation
+            CreateMap<CreateStudentEvaluationDto, StudentEvaluation>();
+            CreateMap<UpdateStudentEvaluationDto, StudentEvaluation>();
+            CreateMap<StudentEvaluation, StudentEvaluationDto>();
+
+            // Quality
+            CreateMap<CreateQualityDto, Quality>();
+            CreateMap<UpdateQualityDto, Quality>();
+            CreateMap<Quality, QualityDto>();
+
+            // StudentQualityEvaluation
+            CreateMap<CreateStudentQualityEvaluationDto, StudentQualityEvaluation>();
+            CreateMap<StudentQualityEvaluation, StudentQualityEvaluationDto>();
+
+            // StudentSubjectComment
+            CreateMap<CreateStudentSubjectCommentDto, StudentSubjectComment>();
+            CreateMap<StudentSubjectComment, StudentSubjectCommentDto>();
+
+            // VirtualClassroom
+            CreateMap<CreateVirtualClassroomDto, VirtualClassroom>();
+            CreateMap<UpdateVirtualClassroomDto, VirtualClassroom>();
+            CreateMap<VirtualClassroom, VirtualClassroomDto>();
+
+            // Notification
+            CreateMap<CreateNotificationDto, Notification>();
+            CreateMap<UpdateNotificationDto, Notification>();
+            CreateMap<Notification, NotificationDto>();
 
             CreateMap<Timetable, TimetableDto>()
     .ForMember(dest => dest.ClassName, opt => opt.MapFrom(src => src.Class.ClassName))
