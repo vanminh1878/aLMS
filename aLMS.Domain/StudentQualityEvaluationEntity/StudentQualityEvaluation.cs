@@ -18,5 +18,9 @@ namespace aLMS.Domain.StudentQualityEvaluationEntity
         public Quality Quality { get; set; }
 
         public string QualityLevel { get; set; } // Tốt, Khá,...
+        public void RaiseCreatedEvent()
+        {
+            AddDomainEvent(new StudentQualityEvaluationCreatedEvent(Id, StudentEvaluationId, QualityId));
+        }
     }
 }

@@ -31,5 +31,19 @@ namespace aLMS.Domain.StudentEvaluationEntity
 
         public ICollection<StudentSubjectComment> SubjectComments { get; set; } = new List<StudentSubjectComment>();
         public ICollection<StudentQualityEvaluation> QualityEvaluations { get; set; } = new List<StudentQualityEvaluation>();
+        public void RaiseCreatedEvent()
+        {
+            AddDomainEvent(new StudentEvaluationCreatedEvent(Id, StudentId, ClassId));
+        }
+
+        public void RaiseUpdatedEvent()
+        {
+            AddDomainEvent(new StudentEvaluationUpdatedEvent(Id));
+        }
+
+        public void RaiseDeletedEvent()
+        {
+            AddDomainEvent(new StudentEvaluationDeletedEvent(Id));
+        }
     }
 }

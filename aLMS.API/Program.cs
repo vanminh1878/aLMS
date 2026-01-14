@@ -21,8 +21,11 @@ using aLMS.Infrastructure.SchoolInfra;
 using aLMS.Infrastructure.StatisticsInfra;
 using aLMS.Infrastructure.StudentAnswerInfra;
 using aLMS.Infrastructure.StudentClassEnrollmentInfra;
+using aLMS.Infrastructure.StudentEvaluationInfra;
 using aLMS.Infrastructure.StudentExerciseInfra;
 using aLMS.Infrastructure.StudentProfileInfra;
+using aLMS.Infrastructure.StudentQualityEvaluationInfra;
+using aLMS.Infrastructure.StudentSubjectCommentInfra;
 using aLMS.Infrastructure.SubjectInfra;
 using aLMS.Infrastructure.TeacherProfileInfra;
 using aLMS.Infrastructure.TimetableInfra;
@@ -248,6 +251,24 @@ namespace aLMS.API
                     ));
                 builder.Services.AddScoped<INotificationRepository>(provider =>
                     new NotificationRepository(
+                        provider.GetRequiredService<aLMSDbContext>(),
+                        provider.GetRequiredService<IConfiguration>().GetConnectionString("DefaultConnection")
+                            ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.")
+                    ));
+                builder.Services.AddScoped<IStudentEvaluationRepository>(provider =>
+                    new StudentEvaluationRepository(
+                        provider.GetRequiredService<aLMSDbContext>(),
+                        provider.GetRequiredService<IConfiguration>().GetConnectionString("DefaultConnection")
+                            ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.")
+                    ));
+                builder.Services.AddScoped<IStudentSubjectCommentRepository>(provider =>
+                    new StudentSubjectCommentRepository(
+                        provider.GetRequiredService<aLMSDbContext>(),
+                        provider.GetRequiredService<IConfiguration>().GetConnectionString("DefaultConnection")
+                            ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.")
+                    ));
+                builder.Services.AddScoped<IStudentQualityEvaluationRepository>(provider =>
+                    new StudentQualityEvaluationRepository(
                         provider.GetRequiredService<aLMSDbContext>(),
                         provider.GetRequiredService<IConfiguration>().GetConnectionString("DefaultConnection")
                             ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.")
