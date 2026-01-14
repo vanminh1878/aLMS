@@ -27,6 +27,7 @@ using aLMS.Infrastructure.TeacherProfileInfra;
 using aLMS.Infrastructure.TimetableInfra;
 using aLMS.Infrastructure.TopicInfra;
 using aLMS.Infrastructure.UserInfra;
+using aLMS.Infrastructure.VirtualClassroomInfra;
 using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -238,9 +239,15 @@ namespace aLMS.API
                         provider.GetRequiredService<IConfiguration>().GetConnectionString("DefaultConnection")
                             ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.")
                     ));
+                builder.Services.AddScoped<IVirtualClassroomRepository>(provider =>
+                    new VirtualClassroomRepository(
+                        provider.GetRequiredService<aLMSDbContext>(),
+                        provider.GetRequiredService<IConfiguration>().GetConnectionString("DefaultConnection")
+                            ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.")
+                    ));
 
 
-  
+
                 builder.Services.AddCors(options =>
                 {
                     options.AddPolicy("AllowReactApp", policy =>
