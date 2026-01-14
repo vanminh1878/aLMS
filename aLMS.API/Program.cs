@@ -11,6 +11,7 @@ using aLMS.Infrastructure.Common;
 using aLMS.Infrastructure.DepartmentInfra;
 using aLMS.Infrastructure.ExerciseInfra;
 using aLMS.Infrastructure.LessonInfra;
+using aLMS.Infrastructure.NotificationInfra;
 using aLMS.Infrastructure.ParentProfileInfra;
 using aLMS.Infrastructure.PermissionInfra;
 using aLMS.Infrastructure.QuestionInfra;
@@ -241,6 +242,12 @@ namespace aLMS.API
                     ));
                 builder.Services.AddScoped<IVirtualClassroomRepository>(provider =>
                     new VirtualClassroomRepository(
+                        provider.GetRequiredService<aLMSDbContext>(),
+                        provider.GetRequiredService<IConfiguration>().GetConnectionString("DefaultConnection")
+                            ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.")
+                    ));
+                builder.Services.AddScoped<INotificationRepository>(provider =>
+                    new NotificationRepository(
                         provider.GetRequiredService<aLMSDbContext>(),
                         provider.GetRequiredService<IConfiguration>().GetConnectionString("DefaultConnection")
                             ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.")
