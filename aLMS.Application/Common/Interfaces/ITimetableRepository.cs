@@ -1,4 +1,5 @@
-﻿using aLMS.Domain.TimetableEntity;
+﻿using aLMS.Application.Common.Dtos;
+using aLMS.Domain.TimetableEntity;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -13,7 +14,7 @@ namespace aLMS.Application.Common.Interfaces
         Task<Timetable?> GetByIdAsync(Guid id);
         Task<bool> HasConflictForClassAsync(Guid classId, short dayOfWeek, short periodNumber);
         Task<bool> HasConflictForTeacherAsync(Guid teacherId, short dayOfWeek, short periodNumber);
-        Task<IEnumerable<Timetable>> GetByClassIdAsync(Guid classId, string? schoolYear);
+        Task<IEnumerable<TimetableDto>> GetByClassIdAsync(Guid classId, string? schoolYear);
         Task<IEnumerable<Timetable>> GetByTeacherIdAsync(Guid teacherId, string? schoolYear);
         Task<IEnumerable<Timetable>> GetByStudentIdAsync(Guid studentId, string? schoolYear); // Qua lớp của HS
     }

@@ -1,4 +1,5 @@
-﻿using aLMS.Application.Common.Interfaces;
+﻿using aLMS.Application.Common.Dtos;
+using aLMS.Application.Common.Interfaces;
 using aLMS.Domain.ClassSubjectEntity;
 using Dapper;
 using Microsoft.EntityFrameworkCore;
@@ -48,16 +49,36 @@ namespace aLMS.Infrastructure.ClassSubjectTeacherInfra
             return await conn.QuerySingleOrDefaultAsync<ClassSubjectTeacher>(sql, new { classSubjectId, teacherId, schoolYear });
         }
 
-        public async Task<IEnumerable<ClassSubjectTeacher>> GetTeachersByClassSubjectAsync(Guid classSubjectId)
+        public async Task<IEnumerable<ClassSubjectTeacherDto>> GetTeachersByClassSubjectAsync(Guid classSubjectId)
         {
             using var conn = new NpgsqlConnection(_connectionString);
             var sql = @"
-                SELECT cst.""Id"", cst.""ClassSubjectId"", cst.""TeacherId"", cst.""SchoolYear"", cst.""CreatedAt"",
-                       tp.""Name"" AS ""TeacherName""
-                FROM ""class_subject_teacher"" cst
-                INNER JOIN ""teacher_profile"" tp ON cst.""TeacherId"" = tp.""UserId""
-                WHERE cst.""ClassSubjectId"" = @classSubjectId";
-            return await conn.QueryAsync<ClassSubjectTeacher>(sql, new { classSubjectId });
+    SELECT 
+        cst.""Id"",
+        cst.""ClassSubjectId"",
+        cst.""TeacherId"",
+        cst.""SchoolYear"",
+        cst.""CreatedAt"",
+        u.""Name"" AS ""TeacherName"",
+        s.""Name"" AS ""Subject_Name""
+    FROM ""class_subject_teacher"" cst
+
+    INNER JOIN ""class_subject"" cs
+        ON cst.""ClassSubjectId"" = cs.""Id""
+
+    INNER JOIN ""subject"" s
+        ON cs.""SubjectId"" = s.""Id""
+
+    INNER JOIN ""teacher_profile"" tp
+        ON cst.""TeacherId"" = tp.""UserId""
+
+    INNER JOIN ""user"" u
+        ON tp.""UserId"" = u.""Id""
+
+    WHERE cst.""ClassSubjectId"" = @classSubjectId;
+";
+
+            return await conn.QueryAsync<ClassSubjectTeacherDto>(sql, new { classSubjectId });
         }
 
         public async Task<IEnumerable<ClassSubject>> GetClassSubjectsByTeacherAsync(Guid teacherId)

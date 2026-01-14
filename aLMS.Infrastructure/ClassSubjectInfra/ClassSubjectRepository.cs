@@ -1,4 +1,5 @@
-﻿using aLMS.Application.Common.Interfaces;
+﻿using aLMS.Application.Common.Dtos;
+using aLMS.Application.Common.Interfaces;
 using aLMS.Domain.ClassSubjectEntity;
 using Dapper;
 using Microsoft.EntityFrameworkCore;
@@ -62,7 +63,7 @@ namespace aLMS.Infrastructure.ClassSubjectInfra
             return await conn.QueryAsync<ClassSubject>(sql);
         }
 
-        public async Task<IEnumerable<ClassSubject>> GetClassSubjectsByClassIdAsync(Guid classId)
+        public async Task<IEnumerable<ClassSubjectDto>> GetClassSubjectsByClassIdAsync(Guid classId)
         {
             using var conn = new NpgsqlConnection(_connectionString);
             var sql = @"
@@ -72,7 +73,7 @@ namespace aLMS.Infrastructure.ClassSubjectInfra
                 INNER JOIN ""class"" c ON cs.""ClassId"" = c.""Id""
                 INNER JOIN ""subject"" s ON cs.""SubjectId"" = s.""Id""
                 WHERE cs.""ClassId"" = @classId";
-            return await conn.QueryAsync<ClassSubject>(sql, new { classId });
+            return await conn.QueryAsync<ClassSubjectDto>(sql, new { classId });
         }
 
         public async Task<IEnumerable<ClassSubject>> GetClassSubjectsBySubjectIdAsync(Guid subjectId)

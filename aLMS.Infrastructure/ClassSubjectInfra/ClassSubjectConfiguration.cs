@@ -18,6 +18,8 @@ namespace aLMS.Infrastructure.ClassSubjectInfra
             builder.Property(x => x.ClassId).HasColumnType("uuid");
             builder.Property(x => x.SubjectId).HasColumnType("uuid");
             builder.Property(x => x.SchoolYear).HasColumnType("varchar(20)");
+            builder.HasIndex(x => new { x.ClassId, x.SubjectId }).IsUnique();
+
 
             builder.HasOne(x => x.Class)
                 .WithMany()
