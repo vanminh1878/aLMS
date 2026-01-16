@@ -1,4 +1,5 @@
 ﻿using aLMS.Application.Common.Dtos;
+using aLMS.Application.Common.DTOs;
 using aLMS.Application.SubjectServices.Commands.CreateSubject;
 using aLMS.Application.SubjectServices.Commands.DeleteSubject;
 using aLMS.Application.SubjectServices.Commands.UpdateSubject;
@@ -59,6 +60,22 @@ namespace aLMS.API.Controllers
         {
             var result = await _mediator.Send(new DeleteSubjectCommand { Id = id });
             return result.Success ? Ok(result) : BadRequest(result);
+        }
+
+        [HttpGet("assigned-to-teacher/{teacherId}")]
+        public async Task<ActionResult<List<AssignedSubjectDto>>> GetAssignedSubjects(
+            Guid teacherId,
+            [FromQuery] string? schoolYear = null)
+        {
+            var query = new GetAssignedSubjectsByTeacherQuery
+            {
+                TeacherId = teacherId,
+                SchoolYear = schoolYear
+            };
+
+            var subjects = await _mediator.Send(query);
+
+            return Ok(subjects);
         }
     }
 }

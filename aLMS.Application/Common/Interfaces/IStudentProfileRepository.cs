@@ -1,4 +1,5 @@
-﻿using aLMS.Domain.ClassEntity;
+﻿using aLMS.Application.Common.Dtos;
+using aLMS.Domain.ClassEntity;
 using aLMS.Domain.StudentProfileEntity;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ namespace aLMS.Application.Common.Interfaces
         Task UpdateAsync(StudentProfile profile);
         Task DeleteAsync(Guid userId);
         Task<bool> ExistsAsync(Guid userId);
-        Task<List<StudentProfile>> GetByClassIdAsync(Guid classId);
+        Task<List<StudentProfileDto>> GetByClassIdAsync(Guid classId);
         Task<int> GetMaxStudentOrderInClass(Guid classId);
     }
 }

@@ -1,4 +1,5 @@
-﻿using aLMS.Domain.SubjectEntity;
+﻿using aLMS.Application.Common.DTOs;
+using aLMS.Domain.SubjectEntity;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -15,5 +16,6 @@ namespace aLMS.Application.Common.Interfaces
         Task<bool> SubjectExistsAsync(Guid id);
         Task<IEnumerable<Subject>> GetSubjectsByClassIdAsync(Guid classId);
         Task<Subject> GetSubjectByTopicIdAsync(Guid id);
+        Task<List<AssignedSubjectDto>> GetAssignedSubjectsByTeacherAsync(Guid teacherId, string? schoolYear = null);
     }
 }

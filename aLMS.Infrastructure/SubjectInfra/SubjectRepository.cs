@@ -1,4 +1,5 @@
-﻿using aLMS.Application.Common.Interfaces;
+﻿using aLMS.Application.Common.DTOs;
+using aLMS.Application.Common.Interfaces;
 using aLMS.Domain.SubjectEntity;
 using Dapper;
 using Microsoft.EntityFrameworkCore;
@@ -94,6 +95,47 @@ namespace aLMS.Infrastructure.SubjectInfra
 
             return await conn.QuerySingleOrDefaultAsync<Subject>(sql, new { topicId });
         }
+        public async Task<List<AssignedSubjectDto>> GetAssignedSubjectsByTeacherAsync(
+            Guid teacherId,
+            string? schoolYear = null)
+        {
+            using var conn = new NpgsqlConnection(_connectionString);
+
+            var sql = @"
+                SELECT 
+                    s.""Id""            AS SubjectId,
+                    s.""Name""          AS SubjectName,
+                    s.""Description"",
+                    s.""Category"",
+                    cs.""ClassId"",
+                    c.""ClassName"",
+                    cst.""SchoolYear""
+                FROM ""subject"" s
+                INNER JOIN ""class_subject"" cs 
+                    ON s.""Id"" = cs.""SubjectId""
+                INNER JOIN ""class_subject_teacher"" cst
+                    ON cs.""Id"" = cst.""ClassSubjectId""
+                LEFT JOIN ""class"" c
+                    ON cs.""ClassId"" = c.""Id""
+                WHERE cst.""TeacherId"" = @TeacherId
+            ";
+
+            var parameters = new DynamicParameters();
+            parameters.Add("@TeacherId", teacherId);
+
+            if (!string.IsNullOrWhiteSpace(schoolYear))
+            {
+                sql += " AND cst.\"SchoolYear\" = @SchoolYear";
+                parameters.Add("@SchoolYear", schoolYear);
+            }
+
+            sql += " ORDER BY cst.\"SchoolYear\" DESC, s.\"Name\"";
+
+            var result = await conn.QueryAsync<AssignedSubjectDto>(sql, parameters);
+
+            return result.AsList();
+        }
+
 
     }
 }

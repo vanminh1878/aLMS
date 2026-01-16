@@ -1,4 +1,5 @@
 ﻿// aLMS.Infrastructure.StudentProfileInfra/StudentProfileRepository.cs
+using aLMS.Application.Common.Dtos;
 using aLMS.Application.Common.Interfaces;
 using aLMS.Domain.ClassEntity;
 using aLMS.Domain.StudentProfileEntity;
@@ -79,7 +80,7 @@ namespace aLMS.Infrastructure.StudentProfileInfra
 
             return await conn.ExecuteScalarAsync<int>(sql, new { classId });
         }
-        public async Task<List<StudentProfile>> GetByClassIdAsync(Guid classId)
+        public async Task<List<StudentProfileDto>> GetByClassIdAsync(Guid classId)
         {
             using var conn = new NpgsqlConnection(_connectionString);
             var sql = @"
@@ -97,7 +98,7 @@ namespace aLMS.Infrastructure.StudentProfileInfra
                 WHERE sce.""ClassId"" = @classId
                 ORDER BY u.""Name""";
 
-            var result = await conn.QueryAsync<StudentProfile>(sql, new { classId });
+            var result = await conn.QueryAsync<StudentProfileDto>(sql, new { classId });
             return result.ToList();
         }
     }
