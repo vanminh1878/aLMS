@@ -11,7 +11,7 @@ To undo this action, use 'ef migrations remove'
 dotnet ef migrations add InitialCreate --startup-project "../aLMS.Api"
 dotnet ef migrations add AddStockIntakeIdToStockIntakeDetail --startup-project "../aLMS.Api"
 dotnet ef migrations add delete --startup-project "../aLMS.Api"
-dotnet ef migrations add AddNotiTable --startup-project "../aLMS.Api"
+dotnet ef migrations add AddFinalTermTable --startup-project "../aLMS.Api"
 
 *update
 dotnet ef database update --project ../aLMS.Infrastructure --startup-project ../aLMS.Api

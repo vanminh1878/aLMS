@@ -23,6 +23,7 @@ using aLMS.Infrastructure.StudentAnswerInfra;
 using aLMS.Infrastructure.StudentClassEnrollmentInfra;
 using aLMS.Infrastructure.StudentEvaluationInfra;
 using aLMS.Infrastructure.StudentExerciseInfra;
+using aLMS.Infrastructure.StudentFinalTermRecordInfra;
 using aLMS.Infrastructure.StudentProfileInfra;
 using aLMS.Infrastructure.StudentQualityEvaluationInfra;
 using aLMS.Infrastructure.StudentSubjectCommentInfra;
@@ -273,6 +274,12 @@ namespace aLMS.API
                         provider.GetRequiredService<IConfiguration>().GetConnectionString("DefaultConnection")
                             ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.")
                     ));
+                builder.Services.AddScoped<IFinalTermRecordRepository>(provider =>
+                   new FinalTermRecordRepository(
+                       provider.GetRequiredService<aLMSDbContext>(),
+                       provider.GetRequiredService<IConfiguration>().GetConnectionString("DefaultConnection")
+                           ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.")
+                   ));
 
 
 

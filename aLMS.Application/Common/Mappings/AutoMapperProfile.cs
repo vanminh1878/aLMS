@@ -19,6 +19,7 @@ using aLMS.Domain.SchoolEntity;
 using aLMS.Domain.StudentAnswerEntity;
 using aLMS.Domain.StudentEvaluationEntity;
 using aLMS.Domain.StudentExerciseEntity;
+using aLMS.Domain.StudentFinalTermRecordEntity;
 using aLMS.Domain.StudentProfileEntity;
 using aLMS.Domain.StudentQualityEvaluationEntity;
 using aLMS.Domain.StudentSubjectCommentEntity;
@@ -208,6 +209,10 @@ namespace aLMS.Application.Common.Mappings
             CreateMap<CreateNotificationDto, Notification>();
             CreateMap<UpdateNotificationDto, Notification>();
             CreateMap<Notification, NotificationDto>();
+
+            CreateMap<CreateFinalTermRecordDto, StudentFinalTermRecord>();
+            CreateMap<UpdateFinalTermRecordDto, StudentFinalTermRecord>();
+            CreateMap<StudentFinalTermRecord, FinalTermRecordDto>();
 
             CreateMap<Timetable, TimetableDto>()
     .ForMember(dest => dest.ClassName, opt => opt.MapFrom(src => src.Class.ClassName))
