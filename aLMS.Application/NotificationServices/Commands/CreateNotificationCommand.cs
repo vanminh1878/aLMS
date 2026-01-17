@@ -25,9 +25,19 @@ namespace aLMS.Application.NotificationServices.Commands
 
         public async Task<Guid> Handle(CreateNotificationCommand request, CancellationToken ct)
         {
-            var entity = _mapper.Map<Notification>(request.Dto);
+            var dto = request.Dto;
+            var entity = new Notification(
+                title: dto.Title,
+                content: dto.Content,
+                targetType: dto.TargetType,
+                targetId: dto.TargetId,
+                createdBy: request.Dto.CreatedBy,               // ← truyền thẳng vào constructor
+                schoolId: dto.SchoolId
+            );
+
             entity.RaiseCreatedEvent();
             await _repo.AddAsync(entity);
+
             return entity.Id;
         }
     }

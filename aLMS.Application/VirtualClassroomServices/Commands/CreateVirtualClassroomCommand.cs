@@ -25,7 +25,22 @@ namespace aLMS.Application.VirtualClassroomServices.Commands
 
         public async Task<Guid> Handle(CreateVirtualClassroomCommand request, CancellationToken ct)
         {
-            var entity = _mapper.Map<VirtualClassroom>(request.Dto);
+            var dto = request.Dto;
+            var entity = new VirtualClassroom(
+                classId: dto.ClassId,
+                title: dto.Title,
+                meetingUrl: dto.MeetingUrl,
+                startTime: dto.StartTime,
+                endTime: dto.EndTime,
+                createdBy: dto.CreatedBy,           
+                isRecurring: dto.IsRecurring,
+                subjectId: dto.SubjectId,
+                timetableId: dto.TimetableId,
+                dayOfWeek: dto.DayOfWeek,
+                periodNumber: dto.PeriodNumber,
+                meetingId: dto.MeetingId,
+                password: dto.Password
+            );
             entity.RaiseCreatedEvent();
             await _repo.AddAsync(entity);
             return entity.Id;

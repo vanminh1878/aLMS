@@ -23,6 +23,7 @@ namespace aLMS.Application.Common.Dtos
         public string TargetType { get; set; } = string.Empty;
         public Guid? TargetId { get; set; }
         public Guid? SchoolId { get; set; }
+        public Guid CreatedBy { get; set; }
     }
 
     public class UpdateNotificationDto

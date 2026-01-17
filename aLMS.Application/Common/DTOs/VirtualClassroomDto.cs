@@ -28,6 +28,7 @@ namespace aLMS.Application.Common.Dtos
     public class CreateVirtualClassroomDto
     {
         public Guid ClassId { get; set; }
+        public Guid CreatedBy { get; set; }
         public Guid? SubjectId { get; set; }
         public Guid? TimetableId { get; set; }
         public short? DayOfWeek { get; set; } // Bắt buộc nếu TimetableId null
