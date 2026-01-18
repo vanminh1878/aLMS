@@ -15,7 +15,7 @@ namespace aLMS.Application.Common.Interfaces
         Task<bool> HasConflictForClassAsync(Guid classId, short dayOfWeek, short periodNumber);
         Task<bool> HasConflictForTeacherAsync(Guid teacherId, short dayOfWeek, short periodNumber);
         Task<IEnumerable<TimetableDto>> GetByClassIdAsync(Guid classId, string? schoolYear);
-        Task<IEnumerable<Timetable>> GetByTeacherIdAsync(Guid teacherId, string? schoolYear);
+        Task<IEnumerable<TimetableDto>> GetByTeacherIdAsync(Guid teacherId, string? schoolYear);
         Task<IEnumerable<Timetable>> GetByStudentIdAsync(Guid studentId, string? schoolYear); // Qua lớp của HS
     }
 }

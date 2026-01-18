@@ -95,14 +95,35 @@ namespace aLMS.Infrastructure.TimetableInfra
             return await conn.QueryAsync<TimetableDto>(sql, new { classId, schoolYear });
         }
 
-        public async Task<IEnumerable<Timetable>> GetByTeacherIdAsync(Guid teacherId, string? schoolYear)
+        public async Task<IEnumerable<TimetableDto>> GetByTeacherIdAsync(Guid teacherId, string? schoolYear)
         {
             using var conn = new NpgsqlConnection(_connectionString);
-            var sql = @"SELECT * FROM ""timetable"" 
-                        WHERE ""TeacherId"" = @teacherId 
-                          AND (@schoolYear IS NULL OR ""SchoolYear"" = @schoolYear)
-                        ORDER BY ""DayOfWeek"", ""PeriodNumber""";
-            return await conn.QueryAsync<Timetable>(sql, new { teacherId, schoolYear });
+
+            var sql = @"
+        SELECT 
+            t.""Id"",
+            t.""ClassId"",
+            c.""ClassName"",                    
+            t.""SubjectId"",
+            s.""Name"" AS ""SubjectName"",       
+            t.""TeacherId"",
+            u.""Name"" AS ""TeacherName"",         
+            t.""DayOfWeek"",
+            t.""PeriodNumber"",
+            t.""StartTime"",
+            t.""EndTime"",
+            t.""Room"",
+            t.""SchoolYear"",
+            t.""CreatedAt"",
+            t.""UpdatedAt""
+        FROM ""timetable"" t
+        INNER JOIN ""class"" c ON t.""ClassId"" = c.""Id""
+        INNER JOIN ""subject"" s ON t.""SubjectId"" = s.""Id""
+        INNER JOIN ""user"" u ON t.""TeacherId"" = u.""Id""
+        WHERE t.""TeacherId"" = @teacherId
+        ORDER BY t.""DayOfWeek"", t.""PeriodNumber""";
+
+            return await conn.QueryAsync<TimetableDto>(sql, new { teacherId, schoolYear });
         }
 
         public async Task<IEnumerable<Timetable>> GetByStudentIdAsync(Guid studentId, string? schoolYear)
