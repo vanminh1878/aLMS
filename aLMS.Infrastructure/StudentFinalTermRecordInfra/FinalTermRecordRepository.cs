@@ -25,23 +25,27 @@ namespace aLMS.Infrastructure.StudentFinalTermRecordInfra
         {
             using var conn = new NpgsqlConnection(_connectionString);
             var sql = @"
-                SELECT 
-                    r.""Id"",
-                    r.""StudentProfileId"",
-                    r.""ClassId"",
-                    r.""FinalScore"",
-                    r.""FinalEvaluation"",
-                    r.""Comment"",
-                    r.""CreatedAt"",
-                    r.""UpdatedAt"",
-                    sp.""UserId"",
-                    u.""Name"" AS StudentName,
-                    c.""ClassName""
-                FROM student_final_term_record r
-                JOIN student_profile sp ON r.""StudentProfileId"" = sp.""UserId""
-                JOIN ""user"" u ON sp.""UserId"" = u.""Id""
-                LEFT JOIN ""class"" c ON r.""ClassId"" = c.""Id""
-                WHERE r.""Id"" = @id";
+        SELECT 
+            r.""Id"",
+            r.""StudentProfileId"",
+            r.""ClassId"",
+            r.""SubjectId"",                  
+            r.""FinalScore"",
+            r.""FinalEvaluation"",
+            r.""Comment"",
+            r.""CreatedAt"",
+            r.""UpdatedAt"",
+            sp.""UserId"",
+            u.""Name"" AS StudentName,
+            c.""ClassName"",
+            sub.""Name"" AS SubjectName      
+        FROM student_final_term_record r
+        JOIN student_profile sp ON r.""StudentProfileId"" = sp.""UserId""
+        JOIN ""user"" u ON sp.""UserId"" = u.""Id""
+        LEFT JOIN ""class"" c ON r.""ClassId"" = c.""Id""
+        JOIN ""subject"" sub ON r.""SubjectId"" = sub.""Id"" 
+        WHERE r.""Id"" = @id";
+
 
             return await conn.QuerySingleOrDefaultAsync<FinalTermRecordDto>(sql, new { id });
         }
@@ -50,24 +54,27 @@ namespace aLMS.Infrastructure.StudentFinalTermRecordInfra
         {
             using var conn = new NpgsqlConnection(_connectionString);
             var sql = @"
-                SELECT 
-                    r.""Id"",
-                    r.""StudentProfileId"",
-                    r.""ClassId"",
-                    r.""FinalScore"",
-                    r.""FinalEvaluation"",
-                    r.""Comment"",
-                    r.""CreatedAt"",
-                    r.""UpdatedAt"",
-                    sp.""UserId"",
-                    u.""Name"" AS StudentName,
-                    c.""ClassName""
-                FROM student_final_term_record r
-                JOIN student_profile sp ON r.""StudentProfileId"" = sp.""UserId""
-                JOIN ""user"" u ON sp.""UserId"" = u.""Id""
-                LEFT JOIN ""class"" c ON r.""ClassId"" = c.""Id""
-                WHERE r.""StudentProfileId"" = @studentProfileId
-                ORDER BY r.""CreatedAt"" DESC";
+        SELECT 
+            r.""Id"",
+            r.""StudentProfileId"",
+            r.""ClassId"",
+            r.""SubjectId"",
+            r.""FinalScore"",
+            r.""FinalEvaluation"",
+            r.""Comment"",
+            r.""CreatedAt"",
+            r.""UpdatedAt"",
+            sp.""UserId"",
+            u.""Name"" AS StudentName,
+            c.""ClassName"",
+            sub.""Name"" AS SubjectName
+        FROM student_final_term_record r
+        JOIN student_profile sp ON r.""StudentProfileId"" = sp.""UserId""
+        JOIN ""user"" u ON sp.""UserId"" = u.""Id""
+        LEFT JOIN ""class"" c ON r.""ClassId"" = c.""Id""
+        JOIN ""subject"" sub ON r.""SubjectId"" = sub.""Id""
+        WHERE r.""StudentProfileId"" = @studentProfileId
+        ORDER BY sub.""Name"", r.""CreatedAt"" DESC";
 
             var result = await conn.QueryAsync<FinalTermRecordDto>(sql, new { studentProfileId });
             return result.ToList();
@@ -77,24 +84,27 @@ namespace aLMS.Infrastructure.StudentFinalTermRecordInfra
         {
             using var conn = new NpgsqlConnection(_connectionString);
             var sql = @"
-                SELECT 
-                    r.""Id"",
-                    r.""StudentProfileId"",
-                    r.""ClassId"",
-                    r.""FinalScore"",
-                    r.""FinalEvaluation"",
-                    r.""Comment"",
-                    r.""CreatedAt"",
-                    r.""UpdatedAt"",
-                    sp.""UserId"",
-                    u.""Name"" AS StudentName,
-                    c.""ClassName""
-                FROM student_final_term_record r
-                JOIN student_profile sp ON r.""StudentProfileId"" = sp.""UserId""
-                JOIN ""user"" u ON sp.""UserId"" = u.""Id""
-                LEFT JOIN ""class"" c ON r.""ClassId"" = c.""Id""
-                WHERE r.""ClassId"" = @classId
-                ORDER BY u.""Name"", r.""CreatedAt"" DESC";
+        SELECT 
+            r.""Id"",
+            r.""StudentProfileId"",
+            r.""ClassId"",
+            r.""SubjectId"",
+            r.""FinalScore"",
+            r.""FinalEvaluation"",
+            r.""Comment"",
+            r.""CreatedAt"",
+            r.""UpdatedAt"",
+            sp.""UserId"",
+            u.""Name"" AS StudentName,
+            c.""ClassName"",
+            sub.""Name"" AS SubjectName
+        FROM student_final_term_record r
+        JOIN student_profile sp ON r.""StudentProfileId"" = sp.""UserId""
+        JOIN ""user"" u ON sp.""UserId"" = u.""Id""
+        LEFT JOIN ""class"" c ON r.""ClassId"" = c.""Id""
+        JOIN ""subject"" sub ON r.""SubjectId"" = sub.""Id""
+        WHERE r.""ClassId"" = @classId
+        ORDER BY u.""Name"", sub.""Name""";
 
             var result = await conn.QueryAsync<FinalTermRecordDto>(sql, new { classId });
             return result.ToList();

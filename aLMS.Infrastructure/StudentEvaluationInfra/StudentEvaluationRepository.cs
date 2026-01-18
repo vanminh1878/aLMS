@@ -1,5 +1,7 @@
 ﻿using aLMS.Application.Common.Interfaces;
 using aLMS.Domain.StudentEvaluationEntity;
+using aLMS.Domain.StudentQualityEvaluationEntity;
+using aLMS.Domain.StudentSubjectCommentEntity;
 using Dapper;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
@@ -48,33 +50,81 @@ namespace aLMS.Infrastructure.StudentEvaluationInfra
             return await conn.QuerySingleOrDefaultAsync<StudentEvaluation>(sql, new { id });
         }
 
-        public async Task<IEnumerable<StudentEvaluation>> GetByStudentIdAsync(Guid studentId, string? semester, string? schoolYear)
+        public async Task<IEnumerable<StudentEvaluation>> GetByStudentIdAsync(
+      Guid studentId,
+      string? semester,
+      string? schoolYear)
         {
             using var conn = new NpgsqlConnection(_connectionString);
-            var sql = @"
-                SELECT se.*, 
-                       u.""Name"" AS ""StudentName"", 
-                       c.""ClassName"", 
-                       cu.""Name"" AS ""CreatedByName""
-                FROM ""student_evaluation"" se
-                INNER JOIN ""user"" u ON se.""StudentId"" = u.""Id""
-                INNER JOIN ""class"" c ON se.""ClassId"" = c.""Id""
-                INNER JOIN ""user"" cu ON se.""CreatedBy"" = cu.""Id""
-                WHERE se.""StudentId"" = @studentId";
 
-            if (!string.IsNullOrEmpty(semester))
+            // 1. Lấy danh sách các evaluation chính
+            var sqlMain = @"
+        SELECT se.*, 
+               u.""Name"" AS ""StudentName"", 
+               c.""ClassName"", 
+               cu.""Name"" AS ""CreatedByName""
+        FROM ""student_evaluation"" se
+        INNER JOIN ""user"" u ON se.""StudentId"" = u.""Id""
+        INNER JOIN ""class"" c ON se.""ClassId"" = c.""Id""
+        INNER JOIN ""user"" cu ON se.""CreatedBy"" = cu.""Id""
+        WHERE se.""StudentId"" = @studentId
+        /* AND điều kiện semester, schoolYear nếu cần */
+        ORDER BY se.""CreatedAt"" DESC";
+
+            var evaluations = (await conn.QueryAsync<StudentEvaluation>(sqlMain, new { studentId, semester, schoolYear }))
+                .ToList();
+
+            if (!evaluations.Any()) return evaluations;
+
+            var evaluationIds = evaluations.Select(e => e.Id).ToList();
+
+            // 2. Lấy tất cả subject comments của các evaluation trên
+            var sqlComments = @"
+        SELECT * 
+        FROM student_subject_comment ssc
+        WHERE ssc.""StudentEvaluationId"" = ANY(@Ids)
+        "; 
+
+            var allComments = await conn.QueryAsync<StudentSubjectComment>(
+                sqlComments,
+                new { Ids = evaluationIds }
+            );
+
+            // 3. Lấy tất cả quality evaluations
+            var sqlQualities = @"
+        SELECT * 
+        FROM student_quality_evaluation sqe
+        WHERE sqe.""StudentEvaluationId"" = ANY(@Ids)
+        ";  
+
+            var allQualities = await conn.QueryAsync<StudentQualityEvaluation>(
+                sqlQualities,
+                new { Ids = evaluationIds }
+            );
+
+            // 4. Group và gán vào từng evaluation
+            var commentsByEval = allComments.GroupBy(c => c.StudentEvaluationId).ToDictionary(
+                g => g.Key,
+                g => g.ToList()
+            );
+
+            var qualitiesByEval = allQualities.GroupBy(q => q.StudentEvaluationId).ToDictionary(
+                g => g.Key,
+                g => g.ToList()
+            );
+
+            foreach (var eval in evaluations)
             {
-                sql += " AND se.\"Semester\" = @semester";
+                eval.SubjectComments = commentsByEval.TryGetValue(eval.Id, out var comments)
+                    ? comments
+                    : new List<StudentSubjectComment>();
+
+                eval.QualityEvaluations = qualitiesByEval.TryGetValue(eval.Id, out var qualities)
+                    ? qualities
+                    : new List<StudentQualityEvaluation>();
             }
 
-            if (!string.IsNullOrEmpty(schoolYear))
-            {
-                sql += " AND se.\"SchoolYear\" = @schoolYear";
-            }
-
-            sql += " ORDER BY se.\"CreatedAt\" DESC";
-
-            return await conn.QueryAsync<StudentEvaluation>(sql, new { studentId, semester, schoolYear });
+            return evaluations;
         }
 
         public async Task<IEnumerable<StudentEvaluation>> GetByClassIdAsync(Guid classId, string? semester, string? schoolYear)

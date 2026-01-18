@@ -1,4 +1,5 @@
-﻿using aLMS.Application.Common.Interfaces;
+﻿using aLMS.Application.Common.Dtos;
+using aLMS.Application.Common.Interfaces;
 using aLMS.Domain.VirtualClassroomEntity;
 using Dapper;
 using Microsoft.EntityFrameworkCore;
@@ -79,7 +80,7 @@ namespace aLMS.Infrastructure.VirtualClassroomInfra
             return await conn.QueryAsync<VirtualClassroom>(sql);
         }
 
-        public async Task<IEnumerable<VirtualClassroom>> GetByClassIdAsync(Guid classId, bool upcomingOnly)
+        public async Task<IEnumerable<VirtualClassroomDto>> GetByClassIdAsync(Guid classId, bool upcomingOnly)
         {
             using var conn = new NpgsqlConnection(_connectionString);
             var sql = @"
@@ -104,7 +105,7 @@ namespace aLMS.Infrastructure.VirtualClassroomInfra
 
             sql += " ORDER BY vc.\"StartTime\" ASC";
 
-            return await conn.QueryAsync<VirtualClassroom>(sql, new { classId });
+            return await conn.QueryAsync<VirtualClassroomDto>(sql, new { classId });
         }
 
         public async Task<IEnumerable<VirtualClassroom>> GetByStudentIdAsync(Guid studentId, bool upcomingOnly)

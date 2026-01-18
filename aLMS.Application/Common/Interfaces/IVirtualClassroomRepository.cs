@@ -1,4 +1,5 @@
-﻿using aLMS.Domain.VirtualClassroomEntity;
+﻿using aLMS.Application.Common.Dtos;
+using aLMS.Domain.VirtualClassroomEntity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace aLMS.Application.Common.Interfaces
         Task UpdateAsync(VirtualClassroom entity);
         Task DeleteAsync(Guid id);
         Task<VirtualClassroom?> GetByIdAsync(Guid id);
-        Task<IEnumerable<VirtualClassroom>> GetByClassIdAsync(Guid classId, bool upcomingOnly);
+        Task<IEnumerable<VirtualClassroomDto>> GetByClassIdAsync(Guid classId, bool upcomingOnly);
         Task<IEnumerable<VirtualClassroom>> GetByStudentIdAsync(Guid studentId, bool upcomingOnly);
     }
 }

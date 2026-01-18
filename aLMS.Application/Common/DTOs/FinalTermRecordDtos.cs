@@ -4,7 +4,9 @@
     {
         public Guid Id { get; set; }
         public Guid StudentProfileId { get; set; }
-        public string? StudentName { get; set; }     // join để hiển thị
+        public string? StudentName { get; set; }     
+        public Guid SubjectId { get; set; }           
+        public string? SubjectName { get; set; }
         public Guid? ClassId { get; set; }
         public string? ClassName { get; set; }
 
@@ -20,6 +22,7 @@
     {
         public Guid StudentProfileId { get; set; }
         public Guid? ClassId { get; set; }
+        public Guid SubjectId { get; set; }
         public decimal? FinalScore { get; set; }
         public string? FinalEvaluation { get; set; }
         public string? Comment { get; set; }

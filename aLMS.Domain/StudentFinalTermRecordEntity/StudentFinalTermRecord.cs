@@ -12,7 +12,7 @@ namespace aLMS.Domain.StudentFinalTermRecordEntity
         public StudentProfile StudentProfile { get; set; } = null!;
         public Guid? ClassId { get; set; }
         // public Guid? SchoolYearId { get; set; }  // tùy chọn
-
+        public Guid SubjectId { get; set; }
         public decimal? FinalScore { get; set; }   
         public string? FinalEvaluation { get; set; }      
         public string? Comment { get; set; }              

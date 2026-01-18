@@ -35,6 +35,7 @@ namespace aLMS.Application.Common.Dtos
         public string Level { get; set; } = string.Empty;
         public string GeneralComment { get; set; } = string.Empty;
         public string FinalEvaluation { get; set; } = string.Empty;
+        public Guid CreatedBy { get; set; }
     }
 
     public class UpdateStudentEvaluationDto

@@ -14,18 +14,50 @@ from torchvision import transforms as T
 from fastapi.middleware.cors import CORSMiddleware
 
 # Danh sách 10 hành vi (phải đúng thứ tự như khi train)
+# Danh sách 10 hành vi - có cả tiếng Anh và tiếng Việt
 behavior_labels = [
-    "Absence or avoidance of eye contact",
-    "Aggressive behavior",
-    "Hyper- or hyporeactivity to sensory input",
-    "Non-responsiveness to verbal interaction",
-    "Non-typical language",
-    "Object lining-up",
-    "Self-hitting or self-injurious behavior",
-    "Self-spinning or spinning objects",
-    "Upper limb stereotypies",
-    "Background"
+    {
+        "en": "Absence or avoidance of eye contact",
+        "vi": "Thiếu hoặc tránh giao tiếp bằng mắt"
+    },
+    {
+        "en": "Aggressive behavior",
+        "vi": "Hành vi hung hăng"
+    },
+    {
+        "en": "Hyper- or hyporeactivity to sensory input",
+        "vi": "Phản ứng quá mức hoặc quá ít với kích thích giác quan"
+    },
+    {
+        "en": "Non-responsiveness to verbal interaction",
+        "vi": "Không phản hồi với tương tác bằng lời nói"
+    },
+    {
+        "en": "Non-typical language",
+        "vi": "Ngôn ngữ không điển hình"
+    },
+    {
+        "en": "Object lining-up",
+        "vi": "Xếp hàng đồ vật"
+    },
+    {
+        "en": "Self-hitting or self-injurious behavior",
+        "vi": "Tự đánh hoặc tự làm đau bản thân"
+    },
+    {
+        "en": "Self-spinning or spinning objects",
+        "vi": "Tự xoay người hoặc xoay đồ vật"
+    },
+    {
+        "en": "Upper limb stereotypies",
+        "vi": "Hành vi lặp lại tay/vùng chi trên"
+    },
+    {
+        "en": "Background",
+        "vi": "Nền (không có hành vi đặc trưng)"
+    }
 ]
+
 
 num_labels = len(behavior_labels)  # 10
 
@@ -233,6 +265,59 @@ def sample_frames_from_video(video_bytes: bytes, num_frames=16):
             except:
                 pass
 
+# @app.post("/predict/")
+# async def predict(file: UploadFile = File(...)):
+#     print(f"\n=== NHẬN REQUEST MỚI ===\nFile: {file.filename}, Content-Type: {file.content_type}")
+    
+#     if file.content_type not in ["video/mp4", "video/mpeg", "video/x-m4v"]:
+#         raise HTTPException(status_code=400, detail="Chỉ hỗ trợ định dạng video MP4")
+
+#     try:
+#         video_bytes = await file.read()
+#         print(f"Đã đọc video: {len(video_bytes) / (1024*1024):.1f} MB")
+        
+#         if len(video_bytes) == 0:
+#             raise ValueError("File video rỗng")
+        
+#         # Xử lý video + audio
+#         video_tensor = sample_frames_from_video(video_bytes)
+#         video_tensor = video_tensor.to(device)
+        
+#         audio_tensor = extract_and_process_audio(video_bytes)
+#         audio_tensor = audio_tensor.unsqueeze(0).to(device)  # (1, 80000)
+        
+#         # Inference
+#         print("Bắt đầu inference...")
+#         with torch.no_grad():
+#             video_outputs = timesformer(pixel_values=video_tensor)
+#             video_features = video_outputs.hidden_states[-1][:, 0, :]  # (1, 768)
+            
+#             audio_outputs = wav2vec(audio_tensor)
+#             audio_features = audio_outputs.last_hidden_state[:, 0, :]  # (1, 768)
+            
+#             logits = fusion_model(video_features, audio_features)
+#             probabilities = torch.sigmoid(logits).cpu().numpy()[0]
+        
+#         probabilities = probabilities.astype(float).tolist()
+#         predicted_labels = [behavior_labels[i] for i, prob in enumerate(probabilities) if prob > 0.3]
+        
+#         result = {
+#             "detected_behaviors": predicted_labels,
+#             "all_probabilities": [
+#                 {"behavior": behavior_labels[i], "probability": round(probabilities[i], 4)}
+#                 for i in range(num_labels)
+#             ]
+#         }
+        
+#         print("DỰ ĐOÁN THÀNH CÔNG!")
+#         print("Hành vi phát hiện (>0.3):", predicted_labels)
+#         return JSONResponse(content=result)
+        
+#     except Exception as e:
+#         print("\n=== LỖI 500 TRONG /predict/ ===")
+#         traceback.print_exc()  # In toàn bộ traceback ra terminal
+#         print("==================================\n")
+#         raise HTTPException(status_code=500, detail=f"Lỗi xử lý video: {str(e)}")
 @app.post("/predict/")
 async def predict(file: UploadFile = File(...)):
     print(f"\n=== NHẬN REQUEST MỚI ===\nFile: {file.filename}, Content-Type: {file.content_type}")
@@ -247,46 +332,59 @@ async def predict(file: UploadFile = File(...)):
         if len(video_bytes) == 0:
             raise ValueError("File video rỗng")
         
-        # Xử lý video + audio
+        # Xử lý video + audio (giữ nguyên phần này)
         video_tensor = sample_frames_from_video(video_bytes)
         video_tensor = video_tensor.to(device)
         
         audio_tensor = extract_and_process_audio(video_bytes)
-        audio_tensor = audio_tensor.unsqueeze(0).to(device)  # (1, 80000)
+        audio_tensor = audio_tensor.unsqueeze(0).to(device)
         
         # Inference
         print("Bắt đầu inference...")
         with torch.no_grad():
             video_outputs = timesformer(pixel_values=video_tensor)
-            video_features = video_outputs.hidden_states[-1][:, 0, :]  # (1, 768)
+            video_features = video_outputs.hidden_states[-1][:, 0, :]
             
             audio_outputs = wav2vec(audio_tensor)
-            audio_features = audio_outputs.last_hidden_state[:, 0, :]  # (1, 768)
+            audio_features = audio_outputs.last_hidden_state[:, 0, :]
             
             logits = fusion_model(video_features, audio_features)
             probabilities = torch.sigmoid(logits).cpu().numpy()[0]
         
         probabilities = probabilities.astype(float).tolist()
-        predicted_labels = [behavior_labels[i] for i, prob in enumerate(probabilities) if prob > 0.3]
+        
+        # Lọc các hành vi có xác suất > 0.3 (dùng nhãn tiếng Việt)
+        predicted_labels_vi = [
+            behavior_labels[i]["vi"] 
+            for i, prob in enumerate(probabilities) 
+            if prob > 0.3
+        ]
+        
+        # Tất cả xác suất (cả tiếng Việt)
+        all_probabilities_vi = [
+            {
+                "behavior": behavior_labels[i]["vi"],
+                "probability": round(probabilities[i], 4)
+            }
+            for i in range(num_labels)
+        ]
         
         result = {
-            "detected_behaviors": predicted_labels,
-            "all_probabilities": [
-                {"behavior": behavior_labels[i], "probability": round(probabilities[i], 4)}
-                for i in range(num_labels)
-            ]
+            "detected_behaviors": predicted_labels_vi,
+            "all_probabilities": all_probabilities_vi,
+            # Nếu frontend cần cả tiếng Anh thì có thể thêm tùy chọn:
+            # "detected_behaviors_en": [...],
+            # "all_probabilities_en": [...]
         }
         
         print("DỰ ĐOÁN THÀNH CÔNG!")
-        print("Hành vi phát hiện (>0.3):", predicted_labels)
+        print("Hành vi phát hiện (>0.3):", predicted_labels_vi)
         return JSONResponse(content=result)
         
     except Exception as e:
         print("\n=== LỖI 500 TRONG /predict/ ===")
-        traceback.print_exc()  # In toàn bộ traceback ra terminal
-        print("==================================\n")
+        traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"Lỗi xử lý video: {str(e)}")
-
 @app.get("/")
 def root():
     return {"message": "ASD Behavior Detection API đang chạy. Upload video tại POST /predict/"}

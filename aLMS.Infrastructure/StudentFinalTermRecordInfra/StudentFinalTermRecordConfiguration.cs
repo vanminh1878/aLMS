@@ -35,6 +35,9 @@ namespace aLMS.Infrastructure.StudentFinalTermRecordInfra
             builder.Property(x => x.Comment)
                 .HasColumnType("text")
                 .IsRequired(false);
+            builder.Property(x => x.SubjectId)        
+                .HasColumnType("uuid")
+                .IsRequired();
 
             builder.Property(x => x.CreatedAt)
                 .HasColumnType("timestamptz");
